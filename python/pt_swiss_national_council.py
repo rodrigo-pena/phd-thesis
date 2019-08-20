@@ -4,8 +4,10 @@
 
 """
 
+cmd_folder = '../../gssr' # Insert here the string pointing to the gssr root folder
+
+# Make sure the gssr folder is in the python path
 import os, sys
-cmd_folder = os.path.realpath(os.path.abspath(os.path.join(os.getcwd(), os.pardir)))
 if cmd_folder not in sys.path:
     sys.path.insert(0, cmd_folder)
 
@@ -27,7 +29,8 @@ if __name__ == "__main__":
     parser = ArgumentParser(description='Error line for class label recovery in swiss-nacional-council,'
                             + ' varying the number of label measurements.')
     
-    parser.add_argument('-p', action='store', nargs='?', default='../data/swiss-national-council/', type=str, 
+    parser.add_argument('-p', action='store', nargs='?', 
+                        default=os.path.join(cmd_folder, 'data/swiss-national-council/'), type=str, 
                         help="path to the folder containing the swiss-nacional-council data" )
     parser.add_argument('-nt', action='store', nargs='?', default=5, type=int, 
                         help='number of random trials for each grid point')
@@ -99,10 +102,12 @@ if __name__ == "__main__":
                                     file_name=args.fn,
                                     aggr_method=np.median,
                                     n_trials=args.nt,
+                                    save_dir='../data/tmp/',
+                                    file_name=args.fn + '.pkl',
                                     save_to_disk=True)
     
     now = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
-    save_path = 'data/' + now + ' ' + args.fn + '.pkl'
+    save_path = '../data/' + now + ' ' + args.fn + '.pkl'
     
     
     # Update fields
