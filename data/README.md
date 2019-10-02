@@ -3,7 +3,7 @@
 The files in this directory are Python `.pkl` objects collecting results from the experiments in `phd-thesis/python/`. The files are time-stamped with their creation date. 
 
 
-## Reproduction
+## Reproducibility
 
 To recreate a similar dataset, first navigate to the `phd-thesis/python/` folder and follow the installation instruction. Then, open a terminal window and type
 
