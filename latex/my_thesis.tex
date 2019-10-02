@@ -1,0 +1,72 @@
+%%%%%%%%%%%%
+% SETTINGS %
+%%%%%%%%%%%%
+
+\input{settings/epfl_template}
+\input{settings/custom}
+
+
+%%%%%%%%%%%%%%%%%%%%
+% HEAD: Book-Begin %
+%%%%%%%%%%%%%%%%%%%%
+
+\begin{document}
+
+\frontmatter{}
+
+\input{head/titlepage}
+\input{head/quotes}
+\input{head/acknowledgements}
+
+\include{head/abstracts}
+
+\tableofcontents{}
+
+\glsaddall{} % Add all glossary entries, even the ones not referenced
+%\glsfindwidesttoplevelname{} % Find widest name automatically
+\glssetwidest{ABCDEFGHIJK} % Manually set the widest name
+\setglossarystyle{alttree}
+%\setglossarystyle{mcoltreenoname}
+\printglossary[type=acronym, title={List of Acronyms}]
+\printglossary[type=symbol, title={List of Symbols}]
+
+\listoffigures{}
+\addcontentsline{toc}{chapter}{List of figures}
+
+\listoftables{}
+\addcontentsline{toc}{chapter}{List of tables}
+
+% space before each new paragraph according to the template guidelines.
+% (after titlepage and frontmatter to keep the table of contents lists short)
+\setlength{\parskip}{1em}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% MAIN: The chapters of the thesis %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\mainmatter{}
+
+\include{main/introduction}
+\include{main/graphs-signals-sampling}
+\include{main/recovery-convex-program}
+\include{main/lower-bound-min-gain}
+\include{main/dual-certificates}
+\include{main/numerical-tour}
+\include{main/conclusions}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% TAIL: Bibliography, Appendix, CV %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\begin{appendices}
+    \input{tail/appendix-probab-ineq}
+\end{appendices}
+
+\include{tail/biblio}
+
+\include{tail/cv}
+
+
+\end{document}

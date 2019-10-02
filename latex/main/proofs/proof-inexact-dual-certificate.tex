@@ -1,0 +1,165 @@
+As a reminder, I follow the strategy of Cand\`es and Plan~\cite[Lemma 3.2]{candes2011b}: assume that some perturbation $\mathbf{x + h}$ is a solution of \eqref{eq:l1_interpolation}, and then show that assumptions \ref{ass:null} -- \ref{ass:approxOffSupport} imply $\mathbf{h = 0}$, lest the contradiction $\|\mathbf{D(x + h)}\|_1 > \|\mathbf{Dx}\|_1$ take place.
+
+\begin{proof}
+
+    \step{}{
+        Suppose $\mathbf{x + h}$ is a solution of \eqref{eq:l1_interpolation}. It suffices to consider $\mathbf{h} \in \operatorname{null} \left ( \mathbf{A} \right )$ such that $\mathbf{h} \perp \operatorname{null} \left ( \mathbf{D} \right )$.
+    }
+        \begin{proof} \pf
+            \step{}{
+                From the feasilibilty condition, $\mathbf{A(x + h) = Ax \implies h = 0}$. So $\mathbf{h}$ has to be in the null space of $\mathbf{A}$ in order for $\mathbf{x + h}$ to be a solution.
+            }
+            \step{}{
+                If, on top of that, $\mathbf{h} \in \operatorname{null} \left ( \mathbf{D} \right )$, then assumption \ref{ass:null} implies $\mathbf{h = 0}$ and the uniqueness claim holds trivially.
+            }
+            \step{}{
+                Therefore, the interesting perturbations are the ones belonging to the intersection $\operatorname{null} \left ( \mathbf{A} \right ) \cap \operatorname{range} \left( \mathbf{D^{\top}} \right)$.
+            }
+            \qedsymbol
+        \end{proof}
+
+    \step{}{
+        Define $\mathbf{g} := \operatorname{sign} \left ( \mathbf{D x} \right ) + (\mathbf{I}_N - \mathbf{P}_\mathcal{S}) \operatorname{sign} \left ( \mathbf{D h} \right ) \in \mathbb{R}^{N}$. Vector $\mathbf{g}$ is a valid subgradient of $\|\cdot\|_1$ at $\mathbf{Dx}$.
+    }
+        \begin{proof} \pf
+            Indeed, we verify
+            \begin{align*}
+                \mathbf{P}_\mathcal{S} \mathbf{g} & = \operatorname{sign} \left ( \mathbf{Dx} \right ) \\
+                \|(\mathbf{I}_N - \mathbf{P}_\mathcal{S}) \mathbf{g}\|_\infty & = \|(\mathbf{I}_N - \mathbf{P}_\mathcal{S}) \operatorname{sign} \left ( \mathbf{D h} \right ) \|_\infty = \left \| \operatorname{sign} ( (\mathbf{I}_N - \mathbf{P}_\mathcal{S}) \mathbf{D h} \right ) \|_\infty \leq 1,
+            \end{align*}
+        so $\mathbf{g}$ is a valid subgradient, by Proposition \ref{prop:character_subdifferential_l1}.~\qedsymbol
+        \end{proof}
+
+    \step{pf:subgrad_lb_1}{
+        Use the expression of $\mathbf{g}$ and the fact that it is a subgradient to lower bound $\|\mathbf{D(x + h)}\|_1$ as
+        \begin{align*}
+            \|\mathbf{D(x + h)}\|_1 & \geq \|\mathbf{D x}\|_1 + \left \langle \mathbf{g, Dh}\right \rangle \\
+            & = \|\mathbf{D x}\|_1 + \left \langle \operatorname{sign} \left ( \mathbf{D x} \right ), \mathbf{Dh}\right \rangle + \left \langle (\mathbf{I}_N - \mathbf{P}_\mathcal{S}) \operatorname{sign} \left ( \mathbf{D h} \right ), \mathbf{Dh}\right \rangle \\
+            & = \|\mathbf{D x}\|_1 + \left \langle \operatorname{sign} \left ( \mathbf{D x} \right ), \mathbf{Dh}\right \rangle + \left \|(\mathbf{I}_N - \mathbf{P}_\mathcal{S}) \mathbf{Dh} \right \|_1.
+        \end{align*}
+        We need now to provide estimates to the terms to the right of $\|\mathbf{D x}\|_1$ in the bound above.
+    }
+
+    \step{}{
+        Let $\mathbf{u} \in \mathbb{R}^{N}$ be any vector satisfying \ref{ass:range}. Then, $\langle \mathbf{u, Dh} \rangle = 0$.
+    }
+        \begin{proof} \pf\
+            Since $\mathbf{h} \in\operatorname{null} \left ( \mathbf{A} \right )$, then $\langle \mathbf{v}, \mathbf{h} \rangle = 0$ for any $\mathbf{v} \in \operatorname{range} \left( \mathbf{A}^{\top} \right)$. But $\mathbf{D}^{\top}\mathbf{u} \in \operatorname{range} \left( \mathbf{A}^{\top} \right)$, so \\ $\langle \mathbf{u, Dh} \rangle = \langle \mathbf{D}^{\top} \mathbf{u}, \mathbf{h} \rangle = 0$.~\qedsymbol
+        \end{proof}
+
+    \step{pf:subgrad_lb_2}{
+        Add $0 = \langle \mathbf{u, Dh}\rangle - \langle \mathbf{u, Dh}\rangle$ to the bound of step \stepref{pf:subgrad_lb_1}, obtaining
+        \begin{align*}
+            \|\mathbf{D(x + h)}\|_1 & \geq \|\mathbf{D x}\|_1 + \underbrace{\left \langle \mathbf{u , Dh}\right \rangle}_{=0} - \left \langle \mathbf{u} - \operatorname{sign} \left ( \mathbf{D x} \right ), \mathbf{Dh}\right \rangle + \|(\mathbf{I}_N - \mathbf{P}_\mathcal{S}) \mathbf{Dh} \|_1 \\
+            & = \|\mathbf{D x}\|_1 - \left \langle \mathbf{u} - \operatorname{sign} \left ( \mathbf{D x} \right ), \mathbf{Dh}\right \rangle + \|(\mathbf{I}_N - \mathbf{P}_\mathcal{S}) \mathbf{Dh} \|_1.
+        \end{align*}
+        Next, we upper bound $\left| \left \langle \mathbf{u} - \operatorname{sign} \left ( \mathbf{D x} \right ), \mathbf{Dh}\right \rangle \right|$.
+    }
+
+    \step{pf:u_approx_ub}{
+        Let $\mathbf{u}$ further abide by assumptions \ref{ass:approxSign} and \ref{ass:boundOffSupport}. Then,
+        \begin{equation*}
+            \left| \left \langle \mathbf{u} - \operatorname{sign} \left ( \mathbf{D x} \right ), \mathbf{Dh}\right \rangle \right| \leq \frac{1}{3} \|\mathbf{P}_\mathcal{S} \mathbf{Dh}\|_2 + \frac{1}{3} \| (\mathbf{I}_N - \mathbf{P}_\mathcal{S}) \mathbf{Dh}\|_1.
+        \end{equation*}
+    }
+        \begin{proof} \pf
+            \step{}{
+                Split $\mathbf{u} - \operatorname{sign} \left ( \mathbf{Dx} \right )$ into $\operatorname{range} \left( \mathbf{P}_\mathcal{S} \right)$ and $\operatorname{null} \left ( \mathbf{P}_\mathcal{S} \right )$.
+            }
+            \step{}{
+                Then, using the triangle and H\"older inequalities, along with assumptions \ref{ass:approxSign} and \ref{ass:boundOffSupport}, compute
+                \begin{align*}
+                    \left|\left \langle \mathbf{u} - \operatorname{sign} \left ( \mathbf{D x} \right ), \mathbf{Dh}\right \rangle\right| & = \left|\left \langle \mathbf{P}_\mathcal{S} (\mathbf{u} - \operatorname{sign} \left ( \mathbf{D x} \right )), \mathbf{Dh}\right \rangle + \left \langle (\mathbf{I}_N - \mathbf{P}_\mathcal{S}) (\mathbf{u} - \operatorname{sign} \left ( \mathbf{D x} \right )), \mathbf{Dh}\right \rangle\right| \\
+                    & = \left|\left \langle \mathbf{P}_\mathcal{S} (\mathbf{u} - \operatorname{sign} \left ( \mathbf{D x} \right )), \mathbf{P}_\mathcal{S} \mathbf{Dh}\right \rangle + \left \langle (\mathbf{I}_N - \mathbf{P}_\mathcal{S}) \mathbf{u} , (\mathbf{I}_N - \mathbf{P}_\mathcal{S}) \mathbf{Dh}\right \rangle\right| \\
+                    & \leq \left|\left \langle \mathbf{P}_\mathcal{S} (\mathbf{u} - \operatorname{sign} \left ( \mathbf{D x} \right )), \mathbf{P}_\mathcal{S} \mathbf{Dh}\right \rangle \right| + \left | \left \langle \left( \mathbf{I}_N - \mathbf{P}_\mathcal{S} \right) \mathbf{u} , \left( \mathbf{I}_N - \mathbf{P}_\mathcal{S} \right) \mathbf{Dh} \right \rangle \right | \\
+                    & \leq \| \mathbf{P}_\mathcal{S} (\mathbf{u} - \operatorname{sign} \left ( \mathbf{D x} \right )) \|_2 \cdot \| \mathbf{P}_\mathcal{S} \mathbf{Dh} \|_2 \\
+                    & \qquad + \|(\mathbf{I}_N - \mathbf{P}_\mathcal{S}) \mathbf{u}\|_\infty \cdot \| (\mathbf{I}_N - \mathbf{P}_\mathcal{S}) \mathbf{Dh}\|_1 \\
+                    & \leq \frac{1}{3} \|\mathbf{P}_\mathcal{S} \mathbf{Dh}\|_2 + \frac{1}{3} \| (\mathbf{I}_N - \mathbf{P}_\mathcal{S}) \mathbf{Dh}\|_1.
+                \end{align*}
+            }
+            \qedsymbol
+        \end{proof}
+
+    \step{pf:subgrad_lb_3}{
+        Pair the result from step \stepref{pf:u_approx_ub} with assumption \ref{ass:boundOffSupport}, to read the lower bound from step \stepref{pf:subgrad_lb_2} as
+        \begin{equation*}
+            \|\mathbf{D(x + h)}\|_1 \geq \|\mathbf{D x}\|_1 - \frac{1}{3} \|\mathbf{P}_\mathcal{S} \mathbf{Dh}\|_2 + \frac{2}{3} \| (\mathbf{I}_N - \mathbf{P}_\mathcal{S}) \mathbf{Dh}\|_1.
+        \end{equation*}
+        Continue by controlling $\|\mathbf{P}_\mathcal{S} \mathbf{Dh}\|_2$ in terms of $\| (\mathbf{I}_N - \mathbf{P}_\mathcal{S}) \mathbf{Dh} \|_1$.
+    }
+
+    \step{pf:psdh_ub}{
+        Assumptions \ref{ass:approxPS} and \ref{ass:boundOffSupport} imply
+        \begin{equation*}
+            \|\mathbf{P}_\mathcal{S} \mathbf{Dh}\|_2 < \frac{3}{2} \| (\mathbf{I}_N - \mathbf{P}_\mathcal{S}) \mathbf{Dh} \|_1.
+        \end{equation*}
+
+        \begin{proof} \pf
+            \step{pf:some_inverse}{
+                Crucially, assumption \ref{ass:approxPS} implies that the matrix $\mathbf{I}_N - \mathbf{P}_\mathcal{S} \mathbf{D}(\mathbf{I}_n - \mathbf{B A}) \mathbf{D}^+ \mathbf{P}_\mathcal{S}$ is \emph{invertible}. Indeed, we can bound the norm of its inverse, using the Neumann series, as
+                \begin{align*}
+                    \left \| \left [ \mathbf{I}_N - \mathbf{P}_\mathcal{S} \mathbf{D} (\mathbf{I}_n - \mathbf{B A}) \mathbf{D}^+ \mathbf{P}_\mathcal{S} \right ]^{-1} \right \|_2 & = \left \|  \sum_{k=0}^{\infty} \left [ \mathbf{P}_\mathcal{S} \mathbf{D} (\mathbf{I}_n - \mathbf{B A}) \mathbf{D}^+ \mathbf{P}_\mathcal{S} \right ]^k \right \|_2 \\
+                    & \leq \sum_{k=0}^{\infty} \left \| \mathbf{P}_\mathcal{S} \mathbf{D} (\mathbf{I}_n - \mathbf{B A}) \mathbf{D}^+ \mathbf{P}_\mathcal{S} \right \|_2^k \\
+                    & \leq \sum_{k=0}^{\infty} \frac{1}{3^k} \\
+                    & = \frac{3}{2}.
+                \end{align*}
+            }
+            \step{}{
+                We can then write the projection matrix $\mathbf{P}_\mathcal{S}$ in the slightly convoluted form $\mathbf{P}_\mathcal{S} = \left [ \mathbf{I}_N - \mathbf{P}_\mathcal{S} \mathbf{D} (\mathbf{I}_n - \mathbf{B A}) \mathbf{D}^+ \mathbf{P}_\mathcal{S} \right ]^{-1} \left [ \mathbf{I}_N - \mathbf{P}_\mathcal{S} \mathbf{D} (\mathbf{I}_n - \mathbf{B A}) \mathbf{D}^+ \right ] \mathbf{P}_\mathcal{S}$.
+            }
+            \step{}{
+                Furthermore, $\mathbf{h} \perp \operatorname{null} \left ( \mathbf{D} \right )$ implies $\mathbf{h} = \mathbf{D}^+\mathbf{D h}$, while $\mathbf{h} \in \operatorname{null} \left ( \mathbf{A} \right )$ implies $\mathbf{BA h} = 0$ for any matrix $\mathbf{B} \in \mathbb{R}^{n \times m}$. Together, these facts entail the identity $\mathbf{h} = (\mathbf{I}_n - \mathbf{B A}) \mathbf{D}^+\mathbf{D h}$.
+            }
+            \step{}{
+                Gathering these observations, and using the shorthand $\mathbf{P}_{\mathcal{S}^{\mathsf{c}}} := \mathbf{I}_N - \mathbf{P}_\mathcal{S}$, we are able to write
+                \begin{align*}
+                    \|\mathbf{P}_\mathcal{S} \mathbf{Dh}\|_2 & = \left \| \left [ \mathbf{I}_N - \mathbf{P}_\mathcal{S} \mathbf{D} (\mathbf{I}_n - \mathbf{B A}) \mathbf{D}^+ \mathbf{P}_\mathcal{S} \right ]^{-1} \right. \\
+                    & \qquad \left. \left [ \mathbf{P}_\mathbb{S} - \mathbf{P}_\mathcal{S} \mathbf{D} (\mathbf{I}_n - \mathbf{B A}) \mathbf{D}^+ \mathbf{P}_\mathcal{S} \right ] \mathbf{Dh}\right \|_2 \\
+                    & \leq \left \| \left [ \mathbf{I}_N - \mathbf{P}_\mathcal{S} \mathbf{D} (\mathbf{I}_n - \mathbf{B A}) \mathbf{D}^+ \mathbf{P}_\mathcal{S} \right ]^{-1} \right \|_2 \times \\
+                    & \qquad \left \| \mathbf{P}_\mathcal{S} \left [ \mathbf{I}_N - \mathbf{D}(\mathbf{I}_n - \mathbf{B A}) \mathbf{D}^+ \right ] \mathbf{P}_\mathcal{S} \mathbf{D h}\right \|_2 \\
+                    & \leq \frac{3}{2} \left \| \mathbf{P}_\mathcal{S} \left [ \mathbf{I}_N - \mathbf{D}(\mathbf{I}_n - \mathbf{B A}) \mathbf{D}^+ \right ] \mathbf{P}_\mathcal{S} \mathbf{D h} \right \|_2 \\
+                    & =: \frac{3}{2} \left \| \mathbf{P}_\mathcal{S} \left [ \mathbf{I}_N - \mathbf{D}(\mathbf{I}_n - \mathbf{B A}) \mathbf{D}^+ \right ] (\mathbf{I}_N - \mathbf{P}_{\mathcal{S}^{\mathsf{c}}}) \mathbf{D h}\right \|_2 \\
+                    & = \frac{3}{2} \left \| \mathbf{P}_\mathcal{S} \underbrace{\left [ \mathbf{I}_N - \mathbf{D}(\mathbf{I}_n - \mathbf{B A}) \mathbf{D}^+ \right ] \mathbf{D h}}_{=0} \right. \\
+                    & \qquad \left. - \mathbf{P}_\mathcal{S} \left [ \mathbf{I}_N - \mathbf{D}(\mathbf{I}_n - \mathbf{B A}) \mathbf{D}^+ \right ] \mathbf{P}_{\mathcal{S}^{\mathsf{c}}} \mathbf{D h} \right \|_2 \\
+                    & = \frac{3}{2} \left \| \mathbf{P}_\mathcal{S} \left [ \mathbf{D}(\mathbf{I}_n - \mathbf{B A}) \mathbf{D}^+ \right ] \mathbf{P}_{\mathcal{S}^{\mathsf{c}}} \mathbf{D h} \right \|_2 \\
+                    & \leq \frac{3}{2} \sum_{k \in \mathcal{S}^{\mathsf{c}}} \left \| \mathbf{P}_\mathcal{S} \left [ \mathbf{D}(\mathbf{I}_n - \mathbf{B A}) \mathbf{D}^+ \right ] \mathbf{\tilde{e}}_k \right \|_2 \cdot |\mathbf{\tilde{e}}_k ^\top \mathbf{D h} | \\
+                    & \leq \frac{3}{2} \underset{k \in \mathcal{S}^{\mathsf{c}}}{\max} \left \| \mathbf{P}_\mathcal{S} \left [ \mathbf{D}(\mathbf{I}_n - \mathbf{B A}) \mathbf{D}^+ \right ] \mathbf{\tilde{e}}_k \right \|_2 \cdot \|\mathbf{P}_{\mathcal{S}^{\mathsf{c}}} \mathbf{D h}\|_1 \\
+                    & \leq \frac{3}{2} \|(\mathbf{I}_N - \mathbf{P}_\mathcal{S}) \mathbf{D h}\|_1.
+                \end{align*}
+            }
+            \qedsymbol
+        \end{proof}
+    }
+
+    \step{pf:subgrad_lb_4}{
+        Steps \stepref{pf:subgrad_lb_3} and \stepref{pf:psdh_ub} combine to yield the lower bound
+        \begin{equation*}
+            \|\mathbf{D(x + h)}\|_1 \geq \|\mathbf{D x}\|_1 + \left ( \frac{2}{3} - \frac{1}{2} \right ) \|(\mathbf{I}_N - \mathbf{P}_\mathcal{S}) \mathbf{D h}\|_1 = \|\mathbf{D x}\|_1 + \frac{1}{6} \|(\mathbf{I}_N - \mathbf{P}_\mathcal{S}) \mathbf{D h}\|_1.
+        \end{equation*}
+    }
+
+    \step{}{
+        But then we must conclude that $(\mathbf{I}_N - \mathbf{P}_\mathcal{S}) \mathbf{D h} = \mathbf{P}_\mathcal{S} \mathbf{D h} = 0$. In other words, $\mathbf{h} \in \operatorname{null} \left ( \mathbf{D} \right )$.
+    }
+        \begin{proof} \pf
+            \step{}{
+                Vector $\mathbf{x + h}$ is assumed to be a minimizer of $\|\mathbf{Dz}\|_1$, subject to $\mathbf{Az = Ax}$. Hence, $\|\mathbf{D(x + h)}\|_1 \leq \|\mathbf{Dx}\|_1$, because $\mathbf{x}$ is trivially feasible.
+            }
+            \step{}{
+                In order to avoid contradiction in step \stepref{pf:subgrad_lb_4}, we must then have $\|(\mathbf{I}_N - \mathbf{P}_\mathcal{S}) \mathbf{D h}\|_1 = 0$, meaning $(\mathbf{I}_N - \mathbf{P}_\mathcal{S}) \mathbf{D h} = \mathbf{0}$.
+            }
+            \step{}{
+                The second assertion, $\mathbf{P}_\mathcal{S} \mathbf{D h} = \mathbf{0}$, ultimately follows from the dominance relation $\|\mathbf{P}_\mathcal{S} \mathbf{D h}\|_2 < \frac{3}{2} \|(\mathbf{I}_N - \mathbf{P}_\mathcal{S}) \mathbf{D h}\|_1$.
+            }
+        \end{proof}
+
+    \qedstep
+        \begin{proof}
+            The only point $\mathbf{h}$ satisfying both $\mathbf{h} \in \operatorname{null} \left ( \mathbf{D} \right )$ and $\mathbf{h} \perp \operatorname{null} \left ( \mathbf{D} \right )$ is $\mathbf{h} = \mathbf{0}$. Therefore, $\mathbf{x} + \mathbf{h} = \mathbf{x} + \mathbf{0} = \mathbf{x}$ is the only solution of problem \eqref{eq:l1_interpolation}.
+        \end{proof}
+
+\end{proof}
+
+\begin{remark}
+    The arguably most unnatural step in this proof, $\langle 1 \rangle 8 \langle 2 \rangle 1$, was inspired by a comment in Boyer~\etal~\cite[Appendix A]{boyer2019}. This step is ultimately the reason I could directly adapt the classical proof from Cand\`es~and~Plan~\cite{candes2011b}. To wit, Lee~\etal~\cite[Lemma 21]{lee2018} arrive at a result that is similar to (but slightly weaker than) Lemma~\ref{lem:inexact_dc}, but their proof --- derived from Chen~and~Chi~\cite{chen2014} --- requires splitting their argument into two complementary cases. The first supposes $\|\mathbf{P}_\mathcal{S} \mathbf{D h}\|_2 < \|(\mathbf{I}_N - \mathbf{P}_\mathcal{S}) \mathbf{D h}\|_1$, while the second $\|\mathbf{P}_\mathcal{S} \mathbf{D h}\|_2 > \|(\mathbf{I}_N - \mathbf{P}_\mathcal{S}) \mathbf{D h}\|_1$. Our implicit invertibility assumption in $\left \| \mathbf{P_\mathcal{S} M P_\mathcal{S}} \right \|_{2} \leq 1 / 3$ (a version of which Lee~\etal~\cite{lee2018} \emph{also} require) makes the second case above irrelevant: $\|\mathbf{P}_\mathcal{S} \mathbf{D h}\|_2$ is always dominated by $\|(\mathbf{I}_N - \mathbf{P}_\mathcal{S}) \mathbf{D h}\|_1$.
+\end{remark}

@@ -1,0 +1,216 @@
+\newglossaryentry{s}{%
+    type=symbol,
+    name={\ensuremath{s}},
+    description={A scalar},
+    sort={0-0-scalar}
+}
+
+\newglossaryentry{v}{%
+    type=symbol,
+    name={\ensuremath{\mathbf{v}}},
+    description={A vector},
+    sort={0-1-vector}
+}
+
+\newglossaryentry{M}{%
+    type=symbol,
+    name={\ensuremath{\mathbf{M}}},
+    description={A matrix},
+    sort={0-2-matrix}
+}
+
+\newglossaryentry{S}{%
+    type=symbol,
+    name={\ensuremath{\mathcal{S}}},
+    description={A set},
+    sort={0-3-set}
+}
+
+\newglossaryentry{vi}{%
+    type=symbol,
+    name={\ensuremath{v_i}},
+    description={The $i$\textsuperscript{th} entry of a vector \ensuremath{\mathbf{v}}},
+    sort={0-scalar-2-vector-entry}
+}
+
+\newglossaryentry{diag-vec}{%
+    type=symbol,
+    name={\ensuremath{\operatorname{diag} \left ( \mathbf{v} \right )}},
+    description={The diagonal matrix whose main diagonal is equal to vector \ensuremath{\mathbf{v}}},
+    sort={2-matrix-1-vector-diag}
+}
+
+\newglossaryentry{l0}{%
+    type=symbol,
+    name={$\| \mathbf{v} \|_0$},
+    description={The number of non-zero elements in vector $\mathbf{v}$. Also known as the $\ell_0$ ``norm''},
+    sort={vector-l0}
+}
+
+\newglossaryentry{lp}{%
+    type=symbol,
+    name={$\| \mathbf{v} \|_p$},
+    description={The $\ell_p$ norm $\left ( \sum_{i} |\mathbf{v}_i|^p \right )^{1/p}$ of a vector $\mathbf{v}$, for $p \in (0, \infty)$},
+    sort={vector-lp}
+}
+
+\newglossaryentry{lp-inf}{%
+    type=symbol,
+    name={$\| \mathbf{v} \|_\infty$},
+    description={The maximum absolute entry in a vector $\mathbf{v}$. Also known as the $\ell_\infty$ norm},
+    sort={vector-lp-inf}
+}
+
+\newglossaryentry{grad}{%
+    type=symbol,
+    name={\ensuremath{\nabla f (\mathbf{v}) }},
+    description={The gradient of function $f$ at vector $\mathbf{v}$},
+    sort={1-vector-function-grad}
+}
+
+\newglossaryentry{std-vec-n}{%
+    type=symbol,
+    name={\ensuremath{\{\mathbf{e}_i\}_{i=1}^n}},
+    description={The set of standard basis vectors in $\mathbb{R}^{n}$},
+    sort={3-set-vector-std-n}
+}
+
+\newglossaryentry{std-vec-N}{%
+    type=symbol,
+    name={\ensuremath{\{\tilde{\mathbf{e}}_i\}_{i=1}^N}},
+    description={The set of standard basis vectors in $\mathbb{R}^{N}$},
+    sort={3-set-vector-std-N}
+}
+
+\newglossaryentry{Mij}{%
+    type=symbol,
+    name={\ensuremath{M_{ij}}},
+    description={The entry in row $i$, column $j$ of matrix \ensuremath{\mathbf{M}}},
+    sort={0-scalar-2-matrix-entry}
+}
+
+\newglossaryentry{Mt}{%
+    type=symbol,
+    name={\ensuremath{\mathbf{M}^\top}},
+    description={The transpose of matrix \ensuremath{\mathbf{M}}},
+    sort={2-matrix-transpose}
+}
+
+\newglossaryentry{M+}{%
+    type=symbol,
+    name={\ensuremath{\mathbf{M}^+}},
+    description={The Moore-Penrose pseudoinverse of matrix \ensuremath{\mathbf{M}}},
+    sort={2-matrix-moore}
+}
+
+\newglossaryentry{In}{%
+    type=symbol,
+    name={\ensuremath{\mathbf{I}_n}},
+    description={The $n \times n$ identity matrix},
+    sort={2-matrix-identity}
+}
+
+\newglossaryentry{diag-mat}{%
+    type=symbol,
+    name={\ensuremath{\operatorname{diag} \left ( \mathbf{M} \right )}},
+    description={The vector formed by extracting the main diagonal of matrix \ensuremath{\mathbf{M}}},
+    sort={1-vector-matrix-diag}
+}
+
+\newglossaryentry{R}{%
+    type=symbol,
+    name={\ensuremath{\mathbb{R}}},
+    description={The set of real numbers},
+    sort={3-set-reals}
+}
+
+\newglossaryentry{Sn}{%
+    type=symbol,
+    name={\ensuremath{\mathcal{S}^n}},
+    description={The cartesian product \ensuremath{\underbrace{\mathcal{S} \times \dots \times \mathcal{S}}_{n \text{ times}}} of a set \ensuremath{\mathcal{S}}},
+    sort={3-set-cartesian}
+}
+
+\newglossaryentry{Smn}{%
+    type=symbol,
+    name={\ensuremath{\mathcal{S}^{m \times n}}},
+    description={The set of \ensuremath{m \times n} matrices with entries that take value in a set \ensuremath{\mathcal{S}}},
+    sort={3-set-matrices}
+}
+
+\newglossaryentry{[n]}{%
+    type=symbol,
+    name={$[n]$},
+    description={The set $\{1, 2, \dots, n\}$ of positive integers going from $1$ to $n$},
+    sort={3-set-n}
+}
+
+\newglossaryentry{Bq}{%
+    type=symbol,
+    name={\ensuremath{\mathbb{B}_q^{n}}},
+    description={The set of unit $q$-norm vectors in $\mathbb{R}^{n}$, that is, $\{\mathbf{v} \in \mathbb{R}^{n} : \| \mathbf{v} \|_q \leq 1\}$},
+    sort={3-set-ball-norm}
+}
+
+\newglossaryentry{Bgtv}{%
+    type=symbol,
+    name={\ensuremath{\mathbb{B}_{\mathcal{G}-\text{TV}}}},
+    description={The set of unit Graph Total Variation semi-norm vectors in $\mathbb{R}^{n}$},
+    sort={3-set-ball-gtv}
+}
+
+\newglossaryentry{Sn-1}{%
+    type=symbol,
+    name={\ensuremath{\mathbb{S}^{n-1}}},
+    description={The Euclidean sphere in $\mathbb{R}^{n}$. Can also be written as $\operatorname{bd}(\mathbb{B}_2^{n})$},
+    sort={3-set-boundary-sphere}
+}
+
+\newglossaryentry{bd}{%
+    type=symbol,
+    name={\ensuremath{\operatorname{bd}(\mathcal{S})}},
+    description={The boundary of a set $\mathcal{S}$},
+    sort={3-set-boundary}
+}
+
+\newglossaryentry{grass}{%
+    type=symbol,
+    name={\ensuremath{\mathcal{G}_{k,n}}},
+    description={The Grassmannian manifold of $k$-dimensional subspaces in $\mathbb{R}^{n}$},
+    sort={3-set-grassmannian}
+}
+
+\newglossaryentry{PS}{%
+    type=symbol,
+    name={\ensuremath{\mathbf{P}_{\mathcal{S}}}},
+    description={The orthogonal projection operator onto $\operatorname{span}\{\mathbf{e}_i : i \in \mathcal{S}\}$. Also refered to as ``coordinate projection''.},
+    sort={2-matrix-orthogonal-projection-coord}
+}
+
+\newglossaryentry{PiS}{%
+    type=symbol,
+    name={$\Pi_{\mathcal{S}}$},
+    description={The orthogonal projection operator onto set $\mathcal{S}$},
+    sort={2-matrix-orthogonal-projection}
+}
+
+\newglossaryentry{dcone}{%
+    type=symbol,
+    name={\ensuremath{\mathcal{D}(f, \mathbf{v})}},
+    description={The descent cone of function $f$ at vector $\mathbf{x}$},
+    sort={3-function-descent-cone}
+}
+
+\newglossaryentry{conv}{%
+    type=symbol,
+    name={\ensuremath{\operatorname{conv}(\mathcal{S})}},
+    description={The convex hull of set $\mathcal{S}$},
+    sort={3-set-convex-hull}
+}
+
+\newglossaryentry{subdiff}{%
+    type=symbol,
+    name={\ensuremath{\partial f (\mathbf{v}) }},
+    description={The subdifferential set of function $f$ at vector $\mathbf{v}$},
+    sort={3-function-subdifferential}
+}

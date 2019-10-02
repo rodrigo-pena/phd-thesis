@@ -1,0 +1,39 @@
+For $\mathbf{A} \in \mathbb{R}^{n \times n}$ coming from the \acrshort{ber} sampling model, and $\mathbf{u} \in \mathbb{R}^{n}$, I claim that
+\begin{equation*}
+    \|\mathbf{Au}\|_q^q \in \left[ \frac{\tau}{2} , \frac{3\tau}{2} \right]
+\end{equation*}
+with likelihood larger than $1 - \varepsilon$, as long as $\tau := \sum_{i=1}^{n} \pi_i |u_i|^q \geq \frac{32}{3n} \|\mathbf{u}\|_{\infty}^q \log \left ( \frac{2}{\varepsilon} \right )$.
+
+\begin{proof}
+    \pf\ We only need to apply the scalar Bernstein inequality (Appendix \ref{ap:probabilistic_inequalities}) to the random deviation $\| \mathbf{Au} \|_q^q - \mathbb{E} \|\mathbf{Au}\|_q^q$.
+    \step{}{
+        Set $X := \| \mathbf{Au} \|_q^q - \mathbb{E} \left ( \|\mathbf{Au}\|_q^q \right ) = \sum_{i=1}^{n} \underbrace{(\delta_i - \pi_i) |u_i|^q}_{=: X_i}$. The scalar $X$ is a sum of independent, zero-mean random variables $X_i$, because the Bernoulli selectors $\{\delta_i\}_{i=1}^n$ are independent.
+    }
+    \step{}{
+        Each term in the sum is upper bounded almost surely as
+        \begin{equation*}
+            |X_i| = \underbrace{|\delta_i - \pi_i|}_{\leq 1} |u_i|^q \leq \underset{i \in [n]}{\max} \enspace |u_i|^q = \|\mathbf{u}\|_{\infty}^q =: B.
+        \end{equation*}
+    }
+    \step{}{
+        We can also write an upper bound for their second moments as
+        \begin{equation*}
+            \mathbb{E} \left ( X_i^2 \right ) = \mathbb{E} \left ( (\delta_i - \pi_i)^2 \right ) |u_i|^{2q}  = \pi_i(1 - \pi_i) |u_i|^{2q} \leq \pi_i |u_i|^{2q} \leq B \pi_i  |u_i|^{q}.
+        \end{equation*}
+        and set $\sigma^2 := \frac{B}{n} \sum_{i=1}^{n} \pi_i |u_i|^{q}$.
+    }
+    \step{}{
+        The scalar Bernstein inequality in Lemma \ref{lem:scalar_bern}, along with the moment estimates above, give us the deviation probability
+        \begin{align*}
+            \mathbb{P} \left ( \left \{ \left | \| \mathbf{Au} \|_q^q - \mathbb{E} \left ( \|\mathbf{Au}\|_q^q \right ) \right | > t \right \}\right ) & \leq 2 \exp \left( -\frac{3 n}{8} \min \left \{ \frac{t^2}{\sigma^2}, \frac{t}{B} \right \} \right) \\
+            & = 2 \exp \left ( -\frac{3 n}{8} \frac{t}{\|\mathbf{u}\|_{\infty}^q} \min \left \{ \frac{nt}{ \sum_{i=1}^{n} \pi_i |u_i|^{q}}, 1 \right \} \right ).
+        \end{align*}
+    }
+    \step{}{
+        Picking $t = \frac{1}{2}\sum_{i=1}^{n} \pi_i |u_i|^{q} =: \frac{1}{2}\mathbb{E} \|\mathbf{Au}\|_q^q$, we have $\frac{nt}{ \sum_{i=1}^{n} \pi_i |u_i|^{q}} \geq 1$, as long as $n \geq 2$. With this choice, the deviation inequality becomes
+        \begin{equation*}
+            \mathbb{P} \left ( \left \{ \left | \| \mathbf{Au} \|_q^q - \mathbb{E} \left ( \|\mathbf{Au}\|_q^q \right ) \right | > \frac{1}{2}  \sum_{i=1}^{n} \pi_i |u_i|^{q} \right \}\right ) \leq 2 \exp \left ( -\frac{3n}{32} \frac{\sum_{i=1}^{n} \pi_i |u_i|^{q}}{\|\mathbf{u}\|_{\infty}^q} \right ).
+        \end{equation*}
+    }
+    \qedstep{The claim holds by setting the \acrshort{rhs} of the last inequality to at most $\varepsilon$.}
+\end{proof}

@@ -1,0 +1,126 @@
+I will need to establish some notation before delving into the argument.
+
+\begin{definition}[Graph cut]
+    The \emph{graph cut} associated with two vertex sets $\mathcal{S}_1, \mathcal{S}_2 \subset [n]$ is the set
+    \begin{equation}
+        \operatorname{cut}\left(\mathcal{S}_1, \mathcal{S}_2\right) := \left\{ e = \left(v_i, v_j\right) \in \mathcal{E} : (i \in \mathcal{S}_1 \wedge j \in \mathcal{S}_2) \vee (j \in \mathcal{S}_1 \wedge i \in \mathcal{S}_2)\right\}.
+    \end{equation}
+    We also define the size of $\operatorname{cut}\left(\mathcal{S}_1, \mathcal{S}_2\right)$ to be
+    \begin{equation}
+        \left|\operatorname{cut}\left(\mathcal{S}_1, \mathcal{S}_2\right)\right| := \sum_{i \in \mathcal{S}_1} \sum_{j \in \mathcal{S}_2} \sqrt{W_{ij}}.
+    \end{equation}
+\end{definition}
+
+\begin{definition}[Up-to-additive-constant extreme point]
+    We say that $\mathbf{t} \in \mathcal{S}$ is an up-to-additive-constant extreme point of $\mathcal{S}$ when we can write $\mathbf{t} = \beta \mathbf{s} + (1 - \beta) \mathbf{u}$, using $\beta \in (0,1)$ and $\mathbf{s}, \mathbf{u} \in \mathcal{S}$, only if $\mathbf{s} - \mathbf{t} = c_s \mathbf{1}$ and $\mathbf{u} - \mathbf{t} = c_u \mathbf{1}$, for some constants $c_s, c_u \in \mathbb{R}$.
+\end{definition}
+
+Lastly, define also the following \emph{level sets} of $\mathbf{t} \in \mathbb{R}^{n}$, indexed by $v \in \mathbb{R}$:
+\begin{align}
+    \mathcal{S}_{v}(\mathbf{t}) := \{i \in \mathbb{R}: t_i = v\} \\
+    \mathcal{S}_{v^{+}}(\mathbf{t}) := \{i \in \mathbb{R}: t_i > v\} \\
+    \mathcal{S}_{v^{-}}(\mathbf{t}) := \{i \in \mathbb{R}: t_i < v\}.
+    \end{align}
+
+I will prove a slightly stronger claim than the one stated in the main text: the up-to-additive-constants extreme points $\mathbf{t}^\star$ of \glsname{Bgtv} are of the form
+\begin{equation}
+    \mathbf{t}^\star = |\operatorname{cut}(\mathcal{S}_{v_1}(\mathbf{t}^\star), \mathcal{S}_{v_2}(\mathbf{t}^\star))| \cdot \mathbb{1}_{\mathcal{S}_{v_2}(\mathbf{t}^\star)} + v_1 \mathbf{1}.
+\end{equation}
+The argument is adapted from Szlam \etal~\cite{szlam2010}.
+
+\begin{proof}
+    \pf\  Let $v_1 < v_2 < \dots < v_d \in \mathbb{R}$ be all the distinct values taken by the coordinates of some $\mathbf{t} \in \mathbb{R}^{n}$. Trivially, $1 \leq d \leq n$. I will split the argument into the cases $d = 1$, $d = 2$, and $d \geq 3$, and show that $\mathbf{t}$ is an extreme point of \glsname{Bgtv} if and only if $d = 2$. The precise expression for $\mathbf{t}^\star$ will appear as a consequence of the computations in the proof.
+
+    \step{}{If $d = 1$, $\mathbf{t}$ is not an extreme point of \glsname{Bgtv}.}
+        \begin{proof}
+            \pf\ Vector $\mathbf{t} = v_1 \mathbf{1}$ is constant, so $\|\mathbf{Dt}\|_1 = \sum_{(i,j)} \sqrt{W_{i,j}} |v_1 - v_1| = 0$. Since $\|\mathbf{Dt}\|_1 < 1$, vector $\mathbf{t}$ cannot be an extreme point of \glsname{Bgtv}.
+        \end{proof}
+
+    \step{}{If $d \geq 3$ and $\|\mathbf{Dt}\|_1 = 1$, $\mathbf{t}$ is still not an extreme point of \glsname{Bgtv}.}
+        \begin{proof}
+            \pf\ I will construct perturbations $\mathbf{s} := \mathbf{t} + \varepsilon_p \mathbb{1}_{\mathcal{S}_{v_p}(\mathbf{t})} - \varepsilon_q \mathbb{1}_{\mathcal{S}_{v_q}(\mathbf{t})}$ and $\mathbf{u} := \mathbf{t} - \varepsilon_p \mathbb{1}_{\mathcal{S}_{v_p}(\mathbf{t})} + \varepsilon_q \mathbb{1}_{\mathcal{S}_{v_q}(\mathbf{t})}$, for some small $\varepsilon_p, \varepsilon_q > 0$ and some $v_p, v_q \in \{v_1, \dots, v_d\}$. With these constructions, I show that $\mathbf{s}, \mathbf{u} \in \glsname{Bgtv}$. Since $\mathbf{t} = \frac{1}{2}\mathbf{s} + \frac{1}{2}\mathbf{u}$, this will imply that $\mathbf{t}$ cannot be an extreme point of \glsname{Bgtv}.
+            \step{}{
+                Note first that if we pick any positive $\varepsilon < \underset{k \neq l \in [d]}{\min} \enspace |v_k - v_l|$ the effect of the perturbation $\varepsilon \mathbb{1}_{\mathcal{S}_{v}(\mathbf{t})}$ decouples from $\| \mathbf{Dt} \|_1$:
+                \begin{align*}
+                    \| \mathbf{D} (\mathbf{t} + \varepsilon \mathbb{1}_{\mathcal{S}_{v}(\mathbf{t})}) \|_1 & = \sum_{(i,j) \in \mathcal{E}} \sqrt{W_{ij}} \left |t_i - t_j + \varepsilon \mathbb{1}_{\mathcal{S}_{v}(\mathbf{t})}(i) - \varepsilon \mathbb{1}_{\mathcal{S}_{v}(\mathbf{t})}(j) \right | \\
+                    & = 2 \sum_{i \in \mathcal{S}_{v^{-}(\mathbf{t})}}\sum_{j \in \mathcal{S}_{v}(\mathbf{t})} \sqrt{W_{ij}} \underbrace{|t_i - t_j - \varepsilon|}_{= t_j - t_i + \varepsilon} \\
+                    & \quad + 2 \sum_{i \in \mathcal{S}_{v}(\mathbf{t})}\sum_{j \in \mathcal{S}_{v}(\mathbf{t})} \sqrt{W_{ij}} |t_i - t_j| \\
+                    & \quad + 2\sum_{i \in \mathcal{S}_{v}(\mathbf{t})}\sum_{j \in \mathcal{S}_{v^{+}}(\mathbf{t})} \sqrt{W_{ij}} \underbrace{|t_i - t_j + \varepsilon|}_{= t_j - t_i - \varepsilon} \\
+                    & = \| \mathbf{Dt} \|_1 + \varepsilon \left ( \underbrace{\left [ \sum_{i \in \mathcal{S}_{v^{-}}(\mathbf{t})}\sum_{j \in \mathcal{S}_{v}(\mathbf{t})} \sqrt{W_{ij}} \right ]}_{=: \left|\operatorname{cut}\left(\mathcal{S}_{v^{-}}(\mathbf{t}), \mathcal{S}_{v}(\mathbf{t})\right)\right|} - \underbrace{\left [ \sum_{i \in \mathcal{S}_{v}(\mathbf{t})}\sum_{j \in \mathcal{S}_{v^{+}}(\mathbf{t})} \sqrt{W_{ij}} \right ]}_{=: \left|\operatorname{cut}\left(\mathcal{S}_{v^{+}}(\mathbf{t}), \mathcal{S}_{v}(\mathbf{t})\right)\right|} \right ). \\
+                \end{align*}
+            }
+            \step{}{
+                Therefore, if we pick $\varepsilon_p, \varepsilon_q < \frac{1}{2} \underset{k \neq l \in [d]}{\min} \enspace |v_k - v_l|$, we can write the \acrshort{gtv} semi-norm of $\mathbf{s}$ as
+                \begin{align*}
+                    \| \mathbf{Ds} \|_1 & = \left \| \mathbf{D} \left (\mathbf{t} + \varepsilon_p \mathbb{1}_{\mathcal{S}_{v_p}(\mathbf{t})} - \varepsilon_q \mathbb{1}_{\mathcal{S}_{v_q}(\mathbf{t})} \right ) \right \|_1 \\
+                    & = \underbrace{\| \mathbf{Dt} \|_1}_{=1} + \varepsilon_p \left ( \left|\operatorname{cut}(\mathcal{S}_{v_p^{-}(\mathbf{t})}, \mathcal{S}_{v_p}(\mathbf{t})) \right| - \left|\operatorname{cut}(\mathcal{S}_{v_p^{+}(\mathbf{t})}, \mathcal{S}_{v_p}(\mathbf{t}))\right| \right ) \\
+                    & \qquad\qquad\ - \varepsilon_q \left ( \left|\operatorname{cut}(\mathcal{S}_{v_q^{-}(\mathbf{t})}, \mathcal{S}_{v_q}(\mathbf{t}))\right| - \left|\operatorname{cut}(\mathcal{S}_{v_q^{+}(\mathbf{t})}, \mathcal{S}_{v_q}(\mathbf{t}))\right| \right ) \\
+                \end{align*}
+                and, similarly for $\mathbf{u}$,
+                \begin{align*}
+                    \| \mathbf{Du} \|_1 & = \left\| \mathbf{D} \left(\mathbf{t} - \varepsilon_p \mathbb{1}_{\mathcal{S}_{v_p}(\mathbf{t})} + \varepsilon_q \mathbb{1}_{\mathcal{S}_{v_q}(\mathbf{t})}\right)\right\|_1 \\
+                    & = 1 - \varepsilon_p \left ( \left|\operatorname{cut}(\mathcal{S}_{v_p^{-}(\mathbf{t})}, \mathcal{S}_{v_p}(\mathbf{t}))\right| - \left|\operatorname{cut}(\mathcal{S}_{v_p^{+}(\mathbf{t})}, \mathcal{S}_{v_p}(\mathbf{t}))\right| \right ) \\
+                    & \qquad + \varepsilon_q \left ( \left|\operatorname{cut}(\mathcal{S}_{v_q^{-}(\mathbf{t})}, \mathcal{S}_{v_q}(\mathbf{t}))\right| - \left|\operatorname{cut}(\mathcal{S}_{v_q^{+}(\mathbf{t})}, \mathcal{S}_{v_q}(\mathbf{t}))\right| \right ) \\
+                \end{align*}
+            }
+            \step{}{
+                For both $\mathbf{s}$ and $\mathbf{u}$ to be on $\operatorname{bd}(\glsname{Bgtv})$, \textit{i.e.}, $\| \mathbf{Ds} \|_1 = \| \mathbf{Du} \|_1 = 1$, it suffices to pick $\varepsilon_p, \varepsilon_q$ such that
+                \begin{equation*}
+                    \varepsilon_p = \varepsilon_q \left ( \frac{\left|\operatorname{cut}\left(\mathcal{S}_{v_q^{-}(\mathbf{t})}, \mathcal{S}_{v_q}(\mathbf{t})\right)\right| - \left|\operatorname{cut}\left(\mathcal{S}_{v_q^{+}(\mathbf{t})}, \mathcal{S}_{v_q}(\mathbf{t})\right)\right|}{\left|\operatorname{cut}\left(\mathcal{S}_{v_p^{-}(\mathbf{t})}, \mathcal{S}_{v_p}(\mathbf{t})\right)\right| - \left|\operatorname{cut}\left(\mathcal{S}_{v_p^{+}(\mathbf{t})}, \mathcal{S}_{v_p}(\mathbf{t})\right)\right|} \right ).
+                \end{equation*}
+            }
+            \step{}{
+                We conclude that $\mathbf{t}$ is not an extreme point of \glsname{Bgtv}, because $\mathbf{t} = \frac{1}{2}\mathbf{s} + \frac{1}{2}\mathbf{u}$ and $\mathbf{s}, \mathbf{u} \in \glsname{Bgtv}$.
+            }
+        \end{proof}
+
+    \step{}{If $d = 2$ and $\|\mathbf{Dt}\|_1 = 1$, $\mathbf{t}$ is an (up-to-additive-constant) extreme point of \glsname{Bgtv}.}
+        \begin{proof}
+            \pf\ It suffices to show that if $\mathbf{t} = \beta \mathbf{s} + (1 - \beta) \mathbf{u}$ for some $\beta \in (0,1)$ and $\mathbf{s} ,\mathbf{u} \in \operatorname{bd}(\glsname{Bgtv})$ with $\mathbf{s} \neq \mathbf{u}$, then $\mathbf{s}$ and $\mathbf{u}$ differ from $\mathbf{t}$ only by a constant.
+            \step{}{
+                Since $\mathbf{t} = (v_2 - v_1) \mathbb{1}_{\mathcal{S}_{v_2}}  + v_1 \mathbf{1}$, $\mathbf{Dt}$ is supported on the edges in $\operatorname{cut} (\mathcal{S}_{v_2}\left(\mathbf{t}), \mathcal{S}_{v_1}(\mathbf{t})\right) \subset \mathcal{E}$.
+            }
+            \step{}{
+                Define a new graph $\mathcal{R} = (\mathcal{V}, \mathcal{E}|_{\operatorname{cut} (\mathcal{S}_{v_2}\left(\mathbf{t}), \mathcal{S}_{v_1}(\mathbf{t})\right)})$ which is the restricted version of the original graph $\mathcal{G}$ to the edges in $\operatorname{cut} (\mathcal{S}_{v_2}\left(\mathbf{t}), \mathcal{S}_{v_1}(\mathbf{t})\right)$. Correspondingly, define a new graph difference operator $\mathbf{D}_{\mathcal{R}}$ by setting to zero the entries in $\mathbf{D}$ related to the edges in the complement of $\operatorname{cut} (\mathcal{S}_{v_2}\left(\mathbf{t}), \mathcal{S}_{v_1}(\mathbf{t})\right)$.
+            }
+            \step{}{
+                By construction, the graph \acrshort{tv} semi-norm of $\mathbf{t}$ is conserved in this new graph, \textit{i.e.}, $\|\mathbf{Dt}\|_1 = \|\mathbf{D}_{\mathcal{R}} \mathbf{t}\|_1 = 1$.
+            }
+            \step{}{
+                I can then use the triangle inequality to get the relation
+                \begin{align*}
+                    1 & = \|\mathbf{D}_{\mathcal{R}} \mathbf{t}\|_1 \\
+                    & = \|\mathbf{D}_{\mathcal{R}} (\beta \mathbf{s} + (1 - \beta) \mathbf{u}) \|_1 \\
+                    & \leq \beta \|\mathbf{D}_{\mathcal{R}} \mathbf{s}\|_1 + (1 - \beta) \|\mathbf{D}_{\mathcal{R}} \mathbf{v}\|_1.
+                \end{align*}
+            }
+            \step{}{
+                On the other hand, $\| \mathbf{Dt} \|_1 := \sum_{(i,j)} \sqrt{W_{ij}} |t_i - t_j|$ is monotonically decreasing \acrshort{wrt} the edge weights, and $\mathcal{R}$ had fewer edges than $\mathcal{G}$. Therefore, since both $\mathbf{s}$ and $\mathbf{u}$ are assumed to be on $\operatorname{bd}(\glsname{Bgtv})$, we thus verify
+                \begin{align*}
+                    \beta \|\mathbf{D}_{\mathcal{R}} \mathbf{s}\|_1 + (1 - \beta) \|\mathbf{D}_{\mathcal{R}} \mathbf{v}\|_1 & \leq \beta \underbrace{\|\mathbf{D} \mathbf{s}\|_1}_{=1} + (1 - \beta) \underbrace{\|\mathbf{D} \mathbf{v}\|_1}_{=1} \\
+                    & = \beta + (1 - \beta) \\
+                    & = 1.
+                \end{align*}
+            }
+            \step{}{
+                By the two previous steps, we must have $\|\mathbf{D} \mathbf{s}\|_1 = \|\mathbf{D}_{\mathcal{R}} \mathbf{s}\|_1 = \|\mathbf{D}_{\mathcal{R}} \mathbf{u}\|_1 = \|\mathbf{D} \mathbf{u}\|_1 = 1$. Hence, both $\mathbf{Ds}$ and $\mathbf{Du}$ must also be supported on $\operatorname{cut} (\mathcal{S}_{v_2}\left(\mathbf{t}), \mathcal{S}_{v_1}(\mathbf{t})\right)$.
+            }
+            \step{}{
+                Finally, having verified that $\mathbf{Dt},\mathbf{Ds}, \mathbf{Du}$ share the same support, and that $\|\mathbf{D} \mathbf{t}\|_1 = \|\mathbf{D} \mathbf{s}\|_1 = \|\mathbf{D} \mathbf{u}\|_1$, we must conclude that $\mathbf{t,s,u}$ can differ only by elements on the null space of $\mathbf{D}$. The latter corresponds to the space of vectors of the form $c \mathbf{1}$, for $c \in \mathbb{R}$, so the claim is proved.~\qedsymbol
+            }
+        \end{proof}
+
+    \step{}{If $d = 2$ and $\mathbf{t}^\star$ is an (up-to-additive-constants) extreme point of \glsname{Bgtv}, then $\mathbf{t}^\star = |\operatorname{cut}(\mathcal{S}_{v_1}(\mathbf{t}^\star), \mathcal{S}_{v_2}(\mathbf{t}^\star))| \cdot \mathbb{1}_{\mathcal{S}_{v_2}(\mathbf{t}^\star)} + v_1 \mathbf{1}$.}
+        \begin{proof}
+            \pf\ This is just a computation exercise. Since $\mathbf{t}^\star = (v_2 - v_1) \mathbb{1}_{\mathcal{S}_{v_2}} + v_1 \mathbf{1}$ and $\|\mathbf{Dt}^\star\|_1 = 1$, we obtain the identity
+            \begin{align*}
+                1 & = \|\mathbf{Dt}^\star\|_1 \\
+                & = \sum_{(i,j)} \sqrt{W_{ij}} |t_i - t_j| \\
+                & = 2 \sum_{i \in \mathcal{S}_{v_2}}\sum_{j \in \mathcal{S}_{v_1}} \sqrt{W_{ij}} (v_2 - v_1) \\
+                & = 2 \left|\operatorname{cut} (\mathcal{S}_{v_2}\left(\mathbf{t}^\star), \mathcal{S}_{v_1}(\mathbf{t}^\star)\right)\right| \cdot (v_2 - v_1).
+            \end{align*}
+            Therefore, $(v_2 - v_1) = \frac{1}{2 \left|\operatorname{cut} (\mathcal{S}_{v_2}\left(\mathbf{t}^\star), \mathcal{S}_{v_1}(\mathbf{t}^\star)\right)\right|}$.~\qedsymbol
+        \end{proof}
+
+    \qedstep{We have exhausted the options for the number $d$ of distinct coordinates, so $\mathbf{t}$ is an extreme point of \glsname{Bgtv} if and only if $d = 2$. Furthermore, any such extreme point is of the form $2|\operatorname{cut}(\mathcal{S}_{v_1}(\mathbf{t}^\star), \mathcal{S}_{v_2}(\mathbf{t}^\star))| \cdot \mathbb{1}_{\mathcal{S}_{v_2}(\mathbf{t}^\star)} + v_1 \mathbf{1}$.}
+\end{proof}

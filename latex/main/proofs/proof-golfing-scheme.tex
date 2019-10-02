@@ -1,0 +1,29 @@
+All we need to do is verify that the assumptions of Lemma \ref{lem:inexact_dc} hold with high probability. Recall that $\mathbf{w}^{(l)} := \mathbf{P}_\mathcal{S} \left (\operatorname{sign} \left ( \mathbf{Dx} \right ) - \mathbf{u}^{(l)} \right )$ is the error vector at each iteration $l \in [L]$, and the updates of the golfing scheme are given by $\mathbf{u}^{(l)} = \mathbf{u}^{(l-1)} + \left[ \mathbf{I}_N - \mathbf{M}^{(l)} \right] \mathbf{w}^{(l)}$. The rest of the proof is a computation exercise.
+
+\begin{proof}
+    \pf\
+    \step{}{
+        Refer back to expression \ref{eq:golf_error_vec}. If assumptions \eqref{ass:lOnSupport2} hold for each $\mathbf{v} \in \mathbb{R}^{N}$ and $l \in [L]$, then the choice of $L := 1 + \left \lceil \frac{\log |S|}{2 \log 3} \right \rceil$ implies that, with probability at least $1 - \varepsilon/3$,
+        \begin{align*}
+            \|\mathbf{P}_\mathcal{S} (\mathbf{u}^{(L)} - \operatorname{sign} \left ( \mathbf{Dx} \right ) )\|_2 & \leq \left ( \frac{1}{3} \right )^{L} \sqrt{|S|} \\
+            & \leq \frac{1}{3 \sqrt{|\mathcal{S}|} } \sqrt{|\mathcal{S}|} \\
+            & \leq \frac{1}{3}.
+        \end{align*}
+    }
+    \step{}{
+        Similarly, refferring to inequality \eqref{eq:golf_bound_off_support}, assume \eqref{ass:lOnSupportInf} and \eqref{ass:lOffSupportInf}. For any $L \geq 1$, we have then
+        \begin{align*}
+            \| (\mathbf{I}_N - \mathbf{P}_\mathcal{S}) \mathbf{u}^{(L)} \|_\infty & \leq \frac{1}{4} \left ( \frac{1 - 1/4^L}{1 - 1/4} \right ) \\
+            & = \frac{1}{3} \left ( 1 - \frac{1}{4^L} \right ) \\
+            & \leq \frac{1}{3},
+        \end{align*}
+        with probability at least $1 - \varepsilon/3$.
+    }
+    \step{}{
+        By construction, $\mathbf{u}^{(L)}$ satisfies $\mathbf{D}^{\top}\mathbf{u}^{(L)} \in \operatorname{range} \left ( \mathbf{A^{\top}} \right )$ with probability $1$.
+    }
+    \step{}{
+        Together with assumptions \eqref{ass:approxPSProb} and \eqref{ass:boundOffSupportProb}, we verify all the requirements of Lemma \ref{lem:inexact_dc} with probability at least $1 - \left( \frac{\varepsilon}{3} + \frac{\varepsilon}{3} + \frac{\varepsilon}{3} \right ) = 1 - \varepsilon$.
+    }
+    \qedstep{With probability larger than $1 - \varepsilon$, vector $\mathbf{u}^{(L)}$ is an inexact dual certificate for $\mathbf{x}$, according to Lemma~\ref{lem:inexact_dc}. Therefore, with the same likelihood, vector $\mathbf{x}$ is the unique solution of problem~\eqref{eq:l1_interpolation}.}
+\end{proof}

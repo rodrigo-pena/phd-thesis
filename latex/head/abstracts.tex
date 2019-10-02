@@ -1,0 +1,37 @@
+%%%%%%%%%%%%%%%%%%%%
+% ENGLISH abstract %
+%%%%%%%%%%%%%%%%%%%%
+
+\cleardoublepage{}
+\chapter*{Abstract}
+\addcontentsline{toc}{chapter}{Abstract/Résumé}
+
+\vspace*{\fill}
+
+Compressed Sensing teaches us that measurements can be traded for offline computation if the signal being sensed has a simple enough representation. Proper decoders can exactly recover the high-dimensional signal of interest from a lower-dimensional vector of that signal's observations. In graph domains --- like social, similarity, or interaction networks --- the relevant signals often have to do with the network's cluster structure. Partitioning a graph into different communities induces a piecewise-constant signal, an object that can be decoded via \acrfull{gtv} minimization even if it is not fully observed. In fact, assume that such a signal can only be accessed by querying vertices at random. Then, we could sensibly ask: what are the sampling probabilities that minimize the number of queries required for a successful \acrshort{gtv} recovery? This thesis is an attempt to answer this question through the study of the success conditions in \acrshort{gtv} minimization programs. I show that the recovery error in these programs undergoes a phase transition in terms of the number of measurements, with a threshold that explicitly depends on the vertex-sampling probabilities. It suffices to minimize this threshold to obtain an optimal sampling design. Yet, sampling optimally in practice has problems of its own. While numerical experiments reveal that it is important to focus on the places of the graph where the signal varies, implementing the optimal design without actually knowing the signal-to-be-sampled remains an open issue.
+
+\vspace*{\fill}
+
+\textbf{Keywords:} Total Variation, graph signal processing, community structure, piecewise-constant signal, convex optimization, $\ell_1$ minimization, analysis sparsity, representer theorem, minimum restricted eigenvalue, small ball method, inexact dual certificate, golfing scheme
+
+\vfill
+
+%%%%%%%%%%%%%%%%%%%
+% FRENCH abstract %
+%%%%%%%%%%%%%%%%%%%
+
+\begin{otherlanguage}{french}
+\chapter*{Résumé}
+
+\vspace*{\fill}
+
+L'Acquisition Comprimée nous enseigne qu'il est possible d'échanger des mesures contre du calcul hors-ligne tant que le signal mesuré a une représentation suffisamment simple. Des décodeurs appropriés peuvent récupérer exactement le signal d’intérêt de grande dimension à partir d’un vecteur de plus petite dimension contenant des observations de ce signal. Dans les domaines de graphes --- comme les réseaux sociaux, de similarité ou d'interaction ---, les signaux pertinents ont souvent à voir avec la structure des clusters du réseau. Le partitionnement d'un graphe en différentes communautés induit un signal constant par morceaux, un objet qui peut être décodé via la minimisation de la Variation Totale sur le Graphe (\acrshort{gtv}) même s'il n'est pas complètement observé. En fait, supposons qu'un tel signal ne soit accessible qu'en interrogeant des nœuds de manière aléatoire. Alors, nous pourrions raisonnablement demander: quelles sont les probabilités d’échantillonnage minimisant le nombre de requêtes nécessaires à une reconstruction \acrshort{gtv} réussie? Cette thèse tente de répondre à cette question en étudiant les conditions de réussite des programmes de minimisation \acrshort{gtv}. Je montre que l’erreur de reconstruction dans ces programmes subit une transition de phase en termes du nombre de mesures, avec un seuil qui dépend explicitement des probabilités d’échantillonnage des nœuds. Il suffit de minimiser ce seuil pour obtenir un plan d'échantillonnage optimal. Cependant, échantillonner optimalement dans la pratique pose des problèmes particuliers. Bien que les expériences numériques révèlent qu'il est important de se concentrer sur les endroits du graphe où le signal varie, la mise en œuvre du plan optimal sans connaître réellement le signal à échantillonner reste une question ouverte.
+
+\vspace*{\fill}
+
+\textbf{Mots clés:} Variation Totale, traitement du signal dans les graphes, structure de communauté, signal constant par morceaux, optimisation convexe, minimisation  $\ell_1$, \emph{analysis sparsity}, théorème du représentant, valeur propre restreinte minimale, \emph{small ball method}, \emph{inexact dual certificate}, \emph{golfing scheme}
+
+\vfill
+
+\end{otherlanguage}
+

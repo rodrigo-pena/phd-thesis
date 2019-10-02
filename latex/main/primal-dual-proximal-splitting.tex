@@ -1,0 +1,81 @@
+In this appendix I sketch, in a little more detail than in the main text, the proximal splitting approach for numerically solving programs like the \acrshort{gtv} decoders \eqref{eq:l1_interpolation} and \eqref{eq:l1_regression}. We may consider here more general optimization problems of the type
+\begin{equation}
+    \underset{\mathbf{z} \in \mathbb{R}^{n}}{\min} \enspace f(\mathbf{z}) + g(\mathbf{Dz}) + h(\mathbf{z}),
+    \label{eq:opt_prob_std_form} \tag{$P_{\text{std}}$}
+\end{equation}
+where $f: \mathbb{R}^{n} \to \mathbb{R}$, $g: \mathbb{R}^{N} \to \mathbb{R}$ and $h: \mathbb{R}^{n} \to \mathbb{R}$ are convex functions, the latter of which is also differentiable (with a Lipschitz-continuous gradient).
+
+The proximity operator of a convex function $f : \mathbb{R}^{n} \to \mathbb{R}$ is the map
+\begin{equation}
+    \mathbf{z} \mapsto \operatorname{prox}_{f} \left ( \mathbf{z} \right ) = \text{arg} \enspace \underset{\mathbf{v} \in \mathbb{R}^{n}}{\min} \enspace \frac{1}{2} \|\mathbf{z} - \mathbf{v} \|_2^2 + f(\mathbf{v}).
+\end{equation}
+The problem on the \acrlong{rhs} admits a unique solution for every $\mathbf{z} \in \mathbb{R}^{n}$. One can interpret proximity operators as generalizing projections. Indeed, take $f$ to be the convex indicator function of a set $\mathcal{C}$, \ie, the functions defined by
+\begin{equation*}
+    \mathbf{z} \mapsto \iota_{\mathcal{C}}(\mathbf{z}) = \left \{
+        \begin{matrix}
+            0, & \text{if }\mathbf{z} \in \mathcal{C}, \\
+            +\infty & \text{otherwise}
+        \end{matrix}
+    \right. .
+\end{equation*}
+Then, for any $\mathbf{z} \in \mathbb{R}^{n}$, the vector $\operatorname{prox}_{f} \left ( \mathbf{z} \right )$ is exactly the orthogonal projection of $\mathbf{z}$ onto $\mathcal{C}$~\cite[Table~2,~entry~i]{combettes2011}. Just like orthogonal projections, proximity maps allow us to split the space into complementary halves. Given a convex function $f$, the so-called Moreau decomposition of any $\mathbf{v} \in \mathbb{R}^{n}$ is given by
+\begin{equation*}
+    \mathbf{v} = \operatorname{prox}_{f} \left ( \mathbf{v} \right ) + \operatorname{prox}_{f^*} \left ( \mathbf{v} \right ),
+\end{equation*}
+where $f^*$ is the Fenchel conjugate of $f$, a function defined as $\mathbf{v} \mapsto \underset{\mathbf{u} \in \mathbb{R}^{n}}{\sup} \enspace \langle \mathbf{u}, \mathbf{v} \rangle - f(\mathbf{u})$.
+
+But perhaps the two most important properties of $\operatorname{prox}_{f}$ --- in what concerns iterative solvers --- are its firm non-expansiveness and the fact that its fixed point set matches the set of minimizers of $f$~\cite{combettes2011}. The gradient descent map $\mathbf{w} \mapsto \mathbf{w} - \gamma \nabla h (\mathbf{w})$ can also be non-expansive (with a proper choice of step size $\gamma$) and, similarly to the proximity map, its fixed point set is equal to the set of minimizers of $h$. \emph{Proximal splitting} techniques take advantage of these two properties to solve problems of the type $\underset{\mathbf{z}}{\min} \enspace f(\mathbf{z}) + h(\mathbf{z})$ with alternating calls to the gradient of $h$ (forward step) and proximal operator of $f$ (backward step). In rough terms, the iterations look like the ones below and repeat until $\mathbf{z}$ stops changing noticeably, coming close enough to a minimizer of the sum $f(\cdot) + h(\cdot)$.
+\begin{algorithm}[H]
+    \begin{algorithmic}
+        \State{$\mathbf{z} \gets \mathbf{z} - \gamma \nabla h (\mathbf{z})$}\Comment{Forward step}
+        \State{$\ldots$}
+        \State{$\mathbf{z} \gets \operatorname{prox}_{\gamma f} \left ( \mathbf{z} \right )$}\Comment{Backward step}
+    \end{algorithmic}
+\end{algorithm}
+
+Adding $g$ to the objective changes things a bit, because the domain of this function is different from that of $f$ and $h$. \emph{Primal-dual} proximal splitting methods address this situation by working simultaneously with two variables, called the primal $\mathbf{z} \in \mathbb{R}^{n}$ and the dual $\mathbf{d} \in \mathbb{R}^{n}$. The direct linear map $\mathbf{z} \mapsto \mathbf{D}\mathbf{z}$ and its transpose, $\mathbf{d} \mapsto \mathbf{D}^\top \mathbf{d}$ connect the primal and dual domains between the forward and backward steps:
+\begin{algorithm}[H]
+    \begin{algorithmic}
+        \State{$(\mathbf{z}, \mathbf{d}) \gets \left(\mathbf{z} - \gamma \nabla h (\mathbf{z}) - \gamma \mathbf{D}^\top \mathbf{d}, \mathbf{d} + \gamma \mathbf{D} \mathbf{z}\right)$}\Comment{Forward step}
+        \State{$\ldots$}
+        \State{$(\mathbf{z}, \mathbf{d}) \gets \left(\operatorname{prox}_{\gamma f} \left ( \mathbf{z} \right ), \operatorname{prox}_{\gamma g^*} \left ( \mathbf{d} \right )\right)$}\Comment{Backward step}
+    \end{algorithmic}
+\end{algorithm}
+
+The specific primal-dual proximal splitting method used in this chapter comes from Komodakis~and~Pesquet~\cite[Algorithm~6]{komodakis2015}. I reproduce all of its steps in Algorithm \ref{algo:primal_dual_general}, but note that at its core the algorithm consists of forward gradient steps, backward proximity steps, and a linear connection between primal and dual spaces via matrix $\mathbf{D}$. The paper of Komodakis~and~Pesquet lists other numerical solvers for \eqref{eq:opt_prob_std_form}, but the one in Algorithm~\ref{algo:primal_dual_general} has more intuitive step size parameters and allows the computation of $\operatorname{prox}_{f}$ and $\operatorname{prox}_{g}$ in parallel.
+
+\begin{algorithm}
+    \caption{\acrshort{fbf} primal-dual iterations for solving \eqref{eq:opt_prob_std_form}}
+    \label{algo:primal_dual_general}
+    \begin{algorithmic}[1]
+        \State{$\mathbf{z}_0 \gets \mathbf{0} \in \mathbb{R}^{n}$}\Comment{Initial primal variable}
+        \State{$\mathbf{d}_0 \gets \mathbf{0} \in \mathbb{R}^{N}$}\Comment{Initial dual variable}
+        \Repeat
+            \State{\textbf{pick} $\gamma_n \in \left(0, \frac{1}{1 + \|\mathbf{D}\|_{2} + \rho}\right)$}\Comment{Step size}
+
+            \State{$\left(\mathbf{w}_{1,n},\enspace\mathbf{w}_{2,n}\right) \gets \left(\mathbf{z}_n - \gamma_n \left[\nabla h (\mathbf{z}_n) + \mathbf{D}^\top \mathbf{d}_n\right],\enspace\mathbf{d}_n + \gamma_n \mathbf{D}\mathbf{z}_n\right)$}\Comment{Forward step}
+
+            \State{$\left(\mathbf{p}_{{1,n}},\enspace\mathbf{p}_{{2,n}}\right) \gets \left(\operatorname{prox}_{\gamma_n f} \left ( \mathbf{w}_{1,n} \right ),\enspace\operatorname{prox}_{\gamma_n g^*} \left ( \mathbf{w}_{2,n} \right )\right)$}\Comment{Backward step}
+
+            \State{$\left(\mathbf{q}_{{1,n}},\enspace\mathbf{q}_{{2,n}}\right) \gets \left(\mathbf{p}_{{1,n}} - \gamma_n \left[ \nabla h (\mathbf{p}_{{2,n}}) + \mathbf{D}^\top \mathbf{p}_{{2,n}}\right],\enspace\mathbf{p}_{{2,n}} + \gamma_n \mathbf{D} \mathbf{p}_{{1,n}}\right)$}\Comment{Forward} step
+
+            \State{$\left(\mathbf{z}_{n+1},\enspace\mathbf{d}_{n+1}\right) \gets \left(\mathbf{z}_n - \mathbf{w}_{1,n} + \mathbf{q}_{1,n},\enspace\mathbf{d}_n - \mathbf{w}_{2,n} + \mathbf{q}_{2,n}\right)$}\Comment{Update primal/dual variables}
+
+        \Until{convergence}
+        \State{\textbf{return} $\mathbf{z}_{n+1}$}
+	\end{algorithmic}
+\end{algorithm}
+
+Algorithms \ref{algo:primal_dual_interpolation} and \ref{algo:primal_dual_regression} in the main text are straightforward specializations of Algorithm \ref{algo:primal_dual_general}. To see that this is true, first identify $g$ with $\|\cdot\|_1 : \mathbb{R}^{N} \to \mathbb{R}$. Then the proximal mapping of its Fenchel conjugate is given by
+\begin{align*}
+    \mathbf{w} \mapsto & \operatorname{prox}_{\gamma_n g^*} \left ( \mathbf{w} \right ) \\
+    & = \mathbf{w} - \operatorname{prox}_{\gamma_n g} \left ( \mathbf{w} \right ) \\
+    & = \mathbf{w} - \operatorname{soft}_{\gamma_n} (\mathbf{w}).
+\end{align*}
+Note that I used the Moreau decomposition, along with the fact that $\operatorname{prox}_{\gamma_n \|\cdot\|_1}$ is the soft thresholding operator $\operatorname{soft}_{\gamma_n} (\mathbf{w})$~\cite[Table 2, entry ii]{combettes2011}. Next, in the interpolation problem related to Algorithm~\ref{algo:primal_dual_interpolation}, we have $h \equiv 0$ and so $\nabla h \equiv \mathbf{0}$. The interpolation constraint is expressed via function $f$ with the convex indicator function $\iota_{\{\mathbf{z} \in \mathbb{R}^{n} : \mathbf{P}_{\Omega}\mathbf{z} = \mathbf{P}_{\Omega}\mathbf{x}\}}(\cdot)$. Its proximity map is the same as the orthogonal projection onto set $\{\mathbf{z} \in \mathbb{R}^{n} : \mathbf{P}_{\Omega}\mathbf{z} = \mathbf{P}_{\Omega}\mathbf{x}\}$:
+\begin{align*}
+    \mathbf{w} \mapsto & \operatorname{prox}_{\gamma_n f} \left ( \mathbf{w} \right ) \\
+    & = \text{arg} \enspace \underset{\{ \mathbf{z} \in \mathbb{R}^{n} : \mathbf{P}_{\Omega} \mathbf{z} = \mathbf{P}_{\Omega} \mathbf{x} \}}{\min} \enspace \|\mathbf{z} - \mathbf{w}\|_2 \\
+    & = (\mathbf{I}_n - \mathbf{P}_{\Omega}) \mathbf{w} + \mathbf{P}_{\Omega}\mathbf{x}.
+\end{align*}
+For the regression problem, we can express the constraints using a differentiable function, $h(\cdot) = \frac{\rho}{2} \| \mathbf{P}_{\Omega}(\cdot) - \mathbf{y}\|_2^2$. Its corresponding gradient map is $\mathbf{z} \mapsto \nabla h (\mathbf{z}) = \rho \mathbf{P}_{\Omega}^\top \mathbf{P}_{\Omega}\mathbf{z} - \mathbf{y} = \rho \mathbf{P}_{\Omega}\mathbf{z} - \mathbf{y}$. There is no need for another function in the objective, so we may set $f \equiv 0$, which finishes the specialization of Algorithm \ref{algo:primal_dual_general} into Algorithm~\ref{algo:primal_dual_regression}.

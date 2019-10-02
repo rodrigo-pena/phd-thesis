@@ -1,0 +1,22 @@
+\begin{tikzpicture}
+
+    % axes
+    %\draw[help lines, color=gray!30, dashed] (-3,-1) grid (3,4);
+    \draw[-{Latex[length=2mm, width=2mm]},thick] (0,0)--(0,3) node[right] {$\psi_{\xi}(s)$};
+    \draw[-{Latex[length=2mm, width=2mm]},thick] (-3,0)--(3,0) node[above] {$s$};
+
+    % labels
+    \node[anchor=north] at (-2,0) {$-2\xi$};
+    \node[anchor=north] at (-1,0) {$-\xi$};
+    \node[anchor=north] at (0,0) {$0$};
+    \node[anchor=north] at (1,0) {$\xi$};
+    \node[anchor=north] at (2,0) {$2\xi$};
+
+    % soft indicator
+    \draw[very thick, color=epfl-groseille] (-3,2) -- (-2,2) -- (-1,0) -- (1,0) -- (2,2) -- (3,2);
+
+    % hard indicators
+    \draw[thick, dashed, color=epfl-ardoise] (-3,2) -- (-1,2) -- (-1,0) -- (1,0) -- (1,2) -- (3,2);
+    \draw[thick, dashed, color=epfl-perle] (-3,2) -- (-2,2) -- (-2,0) -- (2,0) -- (2,2) -- (3,2);
+
+\end{tikzpicture}

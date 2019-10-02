@@ -1,0 +1,101 @@
+\chapter{Dual certificates: \texorpdfstring{\acrshort{kkt}}{KKT} conditions and the golfing scheme}\label{ch:inexact_dual}
+
+As we exit our search for a direct recovery certificate --- cut short by lack of coordinate information on $\mathcal{D}( \|\mathbf{D} \cdot \|_1, \mathbf{x})$ ---, this chapter looks for an alternative in the polar opposite of the descent cone. The subdifferential $\partial \|\mathbf{D} \cdot\|_1(\mathbf{x})$ appears when considering the \acrfull{kkt} conditions for the solutions of
+\begin{equation}
+    \underset{\mathbf{z} \in \mathbb{R}^{n}}{\min} \| \mathbf{D z} \|_1 \text{ such that } \mathbf{Ax = Az} \tag{P1}.
+\end{equation}
+One of these conditions relies on the existence of a certain \emph{dual} vector $\mathbf{u} \in \mathbb{R}^{N}$ living in the co-domain of the linear transformation represented by $\mathbf{D}$. The very existence of the dual vector $\mathbf{u}$ can be seen as a recovery certificate for \eqref{eq:l1_interpolation}; the hard task is actually \emph{proving} that such a vector exists. Nevertheless, I show how to use the \acrshort{kkt} conditions as a blueprint for an iterative scheme producing approximations of the dual vector that are still valid certificates. This idea gives rise to \emph{a version} of the golfing scheme~\cite{gross2011}, popular in \acrlong{cs}, and whose convergence depends on well-behaving tails in random matrices born of the interaction between $\mathbf{D}$ and $\mathbf{A}$. Although powerful, this scheme(by its very construction) applies only to the noiseless, interpolation problem \eqref{eq:l1_interpolation}.~\footnote{This restriction is the main downside of the certificates in this section, as compared to the ones that we could have obtained in the previous chapter.}
+
+In the end, I am able to reach a sample complexity threshold for the \acrshort{gtv} interpolation under \acrfull{cswr}. More importantly, this threshold explicitly depends on the sampling probabilities $\bm{\pi} = (\pi_1, \dots, \pi_n)$ of \acrshort{cswr}. The corresponding optimal design is then just a corollary of sample complexity result, achieved by minimizing the threshold level \acrlong{wrt} $\bm{\pi}$. Although simple to state, the optimal sampling design is difficult to evaluate in practice, but some approximations of it are examined in the next chapter.
+
+
+\section{Lagrange dual problem and the \texorpdfstring{\acrshort{kkt}}{KKT} conditions}
+\input{main/kkt-analysis.tex}
+
+
+\section{Inexact dual certificates for \texorpdfstring{\acrshort{gtv}}{G-TV} interpolation}\label{sec:inexact_dc}
+\input{main/inexact-dual-certificates.tex}
+
+
+\section{The golfing scheme for producing certificates}
+\input{main/golfing-scheme.tex}
+
+
+\section{An optimal vertex-sampling design for \texorpdfstring{\acrshort{gtv}}{G-TV} interpolation}
+
+In the \acrshort{cswr} model, the measurement operator is formed by staking $m$ standard basis vectors of $\mathbb{R}^{n}$, picked independently at random~\footnote{See Chapter~\ref{ch:graphs_signals_sampling}.}. The picks are determined by \acrshort{iid} copies of a random variable $\omega$ taking values in $[n]$ with probabilities $\mathbb{P} \left ( \left \{  \omega = k \right \}\right ) = \pi_k, \forall k \in [n]$. The \acrshort{iid} copies, $\omega_1, \dots, \omega_m$, form a sampling set $\Omega$ with which we express the sampling matrix as $\mathbf{A} = \left(\mathbf{e}_{\omega_i}^\top\right)_{\omega_i \in \Omega}$.
+
+Skipping some computations~\footnote{It suffices to note that $\mathbf{A}^\top \mathbf{A} = \sum_{i=1}^{m} \mathbf{e}_{\omega_i} \mathbf{e}_{\omega_i}^\top$ and $\mathbb{E} \left ( \mathbf{A}^\top \mathbf{A} \right ) = m \operatorname{diag} \left ( \bm{\pi} \right )$.}, the \acrshort{cswr} model induces the following expression for the matrix $\mathbf{M}$ appearing in Lemma~\ref{lem:tails_golf}:
+\begin{equation}
+    \mathbf{M} := \left[ \mathbf{D} \left( \mathbf{I}_n - \mathbb{E} \left ( \mathbf{A}^{\top}\mathbf{A} \right )^{-1} \mathbf{A}^{\top} \mathbf{A} \right) \mathbf{D}^+ \right]^{\top}
+    = \frac{1}{m} \sum_{i=1}^{m} \left [ \mathbf{D} \left ( \mathbf{I}_n - \frac{1}{\pi_{\omega_i}}\mathbf{e}_{\omega_i} \mathbf{e}_{\omega_i}^\top \right ) \mathbf{D}^{+} \right ]^\top.
+    \label{eq:M_cswr}
+\end{equation}
+In words, $\mathbf{M}$ is thus a sum of independent perturbations of the orthogonal projection matrix $\mathbf{D}\mathbf{D}^{+}$ by random, rank-one matrices. Each rank-one matrix is associated with a vertex of the graph via the probabilities $\pi_1, \dots, \pi_n$. By its very construction, a matrix $\mathbf{M}^{(l)}$ only differs then from $\mathbf{M}$ by restricting the limits of the sum in \eqref{eq:M_cswr} to $m_l$ consecutive rows. I will fix each of the chunks $\mathbf{A}^{(1)}, \dots, \mathbf{A}^{(L)}$ of $\mathbf{A}$ in the golfing scheme to be of the same size\footnote{There is no point in doing otherwise for the \acrshort{cswr} model, because the rows of $\mathbf{A}$ are statistically indistinguishable from each other.} (\ie $m_1 = m_2 = \dots = m_L$) in order to write
+\begin{equation}
+    \mathbf{M}^{\textcolor{epfl-groseille}{(l)}} = \frac{1}{\textcolor{epfl-groseille}{m_1}} \sum_{i = \textcolor{epfl-groseille}{(l-1) \cdot m_{1} + 1}}^{\textcolor{epfl-groseille}{l \cdot m_{1}}} \enspace \left [ \mathbf{D} \left ( \mathbf{I}_n - \frac{1}{\pi_{\omega_i}}\mathbf{e}_{\omega_i} \mathbf{e}_{\omega_i}^\top \right ) \mathbf{D}^{+} \right ]^\top
+\end{equation}
+at once, for all $l \in [L]$.
+
+The golfing scheme's ability to output an inexact dual certificate depends on the tails of functions of $\mathbf{M}$ and $\{ \mathbf{M}^{(l)}\}_{l \in [L]}$. I will show that these tails are well-behaved if certain moments of the respective matrices are well-behaved. Correspondingly, define the following deterministic parameters (whose notation I borrowed from Boyer~\etal~\cite{boyer2019}).
+
+\begin{definition}
+    \begin{align}
+        \Theta (\mathcal{S}, \bm{\pi}) & := \underset{i \in [n]}{\max} \enspace \left \| \left [ \mathbf{D} \left ( \mathbf{I}_n - \frac{1}{\pi_{i}}\mathbf{e}_{i} \mathbf{e}_{i}^\top \right ) \mathbf{D}^{+} \right ]^\top \mathbf{P}_{\mathcal{S}}\right \|_{\infty \to \infty} \\
+        & = \underset{i \in [n]}{\max} \enspace \underset{k \in [N]}{\max} \enspace \left \| \tilde{\mathbf{e}}_k^{\top} \left [ \mathbf{D} \left ( \mathbf{I}_n - \frac{1}{\pi_{i}}\mathbf{e}_{i} \mathbf{e}_{i}^\top \right ) \mathbf{D}^{+} \right ]^\top \mathbf{P}_{\mathcal{S}}\right \|_{1} \\
+        \Upsilon (\mathcal{S}, \bm{\pi}) & := \underset{\|\mathbf{v}\|_\infty \leq 1}{\sup} \enspace \sum_{i=1}^{n} \pi_i \cdot \left \| \left [ \mathbf{D} \left ( \mathbf{I}_n - \frac{1}{\pi_{i}}\mathbf{e}_{i} \mathbf{e}_{i}^\top \right ) \mathbf{D}^{+} \right ]^\top \mathbf{P}_{\mathcal{S}} \mathbf{v} \right \|_{2}^2\\
+        \Gamma (\mathcal{S}, \bm{\pi}) & := \max \{ \Theta (\mathcal{S}, \bm{\pi}), \Upsilon (\mathcal{S}, \bm{\pi})\}.
+    \end{align}
+    \label{def:sample_complexity_parameters}
+\end{definition}
+
+The main theorem of this chapter is the next result, which provides a sample complexity threshold for exact recovery in \eqref{eq:l1_interpolation} under \acrshort{cswr} measurements. To prove it, simply call upon certain versions of the Bernstein inequality, as seen in Appendix~\ref{ap:proof_sample_complexity_p1_cswr}. Good Bernstein bounds rely on good estimation of moments, so I avoided approximations, deferring them to Chapter~\ref{ch:numerical_tour}. The elaborate expressions hidden under $\Gamma (\mathcal{S}, \bm{\pi})$ are a consequence of this choice.
+
+\begin{theorem}[Sample complexity of \eqref{eq:l1_interpolation} under \acrshort{cswr} measurements]\label{thm:sample_complexity_p1_cswr}
+    Let $\mathbf{A} \in \mathbb{R}^{m \times n}$ be the measurement matrix in the \acrshort{cswr} model and $\mathbf{D} \in \mathbb{R}^{N \times n}$ be the analysis matrix, denoting $\mathcal{S} := \operatorname{supp}\left ( \mathbf{Dx} \right )$ for some $\mathbf{x} \in \mathbb{R}^{n}$. With probability larger than $1 - \varepsilon$, vector $\mathbf{x}$ is the sole output of \eqref{eq:l1_interpolation} if $\operatorname{null} \left ( \mathbf{D} \right ) \cap \operatorname{null} \left ( \mathbf{A} \right ) = \{ \mathbf{0} \}$ and
+    \begin{equation}
+        m \geq 38 \cdot \Gamma(\mathcal{S}, \bm{\pi}) \cdot \log(|\mathcal{S}|) \cdot \log \left ( \frac{63 \cdot N \cdot\log (|\mathcal{S}|)}{\varepsilon} \right ).
+    \end{equation}
+\end{theorem}
+
+As far as this thesis is concerned, the best sampling design for the \eqref{eq:l1_interpolation} decoder is the one that minimizes its sample complexity. This design --- according to Theorem~\ref{thm:sample_complexity_p1_cswr} --- should therefore minimize $\Gamma(\mathcal{S}, \bm{\pi})$, since this is the only factor in the sample complexity bound that depends on the sampling probabilities $\bm{\pi} = (\pi_1, \dots, \pi_n)$. The next corollary just formalizes this statement.
+
+\begin{corollary}[Optimal \acrshort{cswr} design]\label{cor:opt_samp_design}
+    Let $\mathbf{D} \in \mathbb{R}^{N \times n}$ be the analysis matrix for some $\mathbf{x} \in \mathbb{R}^{n}$, yielding the co-support $\mathcal{S} := \operatorname{supp}\left ( \mathbf{Dx} \right )$. The \acrshort{cswr} design that minimizes the number of measurements required by Theorem \ref{thm:sample_complexity_p1_cswr} to exactly recover $\mathbf{x}$ from \eqref{eq:l1_interpolation} with high probability is
+    \begin{equation}
+        \bm{\pi} = \left \{
+        \begin{matrix}
+            \text{arg} \enspace \underset{\mathbf{p} \in \mathbb{R}^{n}}{\min} & \Gamma(\mathcal{S}, \mathbf{p}) \\
+            \text{subject to} & \mathbf{p} \succeq \mathbf{0} \enspace \text{and} \enspace \langle \mathbf{p}, \mathbf{1} \rangle = 1.
+        \end{matrix}
+        \right.
+    \end{equation}
+\end{corollary}
+
+\clearpage
+
+The optimal design --- despite being easy to state --- is not necessarily straightforward to implement. After all, the objective $\Gamma(\mathcal{S}, \bm{\pi})$ is the maximum of two rather complicated expressions, $\Theta(\mathcal{S}, \bm{\pi})$ and $\Upsilon(\mathcal{S}, \bm{\pi})$. Boyer~\etal~\cite{boyer2019}, in a similar situation, suggest looking for common upper bounds to $\Theta(\mathcal{S}, \bm{\pi})$ and $\Upsilon(\mathcal{S}, \bm{\pi})$, and optimize that instead. But finding appropriate upper bounds for our setting goes beyond the scope of this chapter. It is also important to mention the dependence of $\Gamma(\mathcal{S}, \bm{\pi})$ on $\mathcal{S} = \operatorname{supp}\left ( \mathbf{Dx} \right )$~\footnote{Recall that, in the context of piecewise-constant graph signals analysed via the graph gradient, $\mathcal{S}$ is called the jump-set of the signal.}: since $\mathbf{x}$ is the hidden ``ground-truth'' signal, how can one estimate the actions of the projection matrix $\mathbf{P}_{\mathcal{S}}$ without knowing $\mathbf{x}$ a priori? The reader will find some numerical experiments addressing this questions in Chapter \ref{ch:numerical_tour}.
+
+
+\section{Summary and final notes}
+
+The \acrfull{kkt} conditions of the interpolation problem \eqref{eq:l1_interpolation} reveal that dual certificate vectors arise in the interaction of $\operatorname{range} \left( \mathbf{A} \right)$ and the subdifferential $\partial \|\mathbf{D} \cdot \|_1 (\mathbf{x})$. In fact, merely approximating the \acrshort{kkt} conditions can be enough to guarantee exact recovery. Using Lemma~\ref{lem:inexact_dc} as blueprint, I formulated a golfing scheme that produces potential certificates. Experienced readers might spot how Algorithm~\ref{algo:golf} encompasses other golfing schemes from the literature, derived from particular instances of problem \eqref{eq:l1_interpolation}~\footnote{Problems that have, for example, $\mathbf{D} = \mathbf{I}_n$ and a Gaussian matrix for $\mathbf{A}$.}.
+
+When $\mathbf{A}$ comes from the \acrshort{cswr} model, the success of the golfing scheme demands a number of measurements proportional to a term $\Gamma(\mathcal{S}, \bm{\pi})$. Here lies the explicit connection between the sample complexity of \eqref{eq:l1_interpolation} and the sampling design $\bm{\pi}$. Finding the optimal design is thus a matter of minimizing $\Gamma(\mathcal{S}, \bm{\pi})$, a quantity related to moments of random matrices induced by $\mathbf{D}$ and $\mathbf{A}$. The practical aspects of sampling optimally are discussed in the next chapter.
+
+Lastly, a short note about the absence of the regression version \eqref{eq:l1_regression} in this chapter. Employing the golfing scheme can be suboptimal when dealing with noisy measurements~\cite{krahmer2019}. By this I mean that the number of measurements predicted by the scheme is knowingly not the best possible for some measurement ensembles. I decided then to restrict this chapter to setting with noiseless samples, hoping that ideas like the ones in Chapter \ref{ch:lower_bound_min_gain} could prove to be effective in the future to study the sample complexity of \acrshort{gtv} regression decoders.
+
+\clearpage
+
+\begin{subappendices}
+    \section{Proofs}
+
+    \subsection{Proof of Lemma \ref{lem:inexact_dc}}\label{ap:proof_inexact_dc}
+    \input{main/proofs/proof-inexact-dual-certificate.tex}
+
+    \subsection{Proof of Lemma \ref{lem:tails_golf}}\label{ap:proof_tails_golf}
+    \input{main/proofs/proof-golfing-scheme.tex}
+
+    \subsection{Proof of Theorem \ref{thm:sample_complexity_p1_cswr}}\label{ap:proof_sample_complexity_p1_cswr}
+    \input{main/proofs/proof-sample-complexity-cswr.tex}
+\end{subappendices}

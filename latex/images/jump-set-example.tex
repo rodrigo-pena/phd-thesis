@@ -1,0 +1,89 @@
+\begin{tikzpicture}
+
+    % axes
+    %\draw[help lines, color=gray!30, dashed] (0,0) grid (12,7);
+
+    % real axis
+    \draw[-{Latex[length=3mm, width=3mm]}, very thick] (0,0) -- (0,5) node [right] {$\mathbb{R}$};
+    \begin{scope}[every node/.style={anchor=east}]
+        \node[color=epfl-perle] at (0,0) {$0$};
+        \node[color=epfl-canard] at (0,2) {$1$};
+        \node[color=epfl-groseille] at (0,4) {$2$};
+    \end{scope}
+
+    % vertices
+    \begin{scope}[every node/.style={circle, thick, draw}]
+        \node (v1) at (1,0.5) {$v_1$};
+        \node (v2) at (2.5,2.5) {$v_2$};
+        \node (v3) at (4.5,0.5) {$v_3$};
+        \node (v4) at (6,2.5) {$v_4$};
+    \end{scope}
+
+    % edges
+    \begin{scope}[every edge/.style={thick, draw}]
+        \path[<->] (v1) edge node[left] {$e_1$} node[right] {$e_2$} (v2);
+        \path[<->] (v2) edge node[left] {$e_3$} node[right] {$e_4$}  (v3);
+        \path[<->] (v3) edge node[left] {$e_5$} node[right] {$e_6$}  (v4);
+        \path[<->] (v3) edge node[below] {$e_7$} node[above] {$e_8$}  (v1);
+    \end{scope}
+
+    % signal
+    \begin{scope}[every node/.style={circle, fill},
+                  every edge/.style={dashed, draw}]
+        \node[color=epfl-groseille] (sv1) at (1,4.5) {};
+        \node[color=epfl-groseille] (sv2) at (2.5,6.5) {};
+        \node[color=epfl-groseille] (sv3) at (4.5,4.5) {};
+        \node[color=epfl-canard] (sv4) at (6,4.5) {};
+
+        \path[->, color=epfl-groseille] (v1) edge (sv1);
+        \path[->, color=epfl-groseille] (v2) edge (sv2);
+        \path[->, color=epfl-groseille] (v3) edge (sv3);
+        \path[->, color=epfl-canard] (v4) edge (sv4);
+    \end{scope}
+
+    % level sets
+    \fill[color=epfl-perle, fill=epfl-perle, fill opacity=0.2] (0,0) -- (2.25,3) -- (7,3) -- (4.75,0);
+    %\fill[color=epfl-canard, fill=epfl-canard, fill opacity=0.2] (0,2) -- (2.25,5) -- (7,5) -- (4.75,2);
+    %\fill[color=epfl-groseille, fill=epfl-groseille, fill opacity=0.2] (0,4) -- (2.25,7) -- (7,7) -- (4.75,4);
+
+    % cutting plane
+    \fill[color=epfl-ardoise, fill=epfl-ardoise, fill opacity=0.2] (3.5,3.5) -- (6.5,0.5) -- (6.5,3.5) -- (3.5,6.5);
+
+    % difference signal as a vector
+    \node[anchor=center] (Dx) at (9.75, 4.) {
+        $
+        \mathbf{Dx} = \left [
+        \begin{matrix}
+            \textcolor{epfl-groseille}{f(v_1)} - \textcolor{epfl-groseille}{f(v_2)}\\
+            \textcolor{epfl-groseille}{f(v_2)} - \textcolor{epfl-groseille}{f(v_1)} \\
+            \textcolor{epfl-groseille}{f(v_2)} - \textcolor{epfl-groseille}{f(v_3)} \\
+            \textcolor{epfl-groseille}{f(v_3)} - \textcolor{epfl-groseille}{f(v_2)} \\
+            \textcolor{epfl-groseille}{f(v_3)} - \textcolor{epfl-canard}{f(v_4)}\\
+            \textcolor{epfl-canard}{f(v_4)} - \textcolor{epfl-groseille}{f(v_3)} \\
+            \textcolor{epfl-groseille}{f(v_3)} - \textcolor{epfl-groseille}{f(v_1)} \\
+            \textcolor{epfl-groseille}{f(v_1)} - \textcolor{epfl-groseille}{f(v_3)} \\
+        \end{matrix}
+        \right ]
+        = \left [
+        \begin{matrix}
+            0 \\
+            0 \\
+            0 \\
+            0 \\
+            +1 \\
+            -1 \\
+            0 \\
+            0 \\
+        \end{matrix}
+        \right ]
+        $
+    };
+
+    % graph as a tuple
+    \node[anchor=center] (S) at (9.75, 1.) {
+        $
+        \mathcal{S} := \operatorname{supp}\left ( \mathbf{Dx} \right) = \{5, 6\}
+        $
+    };
+
+\end{tikzpicture}

@@ -1,0 +1,79 @@
+In this section, $\mathbf{A} \in \mathbb{R}^{m \times n}$ is a random matrix whose rows, $\mathbf{a}_1, \dots, \mathbf{a}_m$, are \acrshort{iid} copies of a random vector $\mathbf{a}$. The reader should recall Definitions \ref{def:min_q_gain}, \ref{def:marginal_tail_function}, and \ref{def:mean_empirical_width} for the minimum $q$-gain, the marginal tail function, and the mean empirical width, respectively. The minimum $q$-gain of $\mathbf{A}$, restricted to a set $\mathcal{S}$, will be seen as a non-negative empirical process induced by the random vectors $\mathbf{a}_1, \dots, \mathbf{a}_m$:
+\begin{equation*}
+    \gamma_{\min}^{(q)} \left ( \mathcal{S}, \mathbf{A} \right ) = \underset{\mathbf{u} \in \mathcal{S} \cap \operatorname{bd}(\mathbb{B}^{n}_q)}{\inf} \enspace \|\mathbf{A u}\|_q^q = \underset{\mathbf{u} \in \mathcal{S} \cap \operatorname{bd}(\mathbb{B}^{n}_q)}{\inf} \enspace \sum_{i=1}^{m} \left | \langle \mathbf{a}_i, \mathbf{u} \rangle \right |^q.
+\end{equation*}
+
+I will then show that for any constants $\xi, t > 0$, and with probability larger than $1 - \exp \left ( \frac{-t^2}{2} \right )$, the lower bound
+\begin{equation*}
+    \gamma_{\min}^{(q)} \left ( \mathcal{S}, \mathbf{A} \right ) \geq m^{\frac{2 - q}{2q}} \left [ \xi \sqrt{m} Q_{\xi}(\mathbf{a}, \mathcal{S}) - 2 W_{m}(\mathbf{a}, \mathcal{S}) - \xi t \right ]
+\end{equation*}
+takes place. The argument is taken from Tropp~\cite[Sec. 2.5.5]{tropp2015a}.
+
+\begin{proof}
+    \pf\
+
+    \step{}{
+        Use, successively, the Lyapunov and Markov inequalities to reach the starting lower bound
+        \begin{align*}
+            \left ( \frac{1}{m}\sum_{i=1}^{m} \left | \langle \mathbf{a}_i, \mathbf{u} \rangle \right |^q \right )^{1/q} \geq \frac{1}{m} \sum_{i=1}^{m} \left | \langle \mathbf{a}_i, \mathbf{u} \rangle \right | \geq \frac{\xi}{m} \sum_{i=1}^{m} \mathbb{1}_{\{ \left | \langle \mathbf{a}_i, \mathbf{u} \rangle \right | \geq \xi \}}  .
+        \end{align*}
+    }
+    \step{2}{
+        Add and subtract $\mathbb{P} \left ( \left \{ \left | \langle \mathbf{a}_i, \mathbf{u} \rangle \right | \geq 2\xi \right \}\right )$ on the \acrshort{rhs} of the inequality in the previous step. Then take the infimum over $\mathcal{S}$ on both sides:
+        \begin{align*}
+            \underset{\mathbf{u} \in \mathcal{S}}{\inf} \enspace \left ( \frac{1}{m}\sum_{i=1}^{m} \left | \langle \mathbf{a}_i, \mathbf{u} \rangle \right |^q \right )^{1/q} & \geq \xi \overbrace{\underset{\mathbf{u} \in \mathcal{S}}{\inf} \enspace \mathbb{P} \left ( \left \{ \left | \langle \mathbf{a}_i, \mathbf{u} \rangle \right | \geq 2\xi \right \}\right )}^{=: Q_{2\xi}(\mathbf{a}, \mathcal{S})} \\
+            & \qquad - \frac{\xi}{m} \underset{\mathbf{u} \in \mathcal{S}}{\sup} \enspace \sum_{i=1}^{m} \left [ \mathbb{P} \left ( \left \{ \left | \langle \mathbf{a}_i, \mathbf{u} \rangle \right | \geq 2\xi \right \}\right ) - \mathbb{1}_{\{ \left | \langle \mathbf{a}_i, \mathbf{u} \rangle \right | \geq \xi \}} \right ]
+        \end{align*}
+    }
+    \step{3}{
+       Control the supremum on the new \acrshort{rhs} using the bounded differences inequality \cite[Sec. 6.1]{boucheron2013a}. This is possible because the summands inside the supremum are independent and bounded in magnitude by one. With probability larger than $1 - \exp \left ( -t^2 / 2 \right )$, we then have
+        \begin{align*}
+            \underset{\mathbf{u} \in \mathcal{S}}{\sup} \enspace \sum_{i=1}^{m} \left [ \mathbb{P} \left ( \left \{ \left | \langle \mathbf{a}_i, \mathbf{u} \rangle \right | \geq 2\xi \right \}\right ) - \mathbb{1}_{\{ \left | \langle \mathbf{a}_i, \mathbf{u} \rangle \right | \geq \xi \}} \right ] & \leq \mathbb{E} \left ( \underset{\mathbf{u} \in \mathcal{S}}{\sup} \enspace \sum_{i=1}^{m} \left [ \mathbb{P} \left ( \left \{ \left | \langle \mathbf{a}_i, \mathbf{u} \rangle \right | \geq 2\xi \right \}\right ) - \mathbb{1}_{\{ \left | \langle \mathbf{a}_i, \mathbf{u} \rangle \right | \geq \xi \}} \right ] \right ) \\
+            & \qquad + t \sqrt{m}.
+        \end{align*}
+    }
+    \step{4}{
+        It remains to bound the expected supremum to the right. Let $\varepsilon_1, \dots, \varepsilon_m$ be \acrshort{iid} copies of a Rademacher random variable; I claim that the following holds:
+        \begin{equation*}
+            \mathbb{E} \left ( \underset{\mathbf{u} \in \mathcal{S}}{\sup} \enspace \sum_{i=1}^{m} \left [ \mathbb{P} \left ( \left \{ \left | \langle \mathbf{a}_i, \mathbf{u} \rangle \right | \geq 2\xi \right \}\right ) - \mathbb{1}_{\{ \left | \langle \mathbf{a}_i, \mathbf{u} \rangle \right | \geq \xi \}} \right ] \right ) \leq \frac{2}{\xi} \mathbb{E} \left ( \underset{\mathbf{u} \in \mathcal{S}}{\sup} \enspace \sum_{i=1}^{m} \varepsilon_i \langle \mathbf{a}_i, \mathbf{u} \rangle \right ),
+        \end{equation*}
+    }
+        \begin{proof}
+            \pf\
+            \step{}{
+                Define a ``soft'' indicator function $\psi_{\xi}: \mathbb{R} \to [0,1]$ (see Figure \ref{fig:soft_indicator_function}) as the map
+                \begin{equation*}
+                    s \mapsto \psi_{\xi}(s) := \left \{
+                    \begin{matrix}
+                        0, & |s| \leq \xi \\
+                        \frac{|s| - \xi}{\xi}, & \xi < |s| \leq 2 \xi \\
+                        1, & |s| > 2 \xi \\
+                    \end{matrix}
+                    \right.
+                \end{equation*}
+                \begin{figure}[ht]
+                    \centering
+                    \input{images/soft_indicator_function.tex}
+                    \caption{``Soft'' indicator function}
+                    \label{fig:soft_indicator_function}
+                \end{figure}
+                We will need two, easily-verifiable properties of this function. First, it is ``sandwiched'' by two indicator functions, $\mathbb{1}_{\{ | \cdot | \geq 2\xi \}} \leq \psi_{\xi}(\cdot) \leq \mathbb{1}_{\{ | \cdot | \geq \xi \}}$. Second, the product map $s \mapsto \xi \psi_{\xi}(s)$ is a contraction.
+            }
+            \step{}{
+                Use the soft indicator function --- and its properties --- to apply a symmetrization procedure \cite[Lemma~6.3]{ledoux2011a}, and then the Rademacher comparison principle \cite[Theorem~4.12]{ledoux2011a} to the expected supremum. As a result, the claim is proved:
+                \begin{align*}
+                    \mathbb{E} \underset{\mathbf{u} \in \mathcal{S}}{\sup} \enspace \sum_{i=1}^{m} \left [ \mathbb{P} \left ( \left \{ \left | \langle \mathbf{a}_i, \mathbf{u} \rangle \right | \geq \xi \right \}\right ) - \mathbb{1}_{\{ \left | \langle \mathbf{a}_i, \mathbf{u} \rangle \right | \geq \xi \}} \right ] \\
+                    & = \mathbb{E} \underset{\mathbf{u} \in \mathcal{S}}{\sup} \enspace \sum_{i=1}^{m} \left [ \mathbb{E} \mathbb{1}_{\{ \left | \langle \mathbf{a}_i, \mathbf{u} \rangle \right | \geq 2\xi \}} - \mathbb{1}_{\{ \left | \langle \mathbf{a}_i, \mathbf{u} \rangle \right | \geq \xi \}} \right ] \\
+                    \comment{``sandwiched'' $\psi_{\xi}$} & \leq \mathbb{E} \underset{\mathbf{u} \in \mathcal{S}}{\sup} \enspace \sum_{i=1}^{m} \left [ \mathbb{E} \psi_{\xi}(\langle \mathbf{a}_i, \mathbf{u} \rangle) - \psi_{\xi}(\langle \mathbf{a}_i, \mathbf{u} \rangle) \right ] \\
+                    \comment{symmetrization} & \leq 2 \mathbb{E} \underset{\mathbf{u} \in \mathcal{S}}{\sup} \enspace \sum_{i=1}^{m} \varepsilon_i \psi_{\xi}(\langle \mathbf{a}_i, \mathbf{u} \rangle) \\
+                    \comment{contraction of $\xi \psi_{\xi}$} & \leq \frac{2}{\xi} \underbrace{\mathbb{E} \underset{\mathbf{u} \in \mathcal{S}}{\sup} \enspace \sum_{i=1}^{m} \varepsilon_i \langle \mathbf{a}_i, \mathbf{u} \rangle}_{=: \sqrt{m} W_{m}(\mathbf{a}, \mathcal{S})} \\
+                \end{align*}
+            }
+            \qedsymbol
+        \end{proof}
+        \qedstep{The desired lower bound on the minimim $q$-gain functional arises by combining steps \stepref{2}, \stepref{3} and \stepref{4}:
+        \begin{equation*}
+            \gamma_{\min}^{(q)} \left ( \mathcal{S}, \mathbf{A} \right ) := \underset{\mathbf{u} \in \mathcal{S}}{\inf} \enspace \left ( \frac{1}{m}\sum_{i=1}^{m} \left | \langle \mathbf{a}_i, \mathbf{u} \rangle \right |^q \right )^{1/q} \geq m^{\frac{2 - q}{2q}} \left [ \xi \sqrt{m} Q_{\xi}(\mathbf{a}, \mathcal{S}) - 2 W_{m}(\mathbf{a}, \mathcal{S}) - \xi t \right ].
+        \end{equation*}
+        }
+\end{proof}

@@ -1,0 +1,44 @@
+\chapter{Bernstein inequalities}\label{ap:probabilistic_inequalities}
+
+Many of the random objects encounter in this thesis can be written as a sum of independent random variables. The terms of the sum have bounded moments, so the sum itself takes on values close to its expectation with high probability. This concentration phenomenon can be quantified in terms of the Bernstein-type inequalities that I present here.
+
+\begin{lemma}[\protect{Scalar Bernstein inequality~\cite[p.117]{artstein-avidan2015}}]\label{lem:scalar_bern}.
+    Let $X_1, \dots, X_n$ be \textit{independent} random variables, taking values in $\mathbb{R}$, and such that, for each $i \in [n]$,
+    \begin{itemize}
+        \item $\mathbb{E} \left ( X_i \right ) = 0$,
+        \item $\sigma^2 := \frac{1}{n} \sum_{i=1}^{n} \mathbb{E} \left ( X_i^2 \right ) < \infty$,
+        \item $ |X_i| \leq B < \infty$.
+    \end{itemize}
+    Then, $\forall t > 0,$ the tails of the sum $S_n := X_1 + \dots + X_n$ behave as
+    \begin{equation}
+        \mathbb{P} \left ( \left \{  |S_n| \geq t n \right \}\right ) \leq 2 \exp \left( \frac{-3 n}{8} \min \left \{ \frac{t^2}{\sigma^2}, \frac{t}{B} \right \} \right).
+    \end{equation}
+\end{lemma}
+
+\begin{lemma}[\protect{Vector Bernstein inequality~\cite[p.164]{ledoux2011a}}]\label{lem:vector_bern}
+    Let $X_1, \dots, X_n$ be \textit{independent} random vectors in a Banach space equipped with norm $\| \cdot \|$, such that, for each $i \in [n]$,
+    \begin{itemize}
+        \item $\mathbb{E} \left ( X_i \right ) = 0$,
+        \item $\sigma^2 := \frac{1}{n} \sum_{i=1}^{n} \mathbb{E} \left ( \|X_i\|^2 \right ) < \infty$,
+        \item $ \|X_i\| \leq B < \infty$.
+    \end{itemize}
+    Then, $\forall t > 0,$ the tails of the sum $S_n := X_1 + \dots + X_n$ behave as
+    \begin{equation}
+        \mathbb{P} \left ( \left \{  \| S_n \| \geq t n \right \}\right ) \leq 2 \exp \left( \frac{-3 n}{8} \min \left \{ \frac{t^2}{\sigma^2}, \frac{t}{B} \right \} \right).
+    \end{equation}
+\end{lemma}
+
+\begin{lemma}[\protect{Matrix Bernstein inequality~\cite[Thm. 1.6.2]{tropp2015b}}]\label{lem:matrix_bern}
+    Let $X_1, \dots, X_n \in \mathbb{C}^{d_1 \times d_2}$ be \textit{independent} random matrices, and denote by $\| \cdot \|$ the spectral norm (maximal singular value). Assume that, for each $i \in [n]$,
+    \begin{itemize}
+        \item $\mathbb{E} \left ( X_i \right ) = 0$,
+        \item $\sigma^2 := \max \left \{ \left \| \sum_{i=1}^{n} \mathbb{E} \left ( X_i X_i^* \right )\right \|, \left \| \sum_{i=1}^{n} \mathbb{E} \left ( X_i^* X_i \right )\right \| \right \} < \infty$,
+        \item $ \| X_i \| \leq B < \infty$.
+    \end{itemize}
+    Then, $\forall t > 0,$ the tails of the sum $S_n := X_1 + \dots + X_n$ behave as
+    \begin{equation}
+        \mathbb{P} \left ( \left \{  \| S_n \| \geq t n \right \}\right ) \leq (d_1 + d_2) \exp \left( \frac{-3 n}{8} \min \left \{ \frac{t^2}{\sigma^2}, \frac{t}{B} \right \} \right).
+    \end{equation}
+\end{lemma}
+
+\emph{Remark:} The main difference between the matrix Bernstein inequality and the other two instances is the presence of a dimensional factor $(d_1 + d_2)$ which cannot be removed in the general case. As a consequence, there is a limited range of $t$ for which the matrix Bernstein inequality is informative~\cite[p. 77]{tropp2015b}. Additionally, Tropp highlights that the definition of the variance term $\sigma^2$ through a maximum of two terms reflects the existence of two different squares for a general matrix $\mathbf{M}$, namely $\mathbf{M}^\top \mathbf{M}$ and $\mathbf{M} \mathbf{M}^\top$. A scalar $s \in \mathbb{R}$ has only one square, so only one second moment to consider.

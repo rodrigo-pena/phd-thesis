@@ -1,0 +1,263 @@
+\chapter{Graphs, signals, and sampling}\label{ch:graphs_signals_sampling}
+
+Graphs are combinatorial objects, but much of graph \emph{signal processing} is a matter of linear algebra. A real-valued signal supported on a network can be embedded on a Euclidean space with dimension equal to the number of vertices. In this space, various difference operators can be defined and used as a basis for Fourier analysis or dynamical process analogues for graph signals~\cite{shuman2013}.
+
+The signals that this thesis cares about are piecewise-constant, a characteristic tantamount to having few variations (or jumps) in value across edges. To measure such variations, we work with an operator $\mathbf{D}$, called the graph gradient matrix, whose induced $p$-semi-norms $\|\mathbf{D} \cdot \|_p$ yield various ways to quantify the amount of signal variation on the graph. The semi-norms corresponding to $p = 1, 2$ receive special names: \acrfull{gtv} and Dirichlet form, respectively. The former is one of the main objects of study in the thesis; the latter appears sporadically, as a comparison point to the \acrshort{gtv}.
+
+The act of sampling signal values is also cast in the language of linear algebra. Vertex measurements can be obtained by means of multiplication with a random matrix $\mathbf{A}$ indexed by a sampling set $\Omega$. Specifying the inclusion probabilities of indices into $\Omega$ is called a sampling design. This design is represented numerically by a vector $\bm{\pi}$, whose influence on the inclusion probabilities I present in two alternative ways, the \acrfull{ber} and \acrfull{cswr}. Convenience dictates which one is used when: \acrshort{ber} in Chapter \ref{ch:lower_bound_min_gain}; \acrshort{cswr} in Chapter \ref{ch:inexact_dual}. From the perspective of recovery problems, we will see that these two models are essentially equivalent.
+
+This chapter's goal is to explain how the processing and sampling of graph signals can be seen as issues about vectors and matrices. Readers can use it as reference because much of the notation in the thesis is already established here.
+
+
+\section{Graph signal processing}
+
+Graphs, or networks, are tuples $\mathcal{G} = (\V, \E)$ of a vertex set $\V$ and an edge set $\E$. The latter contains ordered pairs $e_{vu} = (v, u)$ that indicate directed connections from some vertex $v \in V$ to another vertex $u \in V$. We will consider a graph to be \textit{undirected} if $(v, u) \in \E \iff (v, u) \in \E$, that is, if vertex $v$ connects to $u$ if and only if $u$ also connects to $v$. Moreover, a graph has no \emph{self-loops} if $(v, v) \notin \E, \forall v \in \V$, and is \emph{connected} if, starting from any vertex, one can visit all the others by following the edges in $\E$. The graphs in the numerical examples of Chapter \ref{ch:numerical_tour} are all connected, undirected, and without self-loops. Any other reference to graphs in the rest of the text can be assumed to be valid for generic networks.
+
+In machine learning and signal processing, graphs are commonly used to encode ``closeness'' or ``similarity'' between the objects represented by the vertices. A common way to quantify those similarities is by attaching non-negative weights to the edges of the graph. The larger the weight, the more similar the corresponding connected vertices. Formally, the weight assignment is done by means of a function $w : \E \to \mathbb{R}_{\ge 0}$. But an alternative representation of the weights can be derived once we impose an arbitrary ordering $v_1 < v_2 < \dots < v_n$ to the $n$ vertices in $\V$. With this fixed ordering, we can build a weighted adjacency matrix $\mathbf{W} \in \mathbb{R}^{n \times n}$ with entries given by
+
+\begin{equation*}
+    \forall i,j \in [n], \quad W_{ij} = \left \{
+        \begin{matrix}
+            w((v_i, v_j)) & \text{ if } (v_i, v_j) \in \E \\
+            0 & \text{ otherwise}.
+        \end{matrix}
+    \right.
+\end{equation*}
+
+On undirected graphs, any pair $(v_i, v_j), (v_j, v_i)$ really represents the same undirected edge. In this case, we make the weight function symmetric, that is, $w((v_i, v_j)) = w((v_j, v_i))$, $\forall v_i, v_j \in \mathcal{V}$. As a consequence, $W$ for an undirected graph is a symmetric matrix. Whenever the weight function satisfies $w \equiv 1$, we say that the graph is unweighted, recovering in $W$ the classic adjacency matrix used in algebraic graph theory.
+
+I reserve the variable $n$ for the number of vertices on a graph. In other words, for any $\mathcal{G} = (\V, \E)$, we will have $n := |\V|$. Alluding to the imposed order on the vertices of $\V$, we can in fact employ a one-to-one mapping between $\V$ and $[n] := \{1, 2, \dots, n\}$. This mapping, takes $i \mapsto v_i$, and vice versa, for every $i \in [n]$. Without fear of ambiguity then --- and for the sake of presentation ---, I interchangeably refer to the vertex set as either $\V$ or $[n]$. Similarity, we keep the letter $N$ for referring to the number of edges, $|\E|$. The capital $N$ also works as mnemonic device for the fact that the number of edges will almost always be larger than the number of vertices. In fact, for any connected, undirected graph $\mathcal{G}$, the bounds $|\V| - 1 \leq |\E| \leq \frac{|\V|(|\V| - 1)}{2}$ apply by a simple counting exercise. The lower bound is reached if $\mathcal{G}$ is a tree, whereas the upper bound holds whenever $\mathcal{G}$ is a complete graph.
+
+Any function $f : \V \to \mathbb{R}^{n}$ is thought of as a signal on the graph. Intuitively, the naming is justified by imagining each vertex $v \in \V$ as having a real value $f(v)$ living on top ot it. We can then refer to the graph as the support of the signal. This view is borrowed from graphs such as sensor networks, where each vertex (sensor) has a clear signal component (e.g., temperature) attached to it. But we can abstract from this example and refer to, say, the numerical labels of vertices in a clustered network as a graph signal as well.
+
+For processing reasons, it is useful to identify the set of graph signals with the set of vectors in $\mathbb{R}^{n}$, via the bijection between $\V$ and $[n]$. In practice, this only means that for any $\mathbf{x} \in \mathbb{R}^{n}$ there exists a graph signal $f$ such that $\mathbf{x} = \left( f(v_i) \right)_{i = 1}^n$, for some ordering $v_1 < v_2 < \dots < v_n$ of the vertices in $\V$. From now on, having this identification in mind, I will only refer to graph signals as vectors in $\mathbb{R}^{n}$.
+
+\begin{figure}[H]
+    \centering
+    \input{images/graph-signal-example.tex}
+    \caption[A signal supported on a graph]{A signal supported on a graph. The graph is a tuple $\mathcal{G} = (\mathcal{V}, \mathcal{E})$ of vertices and edges, and the signal is a function mapping vertices to the reals (in this case). The vector representation $\mathbf{x}$ of the graph signal gathers the function values at each vertex, once an (arbitrary) vertex ordering has been fixed.}
+    \label{fig:graph-signal-example}
+\end{figure}
+
+
+\subsection{Piecewise-constant graph signals}\label{sec:piece_const_graph_signals}
+
+In Figure \ref{fig:graph-signal-example} is what we would intuitively call a piecewise-constant signal: it assigns a constant value of $2$ for vertices $v_1, v_2, v_3$ and another constant value of $1$ to vertex $v_4$. We could even think that this signal encodes the community structure of this graph, with $v_1, v_2, v_3$ in one community and $v_4$ in another.
+
+To properly define a signal that is constant by pieces, it helps to explore a notion of ``step functions'' on graphs, similarly to how Figure \ref{fig:graph-signal-example} distinguishes between a ``red'' step and a ``blue'' step. The indicator vector of a subset $\mathcal{W} \subset \V$ is the object with entries
+\begin{equation}
+    \mathbb{1}_{\{ \mathcal{W} \}}[i] = \left \{
+        \begin{matrix}
+            1 & \text{if } v_i \in \mathcal{W} \\
+            0 & \text{otherwise}
+        \end{matrix}
+    \right.
+    , \enspace \forall i \in [n].
+\end{equation}
+The blue component of the signal in Figure \ref{fig:graph-signal-example} is the indicator vector of the vertex set $\{v_4\}$, while the red component is twice the indicator vector of $\{v_1, v_2, v_3\}$. Should we then state that any graph signal $\mathbf{x} \in \mathbb{R}^{n}$ is piecewise-constant if it can be written as a linear combination of indicator vectors? No, because the set of indicators $\left\{ \mathbb{1}_{\{ i \}} \right\}_{i=1}^n \equiv \{\mathbf{e}_i\}_{i=1}^n$ forms the standard basis in $\mathbb{R}^{n}$, so \emph{any} graph signal lies in its linear span. To earn the adjective of piecewise-constant, a signal must also have relatively few variations, which we can quantify with help from difference operators.
+
+
+\subsection{Difference operators on graphs}\label{sec:diff_op_graphs}
+
+The weights in the adjacency matrix $\mathbf{W}$ are supposed to represent how ``close'' vertices are to one another. Hence, it is natural to consider gradient maps $\nabla_{\mathcal{G}}f : \E \to \mathbb{R}^{N}$ of graph signals $f : \V \to \mathbb{R}^{n}$ as producing edge differences~\footnote{The square root in the expression is standard~\cite{shuman2013} and has to do with obtaining a clean expression for a related difference operator, the graph Laplacian.}
+\begin{equation}
+    (\nabla_{\mathcal{G}} f)[e] = \sqrt{\mathbf{W}_{j,i}} \left ( f(v_j) - f(v_i) \right ), \enspace \forall e = (v_i, v_j) \in \E.
+\end{equation}
+This gradient assigns each $e = (v_i, v_j)$ to a real number quantifying the variation of the signal $f$ from vertex $v_i$ to vertex $v_j$. If $f(v_j)$ is larger, this variation is positive, indicating that the signal \emph{increases} when going from $v_i$ to $v_j$.
+
+As we have done for vertices, fix now an (arbitrary) ordering $e_1 < e_2 < \dots < e_N$ of the edges in $\E$. The gradient map can then be encoded in a weighted, signed, matrix $\mathbf{D} \in \mathbb{R}^{N \times n}$ with entries~\footnote{For readers familiar with graph theory, this is a version of the transpose incidence matrix.}
+\begin{equation}
+    \mathbf{D}_{kl} = \left \{
+        \begin{matrix}
+            \sqrt{\mathbf{W}_{ji}} & \text{if } l = i \\
+            -\sqrt{\mathbf{W}_{ij}} & \text{if } l = j \\
+            0 & \text{otherwise}
+        \end{matrix}
+    \right.,
+    \quad \forall k \in [N], l \in [n], \text{ with } e_k = (v_i, v_j).
+\end{equation}
+If $\mathbf{x} = (f(v_i))_{i = 1}^n$ is the vector representation of a graph signal $f$, then the gradient map $\nabla_{\mathcal{G}} f$ can be just as well expressed by the matrix-vector multiplication $\mathbf{Dx}$. For this reason, I will refer to $\mathbf{D}$ as the gradient (or difference) operator associated with graph $\mathcal{G}$.
+
+Going back to ``step functions'', one can verify that $\mathbf{D} \mathbb{1}_\mathcal{W}$ is supported~\footnote{The word ``support'' here refers to the edges corresponding to the non-zero entries of vector $\mathbf{D} \mathbb{1}_\mathcal{W}$.} on the boundary $\partial \mathcal{W} \subset \E$ corresponding to the edges between the vertex set $\mathcal{W}$ and its complement $\V \setminus \mathcal{W}$. In graph theory, $\partial \mathcal{W}$ is also known as the cut-set determined by the partition $(\mathcal{W}, \V \setminus \mathcal{W})$ of the vertex set.
+
+We can use any $\ell_p$-norm to define a measure of ``size'' of a cut-set in a way that accounts for the edge weights:
+\begin{align*}
+    \left\| \mathbf{D} \mathbb{1}_{\{ \mathcal{W} \}} \right\|_p^p & = \sum_{e = (v_i,v_j) \in \E} \left( \mathbf{W}_{ji} \right)^{p/2} \left | \mathbb{1}_{\{ \mathcal{W} \}}[j] - \mathbb{1}_{\{ \mathcal{W} \}}[i] \right |^p \\
+    & = \sum_{e = (i,j) \in \partial \mathcal{W}} \left( \mathbf{W}_{ji} \right)^{p/2}.
+\end{align*}
+The choice of $p$ only influences --- a priori --- the importance given to the edge weights for the size computation.
+
+More generally, a linear combination of indicator vectors induces several partial cut-sets, one for each constant piece. I call the union of these partial cut-sets the \emph{jump-set}, indicating across which edges the signal changes value. For piecewise-constant graph signals, we should expect the size of the jump set to be small with respect to the total number $N$ of edges in the graph. The jump-set can be identified with an index set in $[N]$ via the action of $\mathbf{D}$.
+
+\begin{definition}[Jump-set]
+    The jump-set of a graph signal $\mathbf{x} \in \mathbb{R}^{n}$ is the set
+    \begin{equation}
+        \mathcal{S} := \operatorname{supp}\left ( \mathbf{Dx} \right )
+    \end{equation}
+    containing the indices of the non-zero entries of the weighted-edge-differences vector $\mathbf{Dx}$.
+    \label{def:jump_set}
+\end{definition}
+
+\begin{figure}[H]
+    \centering
+    \input{images/jump-set-example.tex}
+    \caption[Difference operation on the graph signal]{Difference operation on the graph signal from Figure \ref{fig:graph-signal-example}, assuming unit-weight connections. The piecewise-constant signal varies only across two of the eight directed edges in the graph. The jump-set $\mathcal{S}$ indexes the twin edges $e_5$ and $e_6$, whose cut splits the graph into ``red'' and ``blue'' communities.}
+    \label{fig:jump-set-example}
+\end{figure}
+
+We can also measure the size of the jump-set using $\ell_p$ norms of $\mathbf{Dx}$. Let $\mathbf{x} = \sum_{l=1}^{L} \alpha_l \mathbb{1}_{\{ \mathcal{W}_l \}}$ be a signal with $L$ constant pieces, taking values $\{ \alpha_l \}_{l=1}^{L}$ on corresponding disjoint vertex subsets $\mathcal{W}_1, \dots, \mathcal{W}_L$. The functional $\left \| \mathbf{D x} \right \|_p^p$ decomposes into $L$ terms, one for each constant piece:
+\begin{align}
+    \left \| \mathbf{D x} \right \|_p^p & = \sum_{e = (v_i,v_j) \in \E} \left(\mathbf{W}_{ji}\right)^{p/2} \left | \mathbf{x}[j] - \mathbf{x}[i] \right |^p \\
+    & = \sum_{l=1}^{L} \sum_{v_i \in \mathcal{W}_l} \sum_{v_j \in \mathcal{W}_k \neq \mathcal{W}_l} \left(\mathbf{W}_{ji}\right)^{p/2} \left | \alpha_l - \alpha_k \right |^p. \nonumber
+\end{align}
+I give special names to the functionals corresponding to two particular choices of $p$.
+
+\begin{definition}[\acrfull{gtv}]
+    The \acrlong{gtv} of a signal $\mathbf{x} \in \mathbb{R}^{n}$ is given by
+    \begin{equation}
+        \left \| \mathbf{D x} \right \|_1 = \sum_{i \in [n]} \sum_{j \in [n]} \sqrt{\mathbf{W}_{ji}} \left | \mathbf{x}[j] - \mathbf{x}[i] \right |
+    \end{equation}
+    \label{def:gtv}
+\end{definition}
+
+\begin{definition}[Dirichlet form]
+    The Dirichlet form of a signal $\mathbf{x} \in \mathbb{R}^{n}$ is given by
+    \begin{equation}
+        \left \| \mathbf{D x} \right \|_2^2 = \sum_{i \in [n]} \sum_{j \in [n]} \mathbf{W}_{ji} \left ( \mathbf{x}[j] - \mathbf{x}[i] \right )^2
+    \end{equation}
+    \label{def:dirichlet_form}
+\end{definition}
+
+\acrlong{gtv} is a constant presence in this thesis, whereas the Dirichlet form appears in chapters \ref{ch:recovery_convex} and \ref{ch:numerical_tour} as a comparison point for results concerning the \acrshort{gtv} semi-norm.
+
+The null space of $\mathbf{D}$ is a particularly important object in the analysis of the \acrshort{gtv} decoders introduced in the next chapter. As usual for difference operators, $\operatorname{null} \left ( \mathbf{D} \right )$ is non-trivial, that is, it contains a subspace dimension at least one. If the associated graph is \emph{connected}, this subspace is $\operatorname{span}(\mathbf{1})$, the set of \emph{constant} vectors in $\mathbb{R}^{n}$. If, however, the graph has \emph{disconnected} parts, then $\operatorname{null} \left ( \mathbf{D} \right )$ will also contain the vectors that are constant on each of the connected sub-graphs. In the limiting case of a graph without edges, $\operatorname{null} \left ( \mathbf{D} \right ) \equiv \mathbb{R}^{n}$.
+
+
+\section{Sampling}\label{sec:sampling}
+
+To sample is to request the values $f(v)$ for every vertex $v$ in some query set $\mathcal{Q} \subset \V$. In the vector interpretation of graph signals, this process is the same as measuring a coordinate subset of a point in $\mathbb{R}^{n}$. To sense coordinates, consider the standard basis $\left\{\mathbf{e}_i\right\}_{i=1}^n$ of $\mathbb{R}^{n}$, where each vector $\mathbf{e}_i$ contains a one at the $i$\textsuperscript{th} coordinate and zeros otherwise. Using this basis, a coordinate sample $y_i \in \mathbb{R}$ of a graph signal $\mathbf{x} = (f(v_i))_{i=1}^n$ at vertex $v_i$ is nothing but the inner product
+\begin{equation*}
+    y_i = \langle \mathbf{e}_i, \mathbf{x} \rangle = x_i.
+\end{equation*}
+More generally, given a sampling set $\Omega \in [n]$ of cardinality $|\Omega| = m$, we can form a matrix
+\begin{equation}
+    \mathbf{A} := \left( \mathbf{e}_i^\top \right)_{i \in \Omega} \in \mathbb{R}^{m \times n}
+\end{equation}
+and define a sampling vector $\mathbf{y} = (y_i)_{i=1}^n$ via the linear operation $\mathbf{y} = \mathbf{Ax}$.
+
+Call $\mathbf{A} = \mathbf{A}(\Omega)$ the measurement matrix associated with the coordinate sampling set $\Omega$. Sometimes it will be convenient to ``lift'' the co-domain of $\mathbf{A}$ to $\mathbb{R}^{n}$, by inserting zero-valued rows for the coordinates outside the sampling set. The resulting square matrix is $\sum_{i \in \Omega} \mathbf{e}_i \mathbf{e}_i^\top =: \mathbf{P}_{\Omega}$, the orthogonal projection operator onto the sampling set. With that in mind, I will abuse notation every once in a while and write $\mathbf{A} = \mathbf{P}_{\Omega}$ as a shorthand.
+
+A \emph{sampling design} is a blueprint for choosing $\Omega$, even if implicitly defined. In general, designs can be either deterministic or probabilistic, but we will consider only the latter~\footnote{Technically, it is possible to produce deterministic sampling designs probabilistic one by setting probability masses to either zero or one.}. I assign a numeric template to sampling design in the form of a vector $\bm{\pi} = (\pi_1, \pi_2, \dots, \pi_n)$. This vector assigns sampling probabilities to each element of $[n]$, but not necessarily their \emph{inclusion probabilities} into $\Omega$. Nonetheless, a larger $\pi_i$ implies a more likely sample of vertex $v_i$. We will assume that each coordinate is sampled \emph{independently} from the others, a convenient constraint for the probabilistic estimates in chapters \ref{ch:lower_bound_min_gain} and \ref{ch:inexact_dual}.
+
+\begin{figure}[H]
+    \centering
+    \input{images/sampling-graph-signal-example.tex}
+    \caption[Sampling the graph signal]{Sampling the graph signal of Figure \ref{fig:graph-signal-example}. A vertex is more likely to be in the sampling set $\Omega$ if its corresponding entry in $\bm{\pi} = \left( \pi_1, \pi_2, \pi_3, \pi_4 \right)$ is large. Vector $\mathbf{y}$ gathers the measured (sampled) signal values, a linear operation over the ground-truth $\mathbf{x}$.}
+    \label{fig:sampling-graph-signal-example}
+\end{figure}
+
+There exist parametric possibilities for modelling the probabilities in $\bm{\pi}$. For an example, Jung \cite{jung2018} takes each $\pi_i$ from an exponential family, parametrized by the signal value $x_i$ at vertex $v_i$. We will proceed otherwise, seeing the entries of $\bm{\pi}$ merely as unspecified real numbers in the interval $[0,1]$.
+
+
+\subsection{\texorpdfstring{\acrfull{ber}}{Bernoulli Sampling Model}}\label{sec:ber}
+
+Define random selectors $\{ \delta_i \}_{i=1}^n$ by drawing $n$ independent, $\{0, 1\}$-valued Bernoulli random variables, each of which according to the probabilities
+\begin{equation}
+    \mathbb{P} \left ( \left \{  \delta_i = 1 \right \}\right ) = \pi_i = 1 - \mathbb{P} \left ( \left \{  \delta_i = 0 \right \}\right ), \forall i \in [n].
+\end{equation}
+These selectors induce a sampling set according to the rule $\Omega = \{ i \in [n] : \delta_i = 1\}$. Note that each vertex $i \in [n]$ is \emph{included} in the sampling set with probability
+\begin{equation*}
+    \mathbb{P} \left ( \left \{  i \in \Omega \right \}\right ) = \pi_i.
+\end{equation*}
+
+An advantage of using Bernoulli selectors that the independent coordinate samples \emph{do not repeat}. There is no redundance in the sampling set, in the sense that the number of unique coordinate observations is equal to the cardinality of $\Omega$. The downside is that this cardinality is itself a \emph{random variable}. Indeed, $|\Omega| = \sum_{i=1}^{n} \delta_i$, so the number of samples is not determined a priori. Fortunately, the distribution $|\Omega|$ is fairly well concentrated around its expectation $\mean{m} := \mathbb{E} \left ( |\Omega| \right ) = \sum_{i=1}^{n} \pi_i$. An application of the scalar Bernstein inequality (Lemma \ref{lem:scalar_bern}) yields
+\begin{equation}
+    \frac{\mean{m}}{2} \leq |\Omega| \leq \frac{3 \mean{m}}{2},
+\end{equation}
+with probability at least $1 - 2 \exp \left ( -  \mean{m} / 9 \right )$.
+
+The (lifted) measurement matrix induced from the Bernoulli model can be written directly in terms of the selectors, bypassing the sampling set $\Omega$:
+\begin{align}
+    \mathbf{A} = \sum_{i \in \Omega} \mathbf{e}_i^\top \mathbf{e}_i^\top = \sum_{i=1}^n \delta_i \mathbf{e}_i^\top \mathbf{e}_i^\top,
+\end{align}
+this expression will be very useful in Chapter \ref{ch:lower_bound_min_gain}.
+
+
+\subsection{\texorpdfstring{\acrfull{cswr}}{Coordinate Sampling with Replacement}}\label{sec:cswr}
+
+Let $\omega$ be a random variable taking values in $[n]$ with probabilities $\mathbb{P} \left ( \left \{ \omega = i \right \}\right ) = \pi_i$, for each $i \in [n]$. Draw $m$ \acrshort{iid} copies, $\omega_1, \omega_2, \dots, \omega_m$, of $\omega$ and define the sampling \emph{multiset} $\Omega = \{ \omega_i \}_{i=1}^m$ containing all those copies, including repetitions. This process effectively implements independent coordinate sampling with replacement. In particular, setting $\pi = (1/n, \dots, 1/n)$, one retrieves uniform random sampling.
+
+Compared to the Bernoulli model, the likelihood that any given vertex $i \in [n]$ is in the sampling set has a more complicated expression:
+\begin{align*}
+    \mathbb{P} \left ( \left \{ i \in \Omega \right \}\right ) & = \mathbb{P} \left ( \left \{  \omega_1 = i \vee \dots \vee \omega_m = i \right \}\right ) \\
+    & = 1 - \mathbb{P} \left ( \left \{  \omega_1 \neq i \wedge \dots \wedge \omega_m \neq i \right \}\right ) \\
+    & = 1 - \mathbb{P} \left ( \left \{ \omega \neq i \right \}\right )^m \enspace \comment{\acrshort{iid}}\\
+    & = 1 - (1 - \pi_i)^m.
+\end{align*}
+However, the total number of measurements is now deterministic and equal to $m$. This property proves to be convenient in Chapter \ref{ch:inexact_dual}.
+
+
+\subsection{Reconstruction from samples}
+
+Behind every sampling procedure there is an underlying signal $\mathbf{x}$ which is the real object of interest. Sometimes the measurements only need to be numerous enough to estimate the mean, variance or other simple statistics of $\mathbf{x}$. We, however, want to recover the \emph{full} signal, in the spirit of \acrfull{cs}.
+
+It should be expected that our ability to reconstruct a sub-sampled signal depends on how many measurements we have taken. If we sample all of the $n$ coordinates of $\mathbf{x}$ then the problem is trivially solved; if we sample none, there is no hope for recovery. The interesting cases are somewhere in between, especially when the number of measurements $m$ is much smaller than the dimension $n$ of the signal, a setup we informally refer to as $m \ll n$. In terms of linear algebra, recovery of $\mathbf{x}$ from $\mathbf{y} = \mathbf{Ax}$ is an attempt to invert a matrix $\mathbf{A} \in \mathbb{R}^{m \times n}$ that is rank-deficient. This problem has infinitely many solutions, and is therefore ill-posed. In Chapter \ref{ch:recovery_convex}, I present decoders $\mathfrak{D} : \mathbb{R}^{m} \to \mathbb{R}^{n}$, based on convex optimization, that remedy this situation. They revert the measurement process, yielding $\mathbf{x} = \mathfrak{D}(\mathbf{y})$, as long as $\mathbf{x}$ belongs to a restricted class of vectors within $\mathbb{R}^{n}$.
+
+I have previously posed that the optimal sampling design for a fixed decoder $\mathfrak{D}$ will minimize the number of measurements needed for a successful recovery. Intuitively, such a design should sample more often the coordinates that contribute the most to the recovery confidence, while neglecting those that do not add as much value. In terms of the probabilities in $\bm{\pi} = (\pi_1, \dots, \pi_n)$, each entry $\pi_i$ can be thus seen as an importance measure of coordinate $i$ from the perspective of the decoder. These guidelines become formal once we can precise how each of the sampling probabilities in $\bm{\pi}$ affects the performance of the decoder.
+
+
+\subsection{``Equivalence'' between the sampling models}\label{sec:samp_equiv}
+
+Using the \acrshort{ber} or the \acrshort{cswr} model in our context is essentially a matter of convenience. Indeed, we can borrow an argument by Cand\`es \etal~\cite[Appendix]{candes2011a}, which I have detailed in Appendix \ref{ap:proof_equiv}. The reasoning holds in the context of any decoder whose success probability, $\mathbb{P} \left ( \left \{ \text{Success} \right \}\right )$, is monotonically increasing with the sample size $m$. This is the case for the procedures commonly used in \acrlong{cs}.
+
+To begin, $\mathbb{P} \left ( \left \{ \text{Success} \right \}\right )$ when sampling \emph{without} replacement can only be larger than the corresponding success probability when sampling \emph{with} replacement when we have the same number of measurements in both settings. The \acrshort{ber} model is without replacement, but produces a \emph{random} number of measurements. The tails of this distribution allow the redundant \acrshort{cswr} model to ``catch-up'', as long as the number of redundant samples in the latter is slightly larger than the average produced by \acrshort{ber}. Ultimately the two models, \acrshort{cswr} and \acrshort{ber}, need a similar number of measurements to reach the same recovery success probability.
+
+A related discussion comparing the use of sampling with or without replacement can be found in Gross and Nesme~\cite{gross2010}, grounded on a classical moment domination result by Hoeffding \cite{hoeffding1963}.
+
+
+\section{Summary}
+
+We can reason about signal processing on graphs by defining appropriate vector spaces and linear operators therein that depend on the connections between vertices. Fundamentally, signal variations across edges can be measured a map $\mathbf{x} \mapsto \mathbf{Dx}$. Piecewise-constant graph signals are the ones that have few edge variations, or a ``small'' jump-set. The size of the jump-set can be measured by $\ell_p$ semi-norms induced by the graph gradient operator, allowing us to assess the degree to which a signal can be deemed piecewise-constant. Table \ref{tab:concepts-graph-gradient} is a record of important Graph Signal Processing objects that are often referenced in the following chapters.
+
+\begin{table}[H]
+    \begin{center}
+        \begin{tabular}{ l l }
+            \hline\noalign{\smallskip}
+            Concept & Notes \\[.1cm]
+            \hline\noalign{\smallskip}
+            Number of vertices & $n$ \\[.25cm]
+            Number of edges & $N$ \\[.25cm]
+            Jump-set of a signal $\mathbf{x}$ & $\mathcal{S} := \operatorname{supp}\left ( \mathbf{Dx} \right )$ \\[.25cm]
+            $\operatorname{null} \left ( \mathbf{D} \right )$ & Contains at least $\operatorname{span}(\mathbf{1})$ \\[.25cm]
+            \acrfull{gtv} & $\| \mathbf{Dx} \|_1 = \sum_{i,j} \sqrt{\mathbf{W}_{ji}} \left | \mathbf{x}[j] - \mathbf{x}[i] \right |$\\[.25cm]
+            Dirichlet form & $\| \mathbf{Dx} \|_2^2 = \sum_{i,j} \mathbf{W}_{ji} \left ( \mathbf{x}[j] - \mathbf{x}[i] \right )^2$\\[.1cm]
+            \hline
+        \end{tabular}
+    \end{center}
+    \caption[Summary of objects related to the graph gradient operator]{Summary of objects related to the graph gradient operator $\mathbf{D} \in \mathbb{R}^{N \times n}$.}
+    \label{tab:concepts-graph-gradient}
+\end{table}
+
+Vertex sampling is also a linear operation, $\mathbf{x} \mapsto \mathbf{Ax}$, where the rows of $\mathbf{A}$ are taken from the standard basis of $\mathbb{R}^{n}$, indexed by a sampling set $\Omega \subset [n]$. A sampling design is a choice of a vector $\bm{\pi} = (\pi_i, \dots, \pi_n)$ that determines the inclusion probabilities of elements of $[n]$ into $\Omega$. I introduced two models for independent random sampling, named \acrshort{ber} and \acrshort{cswr}, that are almost equivalent in the context of recovery problems. Their use in chapters \ref{ch:lower_bound_min_gain} and \ref{ch:inexact_dual}, respectively, is dictated by convenience. Table \ref{tab:sampling-models} is a reference point for some properties of these two sampling models.
+
+\begin{table}[H]
+    \begin{center}
+        \begin{tabular}{ l l l l }
+            \hline\noalign{\smallskip}
+            Model & Rows of $\mathbf{A}$ & Repeated samples & Number of samples ($|\Omega|$) \\[.1cm]
+            \hline\noalign{\smallskip}
+            \acrshort{ber} & independent & no & $m \in \left[ \frac{1}{2}\bm{\pi}^{\top} \mathbf{1}, \frac{3}{2}\bm{\pi}^{\top} \mathbf{1} \right ]$ \acrshort{whp} \\[.25cm]
+            \acrshort{cswr} & independent & yes & $m$ deterministic \\[.1cm]
+            \hline
+        \end{tabular}
+    \end{center}
+    \caption[Summary of sampling models]{Summary of sampling models used to construct the measurement matrix $\mathbf{A}$ from a random (multi-)set of integers $\Omega \subset [n]$.}
+    \label{tab:sampling-models}
+\end{table}
+
+\clearpage
+
+\begin{subappendices}
+    \section{``Equivalence'' of sampling models}\label{ap:proof_equiv}
+    \input{main/proofs/proof-equiv-sampling-models.tex}
+\end{subappendices}

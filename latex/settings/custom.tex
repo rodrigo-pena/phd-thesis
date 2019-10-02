@@ -1,0 +1,114 @@
+%%%%%%%%%%%%%%%%%%%
+% Custom Packages %
+%%%%%%%%%%%%%%%%%%%
+
+\usepackage{algorithm}
+\usepackage{algpseudocode}
+\usepackage[fleqn]{amsmath}
+\usepackage{amsfonts}
+\usepackage{amssymb}
+\usepackage{amsthm}
+\usepackage[titletoc, title, header]{appendix}
+\usepackage{bm}
+\usepackage{chngcntr}
+\usepackage{imakeidx}
+\usepackage{import}
+\usepackage[acronyms,nopostdot,nonumberlist,nogroupskip,toc,sort=standard]{glossaries}
+\usepackage{glossary-tree}
+\usepackage{glossary-mcols}
+\usepackage{mathrsfs}
+\usepackage{pgf,tikz,pgfplots}
+\usepackage{tabularx}
+\usepackage{wrapfig}
+
+\usepackage{pdflscape}
+\usepackage{afterpage}
+
+% Uncomment this to show the page geometry lines
+%\usepackage[showframe]{geometry}
+
+%%%%%%%%%%%%%%%%%%%
+% Custom Snippets %
+%%%%%%%%%%%%%%%%%%%
+
+\newcommand{\dcone}{\mathcal{D}(\|D \cdot\|_1, x)}
+\newcommand{\V}{\mathcal{V}}
+\newcommand{\E}{\mathcal{E}}
+\newcommand{\mean}[1]{\mathop{\overline{#1}}}
+\newcommand{\comment}[1]{\texttt{(#1)}}
+\newcommand{\redcomment}[1]{\textcolor{red}{#1}}
+\newcommand{\polar}{^{\mathsf{o}}}
+\newcommand{\etal}{\textit{et al.}}
+\newcommand{\ie}{\textit{i.e.,}}
+
+\DeclareUnicodeCharacter{00A0}{~}
+
+\renewcommand{\quote}[3][.5\textwidth]{
+    \hfill
+    \begin{minipage}{#1}
+        #2
+        \begin{flushright}
+            --- #3
+        \end{flushright}
+    \end{minipage}
+    \vspace{2cm}
+}
+
+% glossaries
+\newglossary[sbg]{symbol}{sbd}{sbn}{Symbols}
+\makeglossaries{}
+\makeindex[columns=2, title=Index, intoc]
+\loadglsentries{head/acronyms}
+\loadglsentries{head/symbols}
+
+% ams
+\newtheorem{theorem}{Theorem}[section]
+\newtheorem{corollary}{Corollary}[theorem]
+\newtheorem{lemma}[theorem]{Lemma}
+\newtheorem{proposition}{Proposition}[section]
+
+\theoremstyle{definition}
+\newtheorem{definition}{Definition}[section]
+\newtheorem{example}{Example}[section]
+
+\theoremstyle{remark}
+\newtheorem*{remark}{Remark}
+\newtheorem*{claim}{Claim}
+
+
+% pf2 package
+\let\proof\relax
+\let\endproof\relax
+\let\qed\relax
+\usepackage{pf2} % Must come after the previous 3 commands
+\pflongindent
+
+% tikz
+\usetikzlibrary{arrows.meta}
+\usetikzlibrary{calc}
+\usetikzlibrary{graphs}
+\usetikzlibrary{positioning}
+\pgfplotsset{compat=1.14}
+
+
+% epfl visual identity
+\definecolor{epfl-rouge}{HTML}{FF0000}
+\definecolor{epfl-groseille}{HTML}{B51F1F}
+\definecolor{epfl-leman}{HTML}{00A79F}
+\definecolor{epfl-canard}{HTML}{007480}
+\definecolor{epfl-ardoise}{HTML}{413D3A}
+\definecolor{epfl-perle}{HTML}{CAC7C7}
+
+% appendices
+
+%\AtBeginEnvironment{subappendices}{% Start of subappendices environment
+%\chapter*{Appendices}
+%\addcontentsline{toc}{chapter}{Appendices}
+%\counterwithin{figure}{section}
+%\counterwithin{table}{section}
+%}
+
+%\AtEndEnvironment{subappendices}{%% End of subappendices environment
+%\counterwithout{figure}{section}
+%\counterwithout{table}{section}
+%}

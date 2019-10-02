@@ -1,8 +1,6 @@
 # phd-thesis
 
-## About
-
-All the code required to reproduce the contents in my Ph.D. thesis at [EPFL][epfl].
+All the code required to reproduce the contents in my Ph.D. thesis at [EPFL][epfl]. You can find its PDF file here.
 
 
 

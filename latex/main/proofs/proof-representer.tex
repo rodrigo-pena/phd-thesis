@@ -1,0 +1,308 @@
+Throughout this appendix, we will consider problems of the type
+\begin{equation}
+    \mathcal{M}_p = \underset{\mathbf{z} \in \mathbb{R}^{n}}{\min} \| \mathbf{D z} \|_p^p \text{ such that } \mathbf{Az} \in \mathcal{C} \tag{\ref{eq:lp_reg_compact_set}},
+\end{equation}
+with $p \geq 1$, and assume that
+\begin{align}
+    \tag{A1} \label{ass:representer_null} \operatorname{null} \left ( \mathbf{D} \right ) \cap \operatorname{null} \left ( \mathbf{A} \right ) = \{ \mathbf{0} \}\\
+    \tag{A2} \label{ass:representer_compact_convex} \mathcal{C} \subset \mathbb{R}^{m} \text{ is compact and convex} \\
+    \tag{A3} \label{ass:representer_feasible} \mathbf{A}^{-1}(\mathcal{C}) := \{\mathbf{z} \in \mathbb{R}^{n}: \mathbf{Az} \in \mathcal{C}\} \text{ is non-empty}.
+\end{align}
+The representer theorems I will prove are based on the work of Unser~\etal~\cite{unser2016}, but here I extend their results to operators $\mathbf{D}$ without a right-inverse.~\footnote{A matrix has a right inverse if and only if it represents a surjective linear map. Our graph gradient operator, $\mathbf{D} \in \mathbb{R}^{N \times n}$, is not guaranteed to have a right inverse because $N > n$ in general --- hence $\mathbf{D}$ cannot represent a surjective map.} The first basic fact that I need to establish is the following characterization of the sets $\mathcal{M}_p$, for $p \geq 1$. It follows the reasoning of Unser~\etal~\cite[Lemma 20]{unser2016}.
+
+\begin{lemma}\label{lem:nonempty-convex-compact}
+    For any $p \geq 1$, $\mathcal{M}_p$ is a non-empty, convex, and compact subset of $\mathbb{R}^{n}$.
+\end{lemma}
+
+The proof relies relies on features of the interactions between linear maps and convex, compact sets, as well as on properties of norms in finite-dimensional spaces. I begin by characterizing the pre-image $\mathbf{A}^{-1}(\mathcal{C})$. Then, I use the Bolzano-Weierstrass theorem to show that $\mathcal{M}_p$ is not empty. Finally, writing $\mathcal{M}_p$ as an intersection of ``well-behaved'' sets, we can conclude that it must be convex and compact.
+
+\begin{proof}
+
+    \pf\
+
+    \step{pf:closed}{
+        $\mathbf{A}^{-1}(\mathcal{C})$ is closed because $\mathcal{C}$ is closed and the linear map $L: \mathbf{z} \mapsto \mathbf{Az}$ is continuous.
+    }
+    \step{pf:convex}{
+        $\mathbf{A}^{-1}(\mathcal{C})$ is also convex, because the pre-image of a convex set $\mathcal{C}$ by a linear map is convex.
+    }
+    \step{}{
+        $\mathcal{M}_p$ is non-empty.
+    }
+        \begin{proof}
+            \pf\
+            \step{}{
+                For notation sake, let $\gamma := \underset{\mathbf{z} \in \mathbf{A}^{-1}(\mathcal{C})}{\inf} \| \mathbf{Dz}\|_p^p$
+            }
+            \step{}{
+                Let $(\mathbf{z}^{(i)})_{i \in \mathbb{N}}$ be a sequence of elements of $\mathbf{A}^{-1}(\mathcal{C})$ inducing a \emph{decreasing} sequence $(\| \mathbf{Dz}^{(i)}\|_p^p)_{i \in \mathbb{N}}$ of norms such that $\underset{i \to \infty}{\lim \, \inf} \| \mathbf{Dz}^{(i)}\|_p^p = \gamma$.
+            }
+            \step{}{
+                For each $i \in \mathbb{N}$, decompose $\mathbf{z}^{(i)}$ uniquely as $\mathbf{z}^{(i)} = \mathbf{D}^+ \mathbf{a}^{(i)} + \mathbf{b}^{(i)}$, where $\mathbf{a}^{(i)} = \mathbf{Dz}^{(i)}$ is an element of $\operatorname{range} \left( \mathbf{D}^\top \right)$ and $\mathbf{b}^{(i)}$ is an element of $\operatorname{null} \left ( \mathbf{D} \right )$.
+            }
+            \step{}{
+                The sequence $(\mathbf{a}^{(i)})_{i \in \mathbb{N}}$ is bounded, because $\|\mathbf{a}^{(i)}\|_p^p = \| \mathbf{Dz}^{(i)}\|_p^p \leq \| \mathbf{Dz}_{i-1}\|_p^p \leq \dots \leq \| \mathbf{Dz}_1 \|_p^p$.
+            }
+            \step{}{
+                The sequence $(\mathbf{b}^{(i)})_{i \in \mathbb{N}}$ is also bounded.
+            }
+                \begin{proof} \pf\
+                    To see this, note that assumption \ref{ass:representer_null}implies $\| \mathbf{b}^{(i)} \|_p^p \leq c \|\mathbf{Ab}^{(i)}\|_p^p$ for some positive constant $c > 0$. Then, compute
+                    \begin{align*}
+                        \| \mathbf{b}^{(i)} \|_p^p & \leq c \|\mathbf{Ab}^{(i)}\|_p^p \\
+                        & = c \|\mathbf{Az}^{(i)} - \mathbf{AD^+a}^{(i)}\|_p^p \\
+                        & \leq c \| \mathbf{Az}^{(i)} \|_2 + c \|\mathbf{AD^+a}^{(i)}\|_p^p.
+                    \end{align*}
+                    The left term on the \acrshort{rhs}, $\| \mathbf{Az}^{(i)} \|_p^p$, is bounded because $\mathbf{Az}^{(i)} \in \mathcal{C}$ and $\mathcal{C}$ is a compact set. The right term is bounded  because $\mathbf{a}^{(i)}$ is bounded and $\mathbf{AD}^+$ is a finite dimensional linear operator, hence bounded. \qedsymbol
+                \end{proof}
+            \step{}{
+                We can then extract a sub-sequence from $(\mathbf{z}^{(i)})_{i \in \mathbb{N}}$ that converges to some point $\mathbf{z}^{(\infty)} = \mathbf{D}^+ \mathbf{a}^{(\infty)} + \mathbf{b}^{(\infty)}$.
+            }
+                \begin{proof} \pf\
+                    Bolzano-Weierstrass theorem, using the boundedness of both $(\mathbf{a}^{(i)})_{i \in \mathbb{N}}$ and $(\mathbf{b}^{(i)})_{i \in \mathbb{N}}$ sequences. \qedsymbol
+                \end{proof}
+            \step{}{
+                The converging point $\mathbf{z}^{(\infty)}$ must satisfy $\| \mathbf{Dz}^{(\infty)}\|_p^p \leq \gamma$.
+            }
+                \begin{proof}
+                    \pf\ Indeed, $\| \mathbf{Dz}^{(\infty)}\|_p^p \leq \| \mathbf{Dz}^{(i)}\|_p^p$, for any $i \in \mathbb{N}$, due to the sequence \\ $(\| \mathbf{Dz}^{(i)}\|_p^p)_{i \in \mathbb{N}}$ being decreasing. Therefore, taking the limit on both sides of this inequality, $\mathbf{z}^{(\infty)}$ must satisfy $\| \mathbf{Dz}^{(\infty)}\|_p^p \leq \underset{\mathbf{z} \in \mathbf{A}^{-1}(\mathcal{C})}{\inf} \| \mathbf{Dz}\|_p^p =: \gamma$. \qedsymbol
+                \end{proof}
+            \step{}{
+                On the other hand, $\| \mathbf{Dz}^{(\infty)}\|_p^p \geq \underset{\mathbf{z} \in \mathbf{A}^{-1}(\mathcal{C})}{\inf} \| \mathbf{Dz}\|_p^p =: \gamma$ because $\mathbf{A}^{-1}(\mathcal{C})$ is closed, containing all limits of sequences of its elements.
+            }
+            \step{}{
+                $\| \mathbf{Dz}^{(\infty)}\|_p^p = \gamma$, so $\mathcal{M}_p$ contains at least one point, namely $\mathbf{z}^{(\infty)}$.
+            }
+            \qedsymbol
+        \end{proof}
+
+        \step{}{
+            Finally, I can show that $\mathcal{M}_p$ is both convex and compact.
+        }
+            \begin{proof}
+                \pf\
+                \step{}{
+                    Let $\mathcal{L}_p = \left \{\mathbf{z} \in \mathbb{R}^{n} : \| \mathbf{Dz}\|_p^p \leq \gamma \right \}$. We can write $\mathcal{M}_p$ as the intersection $\mathcal{M}_p = \mathcal{L}_p \cap \mathbf{A}^{-1}(\mathcal{C}) = \left \{ \left [ \mathcal{L}_p \cap \operatorname{range} \left( \mathbf{D} \right) \right ] \cap \mathbf{A}^{-1}(\mathcal{C}) \right \} \oplus \left \{ \left [ \mathcal{L} \cap \operatorname{null} \left( \mathbf{D} \right) \right ] \cap \mathbf{A}^{-1}(\mathcal{C}) \right\}$.
+                }
+                \step{}{
+                    $\mathcal{L}_p \cap \operatorname{range} \left( \mathbf{D} \right)$ is convex and compact because it is a norm ball in a subset of $\mathbb{R}^{n}$.
+                }
+                \step{}{
+                    Hence, $\left [ \mathcal{L}_p \cap \operatorname{range} \left( \mathbf{D} \right) \right ] \cap \mathbf{A}^{-1}(\mathcal{C})$ is both convex and compact, by virtue of being the intersection of two convex sets, one closed and the other compact.
+                }
+                \step{}{
+                    For the second term in the direct sum, consider splitting the feasible set as $\mathbf{A}^{-1}(\mathcal{C}) = \left [ \mathbf{A}^{-1}(\mathcal{C}) \cap \operatorname{range} \left( \mathbf{A}^\top \right) \right ] \oplus \left [ \mathbf{A}^{-1}(\mathcal{C}) \cap \operatorname{null} \left ( \mathbf{A} \right ) \right ]$. The first term is a one-to-one linear mapping from $\mathcal{C}$ to a set in $\mathbb{R}^{n}$. Therefore, the compactness of $\mathcal{C}$ implies the compactness of $\left [ \mathbf{A}^{-1}(\mathcal{C}) \cap \operatorname{range} \left( \mathbf{A}^\top \right) \right ]$. Moreover, the latter is a hyperplane slice of a convex set, so it is itself convex. As for the term $\left [ \mathbf{A}^{-1}(\mathcal{C}) \cap \operatorname{null} \left ( \mathbf{A} \right ) \right ]$, it is the empty set if $\mathbf{0} \notin \mathcal{C}$, or equal to $\operatorname{null} \left ( \mathbf{A} \right )$ otherwise.
+                }
+                \step{}{
+                    Since $\|\mathbf{Dz}\|_p^p = 0 \iff \mathbf{z} \in \operatorname{null} \left ( \mathbf{D} \right )$, we have the identity $\mathcal{L}_p \cap \operatorname{null} \left( \mathbf{D} \right) = \operatorname{null} \left ( \mathbf{D} \right )$. Thus, by assumption \ref{ass:representer_null},
+                    \begin{equation*}
+                        \left [ \mathcal{L}_p \cap \operatorname{null} \left( \mathbf{D} \right) \right ] \cap \left [ \mathbf{A}^{-1}(\mathcal{C}) \cap \operatorname{null} \left ( \mathbf{A} \right ) \right ] = \left \{
+                        \begin{matrix}
+                            \emptyset & \text{if } \mathbf{0} \notin \mathcal{C} \\
+                            \{ \mathbf{0} \} & \text{otherwise}.
+                        \end{matrix}
+                        \right.
+                    \end{equation*}
+                    In any case,
+                    \begin{align*}
+                        \left [ \mathcal{L}_p \cap \operatorname{null} \left( \mathbf{D} \right) \right ] \cap \mathbf{A}^{-1}(\mathcal{C}) & = \operatorname{null} \left( \mathbf{D} \right) \cap \left \{ \left [ \mathbf{A}^{-1}(\mathcal{C}) \cap \operatorname{range} \left( \mathbf{A}^\top \right) \right ] \oplus \left [ \mathbf{A}^{-1}(\mathcal{C}) \cap \operatorname{null} \left ( \mathbf{A} \right ) \right ] \right \}\\
+                        & = \operatorname{null} \left( \mathbf{D} \right) \cap \left [ \mathbf{A}^{-1}(\mathcal{C}) \cap \operatorname{range} \left( \mathbf{A}^\top \right) \right ],
+                    \end{align*}
+                    which is a hyperplane slice of a convex and compact set, thus also convex and compact.
+                }
+                \step{}{
+                    At last, we conclude that $\mathcal{M}_p$ is both convex and compact, because those properties are preserved under direct sum.
+                }
+                \qedsymbol
+            \end{proof}
+        \qedstep
+\end{proof}
+
+
+\subsection{Proof of Theorem \ref{thm:l1_representer}}\label{ap:representer_l1}
+
+Let me restate below an informal reminder of the this section's goal.
+
+\begin{claim}
+    The extreme points $\mathbf{z}^\star$ of $\mathcal{M}_1$ are of the form $\mathbf{z}^\star = \mathbf{D}^+ \mathbf{a}^\star + \mathbf{b}^\star$, where $\mathbf{a}^\star$ has at most $m$ non-zero coordinates, and $\mathbf{b}^\star \in \operatorname{null} \left ( \mathbf{D} \right )$.
+\end{claim}
+
+The main tool we will need is the next lemma.
+
+\begin{lemma}\label{lem:l1_sparse_extreme}
+    Let $\mathbf{D}(\mathbf{A}^{-1}(\mathcal{C})) := \{ \mathbf{Dz} \in \mathbb{R}^{N} : \mathbf{Az} \in \mathcal{C} \subset \mathbb{R}^{m} \}$. The extreme points of the set
+    \begin{equation}
+        \widetilde{\mathcal{M}_1} := \underset{\mathbf{a} \in \mathbf{D}(\mathbf{A}^{-1}(\mathcal{C}))}{\min} \| \mathbf{a} \|_1
+    \end{equation}
+    have at most $m$ non-zero coefficients.
+\end{lemma}
+
+The proof can be deduced from \cite[Theorem 6]{unser2016}, but I give the full argument here for completeness.
+
+\begin{proof}
+    \pf\
+    \step{}{
+        First of all, $\widetilde{\mathcal{M}_1}$ is non-empty, convex and compact. This is a consequence of Lemma \ref{lem:nonempty-convex-compact}, with the linear transformation $\mathbf{z} \mapsto \mathbf{Dz}$ mapping $\mathcal{M}_1$ to $\widetilde{\mathcal{M}_1}$.
+    }
+    \step{}{
+        By the Krein-Milman theorem, $\widetilde{\mathcal{M}_1}$ is then the closed convex hull of its extreme points.
+    }
+    \step{}{
+        Let $\mathbf{a}^\star$ be one such extreme point, chosen arbitrarily. I will show that $\| \mathbf{a}^\star \|_0 \leq m$, implying the main claim.
+    }
+        \begin{proof} \pf\
+        \step{}{
+            For notation sake, let $\gamma := \underset{\mathbf{a} \in \mathbf{D}(\mathbf{A}^{-1}(\mathcal{C}))}{\min} \| \mathbf{a} \|_1$, so that $\|\mathbf{a}^\star\|_1 = \gamma$.
+        }
+        \step{}{
+            Prooceed by contradiction, assuming that $\| \mathbf{a}^\star \|_0 \geq m + 1$. Without loss of generality, we can say that $\{\mathbf{a}^{\star}_j\}_{j = 1}^{m+1}$ forms a set of non-zero coordinates of $\mathbf{a}^\star$.
+        }
+        \step{}{
+            Define a new vector $\mean{\mathbf{a}} := \mathbf{a}^\star - \sum_{j=1}^{m+1} \mathbf{a}^{\star}_j \mathbf{e}_j$, where $\{\mathbf{e}_j\}_{j=1}^N$ forms the standard basis in $\mathbb{R}^{N}$. Note that by construction $\mean{\mathbf{a}}$ and $\mathbf{a}^\star$ have disjoint supports.
+        }
+        \step{}{
+            Now, for each $j \in [m+1]$, define $\mathbf{v}_j := \mathbf{AD}^+(\mathbf{a}^{\star}_j \mathbf{e}_j) \in \mathbb{R}^{m}$. Since any collection of $m+1$ vectors in $\mathbb{R}^{m}$ is linearly dependent, there must exist constants $c_1, c_2, \dots, c_{m+1}$ for which $\sum_{j=1}^{m+1} c_j \mathbf{v}_j = \mathbf{0}$.
+        }
+        \step{}{
+            Using these same constants, define a new vector in $\mathbb{R}^{N}$ through $\mathbf{a}_0 := \sum_{j=1}^{m+1} c_j \mathbf{a}^{\star}_j \mathbf{e}_j$. We already know that $\mathbf{a}^\star \in \mathbf{D}(\mathbf{A}^{-1}(\mathcal{C}))$, but we further remark that the perturbations $\mathbf{a}^\star - \varepsilon \mathbf{a}_0$ and $\mathbf{a}^\star + \varepsilon \mathbf{a}_0$ are also both in $\mathbf{D}(\mathbf{A}^{-1}(\mathcal{C}))$, for any $\varepsilon > 0$.
+        }
+            \begin{proof}
+                \pf\ $\mathbf{A D}^+ \mathbf{a}_0 = \sum_{j=1}^{m+1} c_j \mathbf{v}_j = \mathbf{0}$ by construction. Hence, $\mathbf{A D}^+ (\mathbf{a}^\star - \varepsilon \mathbf{a}_0) = \mathbf{A D}^+ \mathbf{a}^\star = \mathbf{A D}^+ (\mathbf{a}^\star + \varepsilon \mathbf{a}_0)$ for any $\varepsilon > 0$. \qedsymbol
+            \end{proof}
+        \step{}{
+            I now claim that $\sum_{j=1}^{m+1} c_j |\mathbf{a}^{\star}_j| = 0$, implying $\|\mathbf{a}^\star \pm \varepsilon \mathbf{a}_0\|_1 = \gamma$.
+        }
+            \begin{proof} \pf\
+                \step{}{
+                    Suppose otherwise that $\sum_{j=1}^{m+1} c_j |\mathbf{a}^{\star}_j| \neq 0$, and pick $\varepsilon \in \left (\frac{-1}{\underset{j \in [m+1]}{\max} |c_j|}, \frac{1}{\underset{j \in [m+1]}{\max} |c_j|} \right )$. Then either $\|(\mathbf{a}^\star - \varepsilon \mathbf{a}_0)\|_1 < \gamma$ or $\|(\mathbf{a}^\star + \varepsilon \mathbf{a}_0)\|_1 < \gamma$.
+                }
+                    \begin{proof} \pf\
+                        This follows by computing
+                        \begin{align*}
+                            \|(\mathbf{a}^\star \pm \varepsilon \mathbf{a}_0)\|_1 & = \left \| \mean{\mathbf{a}} + \sum_{j=1}^{m+1} (1 \pm \varepsilon c_j) \mathbf{a}^{\star}_j \mathbf{e}_j \right \|_1 \\
+                            & \underset{\text{disjoint support}}{=} \|\mean{\mathbf{a}}\|_1 + \sum_{j=1}^{m+1} |1 \pm \varepsilon c_j| |\mathbf{a}^{\star}_j|\\
+                            & \underset{\text{choice of } \varepsilon}{=} \|\mean{\mathbf{a}}\|_1 + \sum_{j=1}^{m+1} (1 \pm \varepsilon c_j) |\mathbf{a}^{\star}_j|\\
+                            & \underset{\text{reordering}}{=} \|\mathbf{a}\|_1 \pm \sum_{j=1}^{m+1} \varepsilon c_j |\mathbf{a}^{\star}_j|\\
+                            & = \gamma \pm \sum_{j=1}^{m+1} \varepsilon c_j |\mathbf{a}^{\star}_j|.~\qedsymbol
+                        \end{align*}
+                    \end{proof}
+                \step{}{
+                    But since $\gamma = \underset{\mathbf{a} \in \mathbf{D}(\mathbf{A}^{-1}(\mathcal{C}))}{\min} \| \mathbf{a} \|_1$ and we have established that both $\mathbf{a}^\star \pm \varepsilon \mathbf{a}_0$ belong to $\mathbf{D}(\mathbf{A}^{-1}(\mathcal{C}))$, the conclusion of the last step is absurd. Thus, \\ $\sum_{j=1}^{m+1} c_j |\mathbf{a}^{\star}_j| = 0$ and $\|\mathbf{a}^\star \pm \varepsilon \mathbf{a}_0\|_1 = \gamma$, as claimed.
+                }
+                \qedsymbol
+            \end{proof}
+        \step{}{
+            A direct consequence of $\|\mathbf{a}^\star \pm \varepsilon \mathbf{a}_0\|_1 = \gamma$ is then that $\mathbf{a}^\star \pm \varepsilon \mathbf{a}_0 \in \widetilde{\mathcal{M}_1}$
+        }
+        \step{}{
+            We have reached our contradiction: we are able to write $\mathbf{a}^\star$ as the convex combination $\mathbf{a}^\star = \frac{1}{2}(\mathbf{a}^\star + \varepsilon \mathbf{a}_0) + \frac{1}{2}(\mathbf{a}^\star - \varepsilon \mathbf{a}_0)$ of two points in $\widetilde{\mathcal{M}_1}$. Thus, $\mathbf{a}^\star$ \emph{cannot} be an extreme point of $\widetilde{\mathcal{M}_1}$.
+        }
+        \qedsymbol
+        \end{proof}
+    \qedstep
+        \begin{proof}
+            Any extreme point of $\widetilde{\mathcal{M}_1} \subset \mathbb{R}^{N}$ must have at most $m$ non-zero coordinates.
+        \end{proof}
+\end{proof}
+
+With Lemma \ref{lem:l1_sparse_extreme} at hand, I am finally ready to prove Theorem \ref{thm:l1_representer}.
+
+\begin{proof}
+
+    \textsc{Proof of Theorem \ref{thm:l1_representer}:}\
+    \step{}{
+        The extreme points $\mathbf{z}^\star$ of $\mathcal{M}_1$ satisfy the equation $\mathbf{D z}^\star = \mathbf{a}^\star$, where $\mathbf{a}^\star$ has at most $m$ non-zero coefficients.
+    }
+        \begin{proof} \pf\
+            Applying the change of variable $\mathbf{D z} = \mathbf{a}$, call on Lemma \ref{lem:l1_sparse_extreme} and realize that the extreme points of $\mathcal{M}_1$ are mapped to the extreme points of $\widetilde{\mathcal{M}_1}$ through the linear transformation $\mathbf{z} \mapsto \mathbf{Dz}$.~\qedsymbol
+        \end{proof}
+    \step{}{
+        We can express any $\mathbf{z} \in \mathbb{R}^{n}$ as $\mathbf{z} = \mathbf{D}^+ \mathbf{D} \mathbf{z} + (\mathbf{I}_n - \mathbf{D}^+ \mathbf{D})\mathbf{z}$, by seeing $\mathbb{R}^{n}$ as a direct sum between $\operatorname{range} \left( \mathbf{D}^\top \right)$ and $\operatorname{null} \left ( \mathbf{D} \right )$.
+    }
+    \qedstep
+        \begin{proof}
+            Any extreme point of $\mathbf{z}^\star$ of $\mathcal{M}_1$ takes the form $\mathbf{z}^\star = \mathbf{D}^+ \mathbf{D} \mathbf{z}^\star + \mathbf{b}^\star = \mathbf{D}^+ \mathbf{a}^\star + \mathbf{b}^\star$, for some $\mathbf{b}^\star \in \operatorname{null} \left ( \mathbf{D} \right )$, and $\mathbf{a}^\star \in \mathbb{R}^{N}$ satisfying $\|\mathbf{a}^\star \|_0 \leq m$.
+        \end{proof}
+\end{proof}
+
+
+\subsection{Proof of Theorem \ref{thm:l2_representer}}\label{ap:representer_l2}
+
+This section's goal is the following:
+
+\begin{claim}
+    All the points in $\mathcal{M}_2$ are of the form $\mathbf{z}^\star = \mathbf{D}^+ \mathbf{DA}^\top \mathbf{v} + \mathbf{b}^\star$, where $\mathbf{v} \in \mathbb{R}^{m}$ is a fixed vector, and $\mathbf{b}^\star \in \operatorname{null} \left ( \mathbf{D} \right )$.
+\end{claim}
+
+This time I adapt \cite[Theorems 5, 9, 18]{unser2016} to use as our main tool.
+
+\begin{lemma}\label{lem:l2_unique_solution}
+    Let $\mathbf{D}(\mathbf{A}^{-1}(\mathcal{C})) := \{ \mathbf{Dz} \in \mathbb{R}^{N} : \mathbf{Az} \in \mathcal{C} \subset \mathbb{R}^{m} \}$. The set
+    \begin{equation}
+        \widetilde{\mathcal{M}_2} := \underset{\mathbf{a} \in \mathbf{D}(\mathbf{A}^{-1}(\mathcal{C}))}{\min} \| \mathbf{a} \|_2^2
+    \end{equation}
+    has a single point, $\mathbf{a}^\star$. Furthermore, this point is of the form $\mathbf{a}^\star = \mathbf{Dr}^\star$ for some $\mathbf{r} \in \operatorname{range} \left( \mathbf{A}^\top \right)$.
+\end{lemma}
+
+\begin{proof}
+    \pf\
+    \step{}{
+        The set $\mathbf{D}(\mathbf{A}^{-1}(\mathcal{C}))$ is convex and closed because it is a linear mapping of a convex and closed set $\mathcal{C}$. It is also non-empty because $\mathbf{A}^{-1}(\mathcal{C})$ is assumed to be non-empty.
+    }
+    \step{}{
+        The solution set $\widetilde{\mathcal{M}_2}$ contains thus a single point, namely the the orthogonal projection of the origin, $\mathbf{0}$, onto the convex set $\mathbf{D}(\mathbf{A}^{-1}(\mathcal{C}))$. Let us call this single point $\mathbf{a}^\star$.
+    }
+    \step{}{
+        Let $\mathbf{z}^\star$ be a point in $\mathbb{R}^{n}$ such that $\mathbf{a}^\star = \mathbf{D z}^\star$. Decompose this point as $\mathbf{z}^\star = \mathbf{r}^\star + \mathbf{n}^\star$, where $\mathbf{r}^\star \in \operatorname{range} \left( \mathbf{A}^\top \right)$ and $\mathbf{n}^\star \in \operatorname{null} \left ( \mathbf{A} \right )$. Then, we must have $\mathbf{n}^\star = \mathbf{0}$.
+    }
+        \begin{proof}
+            \pf\
+            \step{}{
+                By assumption \ref{ass:representer_null}, the orthogonal projection operators $\mathbf{D^+D}$ and $\mathbf{A^+A}$ commute.
+            }
+            \step{}{
+                This commutative property leads to the fact $\| \mathbf{Dz}^\star \|_2^2 = \| \mathbf{Dr}^\star \|_2^2 + \| \mathbf{Dn}^\star \|_2^2$. Indeed,
+                \begin{align*}
+                    \| \mathbf{Dz}^\star \|_2^2 & = \| \mathbf{Dr}^\star \|_2^2 + 2 \langle \mathbf{Dn}^\star, \mathbf{Dr}^\star \rangle +  \| \mathbf{Dn}^\star \|_2^2 \\
+                    & = \| \mathbf{Dr}^\star \|_2^2 + 2 \langle \mathbf{n}^\star, \mathbf{D^\top Dr}^\star \rangle + \| \mathbf{Dn}^\star \|_2^2 \\
+                    & \underset{\text{for some } \mathbf{z} \in \mathbb{R}^{n}}{=} \| \mathbf{Dr}^\star \|_2^2 + 2 \langle \mathbf{n}^\star, \mathbf{D^+ D A^+ A z}^\star \rangle + \| \mathbf{Dn}^\star \|_2^2 \\
+                    & \underset{\text{commutativity}}{=} \| \mathbf{Dr}^\star \|_2^2 + 2 \langle \underbrace{\mathbf{n}^\star}_{\in \operatorname{null} \left ( \mathbf{A} \right )}, \underbrace{\mathbf{A^+ A D^+ D z}^\star}_{\in \operatorname{range} \left( \mathbf{A^\top} \right)} \rangle + \| \mathbf{Dn}^\star \|_2^2 \\
+                    & = \| \mathbf{Dr}^\star \|_2^2 + 0 + \| \mathbf{Dn}^\star \|_2^2 \\
+                \end{align*}
+            }
+            \step{}{
+                The term $\mathbf{n}^\star$ must be in $\operatorname{null} \left ( \mathbf{D} \right )$.
+            }
+                \begin{proof} \pf\
+                    To see this, note that $\mathbf{A z}^\star = \mathbf{A r}^\star$, so $\mathbf{A r}^\star$ is also in $\mathbf{D}(\mathbf{A}^{-1}(\mathcal{C}))$. But because $\mathbf{D z}^\star$ is a norm minimizer, together with the result from the previous step, that $\|\mathbf{D r}^\star\|_2^2 \geq \|\mathbf{D z}^\star\|_2^2 = \| \mathbf{Dr}^\star \|_2^2 + \| \mathbf{Dn}^\star \|_2^2 \iff \| \mathbf{Dn}^\star \|_2^2 = 0$. Hence, $\mathbf{n}^\star \in \operatorname{null} \left ( \mathbf{D} \right )$.~\qedsymbol
+                \end{proof}
+            \step{}{
+                In summary, $\mathbf{n}^\star \in \operatorname{null} \left ( \mathbf{A} \right ) \cap \operatorname{null} \left ( \mathbf{D} \right )$. Calling upon assumption \ref{ass:representer_null} once again, we conclude that $\mathbf{n}^\star = \mathbf{0}$.
+            }
+            \qedsymbol
+        \end{proof}
+    \qedstep
+        \begin{proof}
+            The single point belonging to $\widetilde{\mathcal{M}_2}$ has the form $\mathbf{a}^\star = \mathbf{Dr}^\star$, for some $\mathbf{r}^\star \in \operatorname{range} \left( \mathbf{A}^\top \right)$.
+        \end{proof}
+\end{proof}
+
+Finally, proving Theorem \ref{thm:l2_representer} is very similar to proving Theorem \ref{thm:l1_representer}, but this time I call on Lemma \ref{lem:l2_unique_solution} instead of Lemma \ref{lem:l1_sparse_extreme}.
+
+\begin{proof}
+
+    \textsc{Proof of Theorem \ref{thm:l2_representer}:}\
+    \step{}{
+        Every point $\mathbf{z}^\star \in \mathcal{M}_2$ satisfies the equation $\mathbf{D z}^\star = \mathbf{DA}^\top \mathbf{v}$, for a fixed vector $\mathbf{v} \in \mathbb{R}^{m}$.
+    }
+        \begin{proof} \pf\
+            With the change of variable $\mathbf{D z} = \mathbf{a}$, apply Lemma \ref{lem:l2_unique_solution} and realize that the points of $\mathcal{M}_2$ are all mapped to the single point in $\widetilde{\mathcal{M}_2}$ through the linear transformation $\mathbf{z} \mapsto \mathbf{Dz}$.~\qed
+        \end{proof}
+    \step{}{
+        We can express any $\mathbf{z} \in \mathbb{R}^{n}$ as $\mathbf{z} = \mathbf{D}^+ \mathbf{D} \mathbf{z} + (\mathbf{I}_n - \mathbf{D}^+ \mathbf{D})\mathbf{z}$.
+    }
+    \qedstep
+        \begin{proof}
+            Any point of $\mathbf{z}^\star$ of $\mathcal{M}_2 \subset \mathbb{R}^{n}$ takes the form $\mathbf{z}^\star = \mathbf{D}^+ \mathbf{D} \mathbf{z}^\star + \mathbf{b}^\star = \mathbf{D}^+ \mathbf{DA}^\top \mathbf{v} + \mathbf{b}^\star$, for a fixed vector $\mathbf{v} \in \mathbb{R}^{m}$, and some $\mathbf{b}^\star \in \operatorname{null} \left ( \mathbf{D} \right )$.
+        \end{proof}
+\end{proof}

@@ -1,0 +1,51 @@
+Here I adapt \cite[Lemma 4.1]{krahmer2019}, where Krahmer and St\"{o}ger characterize the descent cone of the matrix spectral norm. But first, let me precise the notion of polarity for cones.
+
+\begin{definition}[Polar cone]\label{def:polar_cone}
+    Let $\mathcal{K} \subset \mathbb{R}^{n}$ be a cone. The corresponding polar cone, denoted $\mathcal{K}^{\mathsf{o}}$, is the set
+    \begin{equation}
+        \mathcal{K}^{\mathsf{o}} := \{ \mathbf{v} \in \mathbb{R}^{n} : \langle \mathbf{v}, \mathbf{u} \rangle \leq 0, \forall \mathbf{u} \in \mathcal{K}\}.
+    \end{equation}
+\end{definition}
+
+I will say that a vector $\mathbf{v}$ is polar to a set $\mathcal{S}$ if $\langle \mathbf{v}, \mathbf{s}\rangle \leq 0, \forall \mathbf{s} \in \mathcal{S}$. Similarly, $\mathbf{v}$ is polar to another vector $\mathbf{u}$ if $\langle \mathbf{v}, \mathbf{u}\rangle \leq 0$.
+
+\begin{proof}
+    \pf\ The desired expressions are a consequence of the subdifferential $\partial \|\mathbf{D} \cdot\|_1(\mathbf{x})$ being polar to $\mean{\mathcal{D}(\| \mathbf{D} \cdot \|_1, \mathbf{x})}$ \cite[Thm. 23.7]{rockafellar1970}. Recall from Proposition \ref{prop:character_subdifferential_l1} that $\mathbf{v} \in \partial \|\mathbf{D} \cdot\|_1(\mathbf{x})$ if and only if $\mathbf{v} = \mathbf{D}^\top \operatorname{sign} \left ( \mathbf{Dx} \right ) + \mathbf{D}^\top (\mathbf{I}_N - \mathbf{P}_{\mathcal{S}}) \mathbf{w}$, for some $\mathbf{w} \in \mathbb{R}^{N}$ satisfying $\left\|(\mathbf{I}_N - \mathbf{P}_{\mathcal{S}}) \mathbf{w}\right\|_\infty \leq 1$. We then split the argument in two parts:
+
+    \step{}{
+        ``$\impliedby$'': If $\left\langle \operatorname{sign} \left ( \mathbf{Dx} \right ), \mathbf{Du} \right\rangle \leq -\left\|(\mathbf{I}_N - \mathbf{P}_{\mathcal{S}}) \mathbf{Du}\right\|_1$ then $\mathbf{u} \in \mean{\mathcal{D}(\| \mathbf{D} \cdot \|_1, \mathbf{x})}$.
+    }
+        \begin{proof}
+            \pf\ For any given $\mathbf{v} \in \mean{\mathcal{D}(\| \mathbf{D} \cdot \|_1, \mathbf{x})}\polar$, directly compute
+            \begin{align*}
+                \langle \mathbf{v}, \mathbf{u} \rangle & = \left\langle \mathbf{D}^\top \operatorname{sign} \left( \mathbf{Dx} \right) + \mathbf{D}^\top (\mathbf{I}_N - \mathbf{P}_{\mathcal{S}}) \mathbf{w}, \mathbf{u} \right\rangle \\
+                & = \left\langle \operatorname{sign} \left ( \mathbf{Dx} \right ), \mathbf{Du} \right\rangle + \left\langle (\mathbf{I}_N - \mathbf{P}_{\mathcal{S}}) \mathbf{w}, \mathbf{Du} \right \rangle \\
+                & \leq \left\langle \operatorname{sign} \left ( \mathbf{Dx} \right ), \mathbf{Du} \right\rangle + \left\|(\mathbf{I}_N - \mathbf{P}_{\mathcal{S}}) \mathbf{Du}\right\|_1 \cdot \underbrace{\left\|(\mathbf{I}_N - \mathbf{P}_{\mathcal{S}}) \mathbf{w}\right\|_\infty}_{\leq 1} & \comment{H\"older inequality} \\
+                & \leq 0. & \comment{Assumption}
+            \end{align*}
+            Therefore, $\mathbf{u}$ is polar to $\mean{\mathcal{D}(\| \mathbf{D} \cdot \|_1, \mathbf{x})}\polar$, meaning $\mathbf{u} \in \mean{\mathcal{D}(\| \mathbf{D} \cdot \|_1, \mathbf{x})}$.\hfill\qedsymbol
+        \end{proof}
+
+    \step{}{
+        ``$\implies$'': If $\mathbf{u} \in \mean{\mathcal{D}(\| \mathbf{D} \cdot \|_1, \mathbf{x})}$ then $\left\langle \operatorname{sign} \left ( \mathbf{Dx} \right ), \mathbf{Du} \right\rangle \leq -\left\|(\mathbf{I}_N - \mathbf{P}_{\mathcal{S}}) \mathbf{Du}\right\|_1$.
+    }
+        \begin{proof}
+            \pf\
+            \step{}{
+                Pick a vector $\mathbf{w} \in \mathbb{B}_{\infty}^N$ for which $\langle \mathbf{w}, (\mathbf{I}_N - \mathbf{P}_{\mathcal{S}}) \mathbf{Du}\rangle = \left\|(\mathbf{I}_N - \mathbf{P}_{\mathcal{S}}) \mathbf{Du}\right\|_1$. Then $\mathbf{v} = \mathbf{D}^\top \operatorname{sign} \left ( \mathbf{Dx} \right ) + \mathbf{D}^\top (\mathbf{I}_N - \mathbf{P}_{\mathcal{S}}) \mathbf{w}$ is a valid subgradient in $\partial \|\mathbf{D} \cdot\|_1(\mathbf{x})$, because
+                \begin{equation*}
+                    \left\|(\mathbf{I}_N - \mathbf{P}_{\mathcal{S}}) \mathbf{w}\right\|_\infty \leq \underbrace{\left\|(\mathbf{I}_N - \mathbf{P}_{\mathcal{S}})\right\|_\infty}_{\leq 1} \cdot \underbrace{\left\|\mathbf{w}\right\|_\infty}_{\leq 1} \leq 1.
+                \end{equation*}
+            }
+            \step{}{
+                Since $\mathbf{v} \in \partial \|\mathbf{D} \cdot\|_1(\mathbf{x})$ is polar to $\mean{\mathcal{D}(\| \mathbf{D} \cdot \|_1, \mathbf{x})}$, we conclude that
+                \begin{align*}
+                    0 & \geq \langle \mathbf{u}, \mathbf{v} \rangle & \comment{Assumption} \\
+                    & = \left\langle \mathbf{D}^\top \operatorname{sign} \left( \mathbf{Dx} \right) + \mathbf{D}^\top (\mathbf{I}_N - \mathbf{P}_{\mathcal{S}}) \mathbf{w}, \mathbf{u} \right\rangle \\
+                    & = \left\langle \operatorname{sign} \left ( \mathbf{Dx} \right ), \mathbf{Du} \right\rangle + \left\|(\mathbf{I}_N - \mathbf{P}_{\mathcal{S}}) \mathbf{Du}\right\|_1. & \comment{Choice of $\mathbf{w}$}
+                \end{align*}
+            }
+            \qedsymbol
+        \end{proof}
+    \qedstep
+\end{proof}

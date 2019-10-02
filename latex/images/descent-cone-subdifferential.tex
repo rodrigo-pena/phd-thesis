@@ -1,0 +1,31 @@
+\begin{tikzpicture}[line cap=round, line join=round, scale=0.85, every node/.style={scale=0.85}]
+    % frame
+    \clip (5,5) circle (5);
+
+    % origin
+    \draw[fill=black] (5,5) circle (2pt);
+    \draw[color=black] (5.0,5.3) node {$\mathbf{0}$};
+
+    % null space
+    \draw[line width=1pt, color=epfl-ardoise] (0,10) -- (10,0);
+    \node at (6.5,3.5) [rotate=-45, anchor=south] {$\operatorname{null} \left ( \mathbf{A} \right )$};
+
+    % range
+    \draw[line width=1pt, color=epfl-ardoise] (0,0) -- (10,10);
+    \node at (6.5,6.5) [rotate=45, anchor=south] {$\operatorname{range} \left ( \mathbf{A} \right )$};
+
+    % descent cone
+    \fill[shift={(5,5)},line width=1pt,color=epfl-groseille,fill=epfl-groseille,fill opacity=0.2]
+    (0,0) -- (-90:5cm) arc (-90:-180:5cm) -- (0,0);
+    \draw[shift={(5,5)}, color=epfl-groseille] (-2.7,0.3) node {$\mathcal{D}( f, \mathbf{x})$};
+
+    % subdifferential
+    \fill[shift={(5,5)},line width=1pt,color=epfl-canard,fill=epfl-canard,fill opacity=0.2]
+    (0,0) -- (0:5cm) arc (0:90:5cm) -- (0,0);
+    \draw[shift={(5,5)}, color=epfl-canard] (2.7,-0.3) node {$\operatorname{cone}\left(\partial f(\mathbf{x})\right)$};
+
+    % sphere
+    \draw (5,5) circle (4);
+    \node at (6.5,0.75) {$\operatorname{bd}(\mathbb{B}_{q}^n)$};
+
+\end{tikzpicture}

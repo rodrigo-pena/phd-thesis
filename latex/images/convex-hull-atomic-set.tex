@@ -1,0 +1,55 @@
+\begin{tikzpicture}
+
+    % frame
+    \clip (1,1) circle (4);
+
+    % axes
+    %\draw[help lines, color=gray!30, dashed] (-5,-5) grid (5,5);
+
+    % atoms
+    \begin{scope}[every node/.style={circle, fill, color=black, scale=0.2, anchor=north east}]
+        \node (0) at (0,0) {$\mathbf{0}$};
+        \node (t1) at (3,3) {$\mathbf{t}_1$};
+        \node (t2) at (2,0) {$\mathbf{t}_2$};
+        \node (t3) at (0,-1) {$\mathbf{t}_3$};
+        \node (t4) at (-1,0) {$\mathbf{t}_4$};
+        \node (t5) at (0,2) {$\mathbf{t}_5$};
+    \end{scope}
+
+    % labels
+    \begin{scope}
+        \node[anchor=south west] at (0) {$\mathbf{0}$};
+        \node[anchor=south west] at (t1) {$\mathbf{t}_1$};
+        \node[anchor=north west] at (t2) {$\mathbf{t}_2$};
+        \node[anchor=north] at (t3) {$\mathbf{t}_3$};
+        \node[anchor=east] at (t4) {$\mathbf{t}_4$};
+        \node[anchor=south east] at (t5) {$\mathbf{t}_5$};
+    \end{scope}
+
+    % convex hull
+    \begin{scope}[every edge/.style={ultra thick, draw}, color=epfl-groseille]
+        \path[-] (t1) edge (t2);
+        \path[-] (t2) edge (t3);
+        \path[-] (t3) edge (t4);
+        \path[-] (t4) edge (t5);
+        \path[-] (t5) edge (t1);
+    \end{scope}
+
+    % descent cone from convex hull
+    \fill[color=epfl-groseille,fill=epfl-groseille, fill opacity=0.2]
+    (t1) to (0,-6) -- (-6,0) to (t1);
+
+    % a wider set
+    \begin{scope}[every edge/.style={ultra thick, draw}, color=epfl-canard]
+        \path[-] (t1) edge [bend left=15] (t2);
+        \path[-] (t2) edge [bend left=15] (t3);
+        \path[-] (t3) edge [bend left=15] (t4);
+        \path[-] (t4) edge [bend left=15] (t5);
+        \path[-] (t5) edge [bend left=15] (t1);
+    \end{scope}
+
+    % descent cone from wider set
+    \fill[color=epfl-canard,fill=epfl-canard, fill opacity=0.2]
+    (t1) to (3,-7) -- (-7,3) to (t1);
+
+\end{tikzpicture}

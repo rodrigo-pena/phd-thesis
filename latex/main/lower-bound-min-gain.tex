@@ -1,0 +1,334 @@
+\chapter{Direct certificates: measurement gain inside the descent cone}
+\label{ch:lower_bound_min_gain}
+
+In Chapter \ref{ch:recovery_convex} I hinted at how the geometry of the descent cone influences the correctness of the solutions to the \emph{interpolation} problem \eqref{eq:f_interpolation}. In this chapter, I will show which sense of narrowness in the descent cones can lead to robust recovery guarantees for \emph{regression} problems \eqref{eq:f_regression}, and in particular \eqref{eq:l1_regression}. Recall that the regression setting admits noisy measurements of the type $\mathbf{y} = \mathbf{Ax} + \mathbf{e}$ where we have a bound, $\|\mathbf{e}\|_q^q \leq \eta$, on the noise level.
+
+Notions of width appear as a consequence of translating the trivial intersection property from Theorem~\ref{thm:trivial_intersection_suffices} into something computable. This quantity is a positive lower bound on the measurement operator's gain restricted to the descent cone. I this lower bound a direct recovery certificate, in contrast to the dual certificates investigated in the next chapter.
+
+Strategies for lower bounding the minimum gain vary according to which random matrix plays the role of measurement operator. It is enlightening at first to imagine what would happen if we had Gaussian measurement vectors. Then, I introduce Mendelson's small-ball method as a potential path towards a direct certificate in our setting. Unfortunately, the ``spikiness'' of our coordinate-sampling matrices proves to be a burden down this road.
+
+The chapter finishes with an open question, but points towards a way to get a direct certificate for robust recovery in \eqref{eq:l1_regression}. A way that requires knowing more about the \emph{coordinate structure} of descent cones induced by the \acrshort{gtv} semi-norm. Ultimately, the sample complexity of \acrshort{gtv} decoders only gets a workable expression in Chapter \ref{ch:inexact_dual}.
+
+
+\section{A positive gain functional as a recovery certificate}
+
+We can quantify the the trivial intersection property in terms of any $q$-norm by noting that
+\begin{equation}
+    \mathcal{D}(f, \mathbf{x}) \cap \operatorname{null} \left ( \mathbf{A} \right ) = \{ \mathbf{0} \} \iff \|\mathbf{Au}\|_q^q > 0, \forall \mathbf{u} \in \mathcal{D}(f, \mathbf{x}) \setminus \{ \mathbf{0} \}.
+    \label{eq:trivial_intersect_equiv_lower_bound_gain}
+\end{equation}
+This motivates the definition of a minimum gain functional as a computable proxy for the property.
+
+\begin{definition}[Minimum $q$-gain]\label{def:min_q_gain}
+    For any $q \geq 1$, the minimum $q$-gain of a measurement operator $\mathbf{A}$, restricted to the descent cone $\mathcal{D}( f, \mathbf{x})$ is the quantity
+    \begin{equation}
+        \gamma_{\min}^{(q)} \left ( \mathcal{D}( f, \mathbf{x}), \mathbf{A} \right ) = \underset{\mathbf{u} \in \mathcal{D}(f, \mathbf{x}) \cap \operatorname{bd}(\mathbb{B}^{n}_q)}{\inf} \enspace \|\mathbf{A u}\|_q^q.
+    \end{equation}
+\end{definition}
+
+The \acrlong{rhs} of \eqref{eq:trivial_intersect_equiv_lower_bound_gain} now simply reads as $ \gamma_{\min}^{(q)} \left ( \mathcal{D}( f, \mathbf{x}), \mathbf{A} \right ) > 0$. Automatically, by Theorem~\ref{thm:trivial_intersection_suffices}, we conclude that a positive minimum $q$-gain yields the uniqueness of $\mathbf{x}$ as a solution of the \emph{interpolation} problem \eqref{eq:f_interpolation}. In the literature, $\sqrt{\gamma_{\min}^{(2)} \left ( \mathcal{D}( f, \mathbf{x}), \mathbf{A} \right )}$ is also known as simply ``minimum gain''~\cite{chandrasekaran2012}, or ``minimum conic singular value''~\cite{tropp2015a}. Rather than being a mere numeric translation of a geometric property, minimum gain functionals also inform on the robustness of convex recovery programs to noise.
+
+A \emph{regression} program of the type
+\begin{equation*}
+    \underset{\mathbf{z} \in \mathbb{R}^{n}}{\min} f(\mathbf{Dz}) \text{ subject to } \| \mathbf{Az - y} \|_q^q \leq \eta. \tag{P$f$-$\eta$}
+\end{equation*}
+recovers $\mathbf{x}$ robustly from $\mathbf{y} = \mathbf{Ax} + \mathbf{e}$ if any solution $\mathbf{z}^\star$ is as close to $\mathbf{x}$ as the noise $\mathbf{e}$ permits. Theorem \ref{thm:error_min_q_gain} shows how the distance between $\mathbf{z}^\star$ and $\mathbf{x}$ is inversely proportional to the minimum gain functional, and directly proportional to the noise level.
+
+\begin{theorem}[\protect{\cite[Prop. 2.2]{chandrasekaran2012}, \cite[Prop. 2.6]{tropp2015a}, \cite[~Thm. 4]{kabanava2015a}}]\label{thm:error_min_q_gain}
+    If $\gamma_{\min}^{(q)} \left ( \mathcal{D}( f, \mathbf{x}), \mathbf{A} \right ) > 0$ and $\|\mathbf{e}\|_q^q \leq \eta$, then any solution $\mathbf{z}^\star$ of problem \eqref{eq:f_regression} satisfies
+    \begin{equation}
+        \| \mathbf{z}^\star - \mathbf{x}\|_q^q \leq \frac{2 \eta}{\gamma_{\min}^{(q)} \left ( \mathcal{D}( f, \mathbf{x}), \mathbf{A} \right )}.
+    \end{equation}
+\end{theorem}
+
+Therefore, the larger $\gamma_{\min}^{(q)} \left ( \mathcal{D}( f, \mathbf{x}), \mathbf{A} \right )$, the more robust the corresponding decoder is. Theorem \ref{thm:error_min_q_gain} is a powerful result with a simple proof.
+
+\clearpage
+
+\begin{proof}
+    \pf\ A straightforward adaptation of the argument in \cite[~Theorem 4]{kabanava2015a}, connecting two separate inequalities to reach the claim. Let $\mathbf{z}^\star$ be some solution \eqref{eq:f_regression}.
+    \step{}{
+        $\| \mathbf{z}^\star - \mathbf{x}\|_q^q \leq \frac{\| \mathbf{A} (\mathbf{z}^\star - \mathbf{x})\|_q^q}{\gamma_{\min}^{(q)} \left ( \mathcal{D}( f, \mathbf{x}), \mathbf{A} \right )}$
+    }
+        \begin{proof}
+            \pf
+            \step{}{$f(\mathbf{\mathbf{z}^\star}) \leq f(\mathbf{\mathbf{x}})$, because $\mathbf{z}^\star$ is a solution of \eqref{eq:f_regression}.}
+            \step{}{Hence, $\mathbf{z}^\star - \mathbf{x} \in \mathcal{D}( f, \mathbf{x})$.}
+            \step{}{With $\mathbf{u} := \frac{1}{\| \mathbf{z}^\star - \mathbf{x}\|_q^q} \in \mathcal{D}(f, \mathbf{x}) \cap \mathbb{B}^{n}_q$, we conclude that $\gamma_{\min}^{(q)} \left ( \mathcal{D}( f, \mathbf{x}), \mathbf{A} \right ) \cdot \|\mathbf{u}\|_q^q \leq \|\mathbf{Au}\|_q^q$, by definition of the minimum $q$-gain.}~\qedsymbol
+        \end{proof}
+    \step{}{
+        $\| \mathbf{A} (\mathbf{z}^\star - \mathbf{x})\|_q^q \leq 2 \eta$.
+    }
+        \begin{proof}
+            \pf\ Just use the triangle inequality and the feasibility of both $\mathbf{z}^\star$ and $\mathbf{x}$:
+            \begin{align*}
+                \| \mathbf{A} (\mathbf{z}^\star - \mathbf{x})\|_q^q & = \| (\mathbf{Az}^\star - \mathbf{y}) - (\mathbf{Ax} - \mathbf{y})\|_q^q \\
+                & \leq \| \mathbf{Az}^\star - \mathbf{y} \|_q^q + \| \mathbf{Ax} - \mathbf{y}\|_q^q \\
+                & \leq \eta + \eta.
+            \end{align*}
+            \qedsymbol
+        \end{proof}
+    \qedstep{$\| \mathbf{z}^\star - \mathbf{x}\|_q^q \leq \frac{\| \mathbf{A} (\mathbf{z}^\star - \mathbf{x})\|_q^q}{\gamma_{\min}^{(q)} \left ( \mathcal{D}( f, \mathbf{x}), \mathbf{A} \right )} \leq \frac{2 \eta}{\gamma_{\min}^{(q)} \left ( \mathcal{D}( f, \mathbf{x}), \mathbf{A} \right )}.$}
+\end{proof}
+
+The dependence of $\|\mathbf{z}^\star - \mathbf{x}\|_q^q$ on the noise level is optimal, because all we know about $\mathbf{e}$ is the bound $\|\mathbf{e}\|_q^{q} \leq \eta$. Furthermore, Theorem~\ref{thm:trivial_intersection_suffices} from Chapter~\ref{ch:recovery_convex} becomes a mere corollary, reached by making $\eta \to 0$ in the recovery error bound. Hence there is no loss in considering only regression --- and not interpolation --- problems in this chapter.
+
+In \acrlong{cs}, a metric condition more commonly used than $\gamma_{\min}^{(q)} \left ( \mathcal{D}( f, \mathbf{x}), \mathbf{A} \right ) > 0$ is the \acrfull{rip}, demanding that
+\begin{equation}
+    c \|\mathbf{z}\|_q \leq \|\mathbf{Az}\|_q \leq C\|\mathbf{z}\|_q, \enspace 0< c < C, \enspace \forall \mathbf{z} \in \mathcal{D}( f, \mathbf{x}).
+    \label{eq:rip}
+\end{equation}
+But \acrlong{lhs} of \eqref{eq:rip} is equivalent to a positive minimum $q$-gain. The \acrshort{rip} is thus a stronger condition; too strong, in fact. Recent research~\cite{dirksen2018a} suggests that the \acrlong{rhs} of \eqref{eq:rip} gives rise to a \emph{gap} between the optimal and the \acrshort{rip}-certifiable numbers of measurements required in $\ell_1$-recovery problems. The reason for the gap seems to be that the inequality $\|\mathbf{Az}\|_q \leq C\|\mathbf{z}\|_q$ requires of $\mathbf{A}$ either very good concentration properties or a large number of rows~\cite{lecue2017}. Despite the popularity of the \acrshort{rip}, I will therefore focus only on how our measurement matrices can be made to satisfy $\gamma_{\min}^{(q)} \left ( \mathcal{D}( f, \mathbf{x}), \mathbf{A} \right ) > 0$.
+
+
+\section{Interlude: what is known for Gaussian measurements?}
+
+The properties of Gaussian random vectors are among the easiest to characterize theoretically. It is no surprise then that most of the work in convex recovery \cite{chandrasekaran2012, tropp2015a, vershynin2015a, plan2016, liaw2017, plan2017, vershynin2017} (in general), and \acrlong{cs} \cite{foucart2013, foygel2014, dirksen2018, dirksen2018a} (in particular) employ Gaussian measurement ensembles.
+
+Gordon's ``escape through a mesh'' theorem \cite[Cor. 1.2]{gordon1988} connects the minimum $2$-gain of  a Gaussian matrix~\footnote{By ``Gaussian matrix'' I always mean a random matrix whose entries are independent draws from the standard Gaussian distribution.} $\mathbf{A}$ to its number of rows (measurements) through the Gaussian width of the descent cone~\cite[Cor. 3.3]{chandrasekaran2012}. This is notion of conic width through the lens of Gaussian vectors can be defined as follows.
+
+\begin{definition}[Conic Gaussian width \protect{\cite[Def. 3.1]{tropp2015a}}]
+    Let $\mathcal{K} \subset \mathbb{R}^{n}$ be a cone and $\mathbf{g} \sim \mathcal{N}(\mathbf{0}, \mathbf{I}_n)$ be a standard Gaussian vector. The conic Gaussian width of $\mathcal{K}$ is the quantity
+    \begin{equation}
+        w(\mathcal{K}) := \mathbb{E} \left ( \underset{\mathbf{u} \in \mathcal{K} \cap \mathbb{S}^{n-1}}{\sup} \langle \mathbf{g}, \mathbf{u}\rangle \right ).
+    \end{equation}
+\end{definition}
+
+The conic Gaussian width is computed for the descent cones of some atomic norms in Chandrasekaran \etal~\cite{chandrasekaran2012}. The authors can then use those widths to arrive at the number of Gaussian measurements required for robust recovery in the respective decoders.
+
+More than that, it is even possible to precisely describe the phase transition undergone by the probability of recovery in convex recovery problems with Gaussian measurements. Such a result, derived from conic integral geometry tools, is presented next.
+
+\begin{theorem}[Phase transition \protect{\cite[Thm. II]{amelunxen2014}}]
+    \label{thm:phase_transition_gaussian}
+    Let $\mathbf{A} \in \mathbb{R}^{m \times n}$ be a random measurement matrix with \acrshort{iid} standard Gaussian entries. Define \texttt{Success} as the event that $\gamma_{\min}^{(q)} \left ( \mathcal{D}( f, \mathbf{x}), \mathbf{A} \right ) > 0$ takes place. Then, for any $\varepsilon \in (0, 1)$
+    \begin{equation}
+        \left \{
+        \begin{matrix}
+        m \leq w(\mathcal{D}(f, \mathbf{x}))^2 - \sqrt{8 n \log (4 / \varepsilon)} & \implies & \mathbb{P} \left ( \texttt{Success} \right ) \leq \varepsilon \\
+        m \geq w(\mathcal{D}(f, \mathbf{x}))^2 + \sqrt{8 n \log (4/\varepsilon)} + 1 & \implies & \mathbb{P} \left ( \texttt{Success} \right ) \geq 1 - \varepsilon \\
+        \end{matrix}
+        \right.
+    \end{equation}
+\end{theorem}
+
+In words, the theorem says that if the number of Gaussian measurements crosses a barrier of $\mathcal{O} \left( \sqrt{n} \right)$, centered at $w(\mathcal{D}(f, \mathbf{x}))^2$, then the probability of success suddenly jumps from almost zero to almost one. Sharp transition phenomena like this one are ubiquitous in high-dimensional geometry \cite{donoho2009a,oymak2018}. Below, I give a brief sketch of the proof of Theorem~\ref{thm:phase_transition_gaussian}, because it complements the geometric intuition from Chapter~\ref{ch:recovery_convex}.
+
+\clearpage
+
+\begin{proof}
+    \pfsketch\ If the entries of $\mathbf{A} \in \mathbb{R}^{m \times n}$ are \acrshort{iid} standard Gaussian, then the solutions to the equation $\mathbf{A u} = \mathbf{0}$ lie almost surely on an $(n - m)$-dimensional subspace of $\mathbb{R}^{n}$ drawn uniformly at random \footnote{More precisely, a subspace distributed according to the Haar measure on the Grassmannian manifold $\mathcal{G}_{(n-m),n}$ invariant to the group of rotations $\operatorname{SO}(n)$.}. The probability that a fixed cone, $\mathcal{D}(f, \mathbf{x})$, and a uniformly random subspace, $\operatorname{null} \left ( \mathbf{A} \right )$, intersect only at $\mathbf{0}$ is given by the kinematic formula studied in conic integral geometry~\cite{schneider2008}. The kinematic formula is expressed as a sum of certain ``conic intrinsic volumes'', which are shown to concentrate sharply around the square of the conic Gaussian width~\cite{amelunxen2014}~\footnote{Actually, Amelunxen \etal show that the conic intrinsic volumes concentrate around the so-called ``statistical dimension'' of the descent cone, $\delta(\mathcal{D}(f, \mathbf{x}))$. Nevertheless, this quantity is bounded as $w(\mathcal{D}(f, \mathbf{x}))^2 \leq \delta(\mathcal{D}(f, \mathbf{x})) \leq w(\mathcal{D}(f, \mathbf{x}))^2 + 1$~\cite[Prop. 10.2]{amelunxen2014}, so the Gaussian width and the statistical dimension are essentially equivalent for the purposes of characterizing the phase transition in Theorem~\ref{thm:phase_transition_gaussian}.}
+\end{proof}
+
+It is possible to rank different objectives $f$, from worst to best, according to how small is $w(\mathcal{D}(f, \mathbf{x}))$. This is one of the main benefits of pinpointing the sample complexity threshold so precisely. The width functional almost singlehandedly determines how many Gaussian measurements are needed for a successful recovery; and good objectives $f$ should require a small number of measurements. Lemma \ref{lem:upper_bound_conic_gaussian_width} shows a possible upper bound to the Gaussian width of the descent cone induced by the \acrshort{gtv} semi-norm.
+
+\begin{lemma}[Conic Gaussian width of $\mathcal{D}( \|\mathbf{D} \cdot \|_1, \mathbf{x})$ \protect{\cite{kabanava2015a}}]\label{lem:upper_bound_conic_gaussian_width}
+    Let $\mathcal{S} := \operatorname{supp}\left ( \mathbf{Dx} \right )$ be the support of $\mathbf{x}$ under the action of the analysis operator $\mathbf{D} \in \mathbb{R}^{N \times n}$, and define $\mathbf{P}_\mathcal{S}$ to be the orthogonal projection operator onto $\operatorname{span}\left \{ \mathbf{e}_i : i \in \mathcal{S} \right \}$. Then, with $\mathbf{g} \sim \mathcal{N}(\mathbf{0}, \mathbf{I}_n)$,
+    \begin{equation}
+        w(\mathcal{D}(\|\mathbf{D} \cdot \|_1, \mathbf{x}))^2 \leq n - \left [ \frac{\mathbb{E} \left ( \left \|(\mathbf{I}_N - \mathbf{P}_\mathcal{S}) \mathbf{Dg} \right \|_1 \right )}{\underset{\|\mathbf{z}\|_2 \leq 1}{\max} \| \mathbf{Dz} \|_1} \right ]^2.
+        \label{eq:upper_bound_gaussian_width_gtv}
+    \end{equation}
+\end{lemma}
+
+The \acrshort{gtv} is suited to recover a signal $\mathbf{x}$ from Gaussian measurements only if the descent cone $\mathcal{D}(\|\mathbf{D} \cdot \|_1, \mathbf{x})$ has small Gaussian width. Referring to Theorem~\ref{thm:phase_transition_gaussian} and inequality~\eqref{eq:upper_bound_gaussian_width_gtv}, the closer the term $$\left[ \mathbb{E} \left ( \left \|(\mathbf{I}_N - \mathbf{P}_\mathcal{S}) \mathbf{Dg} \right \|_1 \right ) \middle/ \underset{\|\mathbf{z}\|_2 \leq 1}{\max} \| \mathbf{Dz} \|_1 \right ]^2$$ is to $n$, the fewer observations are needed for a successful recovery. Among these terms, the only depending on $\mathbf{x}$ (through the jump-set $\mathcal{S}$) is $\mathbb{E} \left ( \left \|(\mathbf{I}_N - \mathbf{P}_\mathcal{S}) \mathbf{Dg} \right \|_1\right)$. Intuitively, this expectation is made larger the smaller the jump-set is. Therefore, even if measured by Gaussian vectors, piecewise-constant graph signals (due to their small jump-set) seem to be efficiently reconstructed by \acrshort{gtv} decoders.
+
+I should remark that there are currently better estimates for the Gaussian width of $\mathcal{D}(\|\mathbf{D} \cdot \|_1, \mathbf{x})$. The \emph{sampling-rate function} in Genzel~\etal~\cite{genzel2017a} gives a tighter upper bound than the one in Lemma~\ref{lem:upper_bound_conic_gaussian_width}. I avoided introducing this function for the sake of presentation, but the reader is invited to check Genzel~\etal's paper because it discusses interesting properties of $\ell_1$-analysis recovery programs in general.
+
+
+\section{The small-ball method and its shortcomings}
+
+If the measurement matrix $\mathbf{A}$ is not Gaussian, which tools from probability theory can still be used to show when the random object $\gamma_{\min}^{(q)} \left ( \mathcal{D}( f, \mathbf{x}), \mathbf{A} \right )$ is positive? The sampling matrices defined in Chapter~\ref{ch:graphs_signals_sampling} have \emph{independent} rows, so the minimum $q$-gain is a bounded function of many independent random variables. By concentration of measure, we could argue that $\gamma_{\min}^{(q)} \left ( \mathcal{D}( f, \mathbf{x}), \mathbf{A} \right )$ is then essentially constant~\cite{talagrand1996}, taking values that are almost always close to its mean. If $\mathbb{E} \left ( \gamma_{\min}^{(q)} \left ( \mathcal{D}( f, \mathbf{x}), \mathbf{A} \right ) \right ) > 0$ then the minimum $q$-gain would also be positive \emph{with high probability}.
+
+The downside of such concentration arguments is that they only work properly if the marginals of $\gamma_{\min}^{(q)} \left ( \mathcal{D}( f, \mathbf{x}), \mathbf{A} \right )$ have well-behaved tails. The small-ball method~\cite{mendelson2015, koltchinskii2015} was developed by Mendelson and others with the explicit goal of ``obtaining high-probability, uniform estimates in heavy-tailed situations'' \cite[p. 7]{mendelson2018}. The method's name comes from its main assumption, a positive lower bound on the small-ball probability $\inf_{\mathbf{u} \in \mathbb{S}^{n-1}} \enspace \mathbb{P} \left ( \left \{ |\langle \mathbf{u}, \mathbf{a} \rangle| > 0\right \}\right )$, where $\mathbf{a}$ is distributed as the rows of $\mathbf{A}$ in our context.
+
+\begin{definition}[Small-ball condition]\label{def:small-ball-condition}
+    A random vector $\mathbf{v}$ satisfies a small-ball condition with constants $\kappa > 0$ and $\delta \in  (0,1)$ if $\mathbb{P} \left ( \left \{  |\langle \mathbf{v}, \mathbf{u} \rangle| \geq \kappa \| \mathbf{u} \|_2 \right \}\right ) \geq \delta$.
+\end{definition}
+
+The small-ball condition can be linked to identifiability questions about linear functionals~\cite{lecue2018, lecue2017a}. Let $X$ be a random variable distributed according to some probability measure $\mu$. A class of linear functionals $\mathcal{F} = \{ \langle \mathbf{v}, \cdot \rangle : \mathbf{v} \in \mathcal{S}\}$ is \emph{identifiable} under $\mu$ if $\mathbb{P} \left ( \left \{ \langle \mathbf{v}, X \rangle \neq \langle \mathbf{u}, X \rangle \right \}\right ) > 0$ for every $\mathbf{u}, \mathbf{v} \in \mathcal{S}$. This is equivalent to assuming $\mathbb{P} \left ( \left \{ |\langle \mathbf{v}, X \rangle| > 0\right \}\right ) > 0$~\cite{lecue2018, lecue2017a}, which is a small-ball condition. This condition is thus weak in the sense that it simply demands the distribution of random vectors $X$ to be able to distinguish the functions in $\mathcal{F}$ --- with some non-zero probability.
+
+The first step towards the small-ball method is to see the minimum $q$-gain functional as the infimum of a non-negative empirical process induced by the rows of $\mathbf{A}$. Denote those rows by $\{ \mathbf{a}_i \}_{i=1}^m$, so as to unpack the $q$-norm in Definition~\ref{def:min_q_gain} as
+\begin{equation}
+    \gamma_{\min}^{(q)} \left ( \mathcal{D}( f, \mathbf{x}), \mathbf{A} \right ) = \underset{\mathbf{u} \in \mathcal{D}(f, \mathbf{x}) \cap \mathbb{B}^{n}_q}{\inf} \left ( \sum_{i=1}^{m} | \langle \mathbf{a}_i, \mathbf{u} \rangle |^q \right )^{1/q}.
+\end{equation}
+Then, a series of non-trivial manipulations of this expression ends up lower bounding the minimum $q$-gain by the difference of two functionals, one related to a small-ball condition and the other to a new notion of width for the descent cone $\mathcal{D}( f, \mathbf{x})$. The first of these terms is the \emph{marginal tail function}.
+
+\begin{definition}[Marginal tail function \protect{\cite{tropp2015a}}]\label{def:marginal_tail_function}
+    The marginal tail function, at level $\xi \geq 0$, of a random vector $\mathbf{v}$ restricted to a set $\mathcal{S}$ is defined as
+    \begin{equation}
+        Q_{\xi}(\mathbf{v}, \mathcal{S}) := \underset{\mathbf{u} \in \mathcal{S} \cap \mathbb{S}^{n-1}}{\inf} \mathbb{P} \left ( \left \{ | \langle \mathbf{v}, \mathbf{u}\rangle | \geq \xi \right \} \right )
+    \end{equation}
+\end{definition}
+
+The second functional appearing the the lower bound of $\gamma_{\min}^{(q)} \left ( \mathcal{D}( f, \mathbf{x}), \mathbf{A} \right )$ is the \emph{mean empirical width}. It has a similar expression to the conic Gaussian width of the previous section, but the expectation is taken with respect to a Rademacher average of the rows of $\mathbf{A}$.
+
+\begin{definition}[Mean empirical width \protect{\cite{tropp2015a}}]\label{def:mean_empirical_width}
+    Let $\varepsilon_1, \dots, \varepsilon_m$ be \acrshort{iid} copies of a Rademacher random variable~\footnote{That is, a $\{-1, 1\}$-valued random variable $\varepsilon$ for which $\mathbb{P} \left ( \left \{  \varepsilon = -1 \right \}\right ) = \mathbb{P} \left ( \left \{  \varepsilon = 1 \right \}\right ) = 1/2$.}. The mean empirical width of a set $\mathcal{S}$, as measured by $m$ \acrshort{iid} copies, $\mathbf{v}_1, \dots, \mathbf{v}_m$, of a random vector $\mathbf{v}$, is the quantity
+    \begin{equation}
+        W_{m}(\mathbf{v}, \mathcal{S}) := \mathbb{E} \left ( \underset{\mathbf{u} \in \mathcal{S} \cap \mathbb{S}^{n-1}}{\sup} \left \langle \underbrace{\frac{1}{\sqrt{m}} \sum_{i=1}^{m} \varepsilon_i \mathbf{v}_i}_{=:\mathbf{h}}, \mathbf{u} \right \rangle \right )
+    \end{equation}
+\end{definition}
+
+In passing, note that whenever $\mathbf{v}$ has bounded moments the Central Limit Theorem tells us that the distribution of $\mathbf{h}$ tends to $\mathcal{N}(0, \mathbb{E} \left ( \mathbf{v}\mathbf{v}^\top \right ))$ as $m \to \infty$. If, on top of that, $\mathbf{v}$ is isotropic~\footnote{$\mathbb{E} \left ( \mathbf{v}\mathbf{v}^\top \right )= \mathbf{I}_n$} then $W_{m}(\mathbf{v}, \mathcal{S})$ will approximate the Gaussian width $w(\mathcal{S})$ as the number of \acrshort{iid} copies of $\mathbf{v}$ grows. The functional $W_{m}$ is really then an empirical  analogous of the notion of set width induced by standard Gaussian vectors.
+
+The precise expression relating the minimum $q$-gain to the marginal tail function and the mean empirical width is given in Proposition \ref{prop:lower_bound_min_q_gain}. Its proof is taken from Tropp~\cite{tropp2015a}, but I reproduce it in Appendix \ref{ap:proof_small_ball} for the interested reader.
+
+\begin{proposition}[\protect{\cite[Prop. 5.1]{tropp2015a}}]\label{prop:lower_bound_min_q_gain}
+    Let the rows of $\mathbf{A} \in \mathbb{R}^{m \times n}$ be \acrshort{iid} copies of a random vector $\mathbf{a}$. Then, for any constants $\xi, t > 0$, and with probability at least $1 - \exp \left ( \frac{-t^2}{2} \right )$, we have the lower bound
+    \begin{equation}
+        \gamma_{\min}^{(q)} \left ( \mathcal{D}( f, \mathbf{x}), \mathbf{A} \right ) \geq m^{\frac{2 - q}{2q}} \left [ \xi \sqrt{m} Q_{\xi}(\mathbf{a}, \mathcal{S}) - 2 W_{m}(\mathbf{a}, \mathcal{S}) - \xi t \right ].
+    \end{equation}
+\end{proposition}
+
+This lower bound combines with Theorem \ref{thm:error_min_q_gain} to form in the following robust recovery result for regression problems of the type \eqref{eq:f_regression}.
+
+\begin{corollary}\label{cor:sample_complexity_small_ball_method}
+    Let the rows of $\mathbf{A} \in \mathbb{R}^{m \times n}$ be \acrshort{iid} copies of a random vector $\mathbf{a}$. Then, for any constants $\tau, \xi, t > 0$, any solution $\mathbf{z}^\star$ of problem \eqref{eq:f_regression} satisfies
+    \begin{equation}
+        \| \mathbf{z}^\star - \mathbf{x}\|_q^q \leq \frac{2 \eta}{\tau m^{(2 - q)/2q}},
+    \end{equation}
+    with probability at least $1 - \exp \left ( \frac{-t^2}{2} \right )$, provided that
+    \begin{equation}
+        m \geq \left ( \frac{2 W_{m}(\mathbf{a}, \mathcal{D}( f, \mathbf{x})) + \xi t + \tau}{\xi Q_{\xi}(\mathbf{a}, \mathcal{D}( f, \mathbf{x}))} \right )^2.
+        \label{eq:sample_complexity_small_ball_method}
+    \end{equation}
+\end{corollary}
+
+\begin{proof}
+    \pf\ Set $\tau := \xi \sqrt{m} Q_{\xi}(\mathbf{a}, \mathcal{S}) - 2 W_{m}(\mathbf{a}, \mathcal{S}) - \xi t$ as a lower-estimate for $\gamma_{\min}^{(q)} \left ( \mathcal{D}( f, \mathbf{x}), \mathbf{A} \right )$. This estimate is positive by condition \eqref{eq:sample_complexity_small_ball_method}. Then, combine Proposition \ref{prop:lower_bound_min_q_gain} and Theorem \ref{thm:error_min_q_gain}.~\qedsymbol
+\end{proof}
+
+In light of Corollary~\ref{cor:sample_complexity_small_ball_method}, the small-ball method prescribes the following three steps for uncovering the sample complexity of decoders like \eqref{eq:f_regression} whenever the measurement matrix has independent rows.
+\begin{algorithm}
+	\begin{algorithmic}[1]
+		\State{Bound $Q_{\xi}(\mathbf{a}, \mathcal{D}( f, \mathbf{x}))$ below.}
+        \State{Bound $W_{m}(\mathbf{a}, \mathcal{D}( f, \mathbf{x}))$ above.}
+        \State{Return $m$ according to Corollary \ref{cor:sample_complexity_small_ball_method}.}
+	\end{algorithmic}
+\end{algorithm}
+
+There are many tools for attacking the non-trivial steps 1 and 2. Unless we already know the constants in the small-ball condition satisfied by $\mathbf{a}$, a Paley-Zygmund inequality \cite[Prop. 3.3.1]{delapena1999} may lower-bound the marginal tail function. Generic chaining \cite[Ch. 2]{talagrand2014} or cone polarity \cite[Prop 7.1]{tropp2015a}, in turn, may majorize the mean empirical width by simpler objects. Indeed, in Appendix~\ref{ap:proof_empirical_width_l1} I adapt an argument of Tropp to arrive at the following estimate for the mean empirical width associated with the \acrshort{gtv} regression decoder \eqref{eq:l1_regression}. Notice its similarity to Lemma~\ref{lem:upper_bound_conic_gaussian_width}, even though the rows of $\mathbf{A}$ are not necessarily Gaussian random vectors.
+
+\begin{lemma}[Mean empirical width of $\mathcal{D}( \|\mathbf{D} \cdot \|_1, \mathbf{x})$]\label{lem:upper_bound_mean empirical_width}
+    Let $\mathcal{S} := \operatorname{supp}\left ( \mathbf{Dx} \right )$ be the support of $\mathbf{x}$ under the action of the analysis operator $\mathbf{D} \in \mathbb{R}^{N \times n}$, and define $\mathbf{P}_\mathcal{S}$ to be the orthogonal projection operator onto $\operatorname{span}\left \{ \mathbf{e}_i : i \in \mathcal{S} \right \}$. Recall that, given $m$ \acrshort{iid} copies of a random vector $\mathbf{a}$, we define $\mathbf{h} := \frac{1}{\sqrt{m}} \sum_{i=1}^{m} \varepsilon_i \mathbf{a}_i$ as their Rademacher average. Then, the following upper bound holds:
+    \begin{equation}
+        W_{m}(\mathbf{a}, \mathcal{D}( \|\mathbf{D} \cdot \|_1, \mathbf{x}))^2 \leq \mathbb{E} \left ( \|\mathbf{a}\|_2^2 \right ) - \left [ \frac{\mathbb{E} \left ( \left \|(\mathbf{I}_N - \mathbf{P}_\mathcal{S}) \mathbf{Dh} \right \|_1 \right )}{\underset{\|\mathbf{z}\|_2 \leq 1}{\max} \| \mathbf{Dz} \|_1} \right ]^2.
+        \label{eq:upper_bound_mean empirical_width}
+    \end{equation}
+\end{lemma}
+
+This bound is manageable even when we consider the sampling matrices defined in Chapter~\ref{ch:graphs_signals_sampling}. We only need an estimate for the second moment of the rows of $\mathbf{A}$, and we can borrow from the literature~\cite{kabanava2015a} ways to deal with the rightmost term in \eqref{eq:upper_bound_mean empirical_width}. Our coordinate sampling matrices only become a problem when dealing with the marginal tail function.
+
+Koltchinskii and Mendelson \cite{koltchinskii2015} --- and later Tropp~\cite{tropp2015a} --- state that the marginal tail function reflects the absolute continuity of the distribution of the random vector $\mathbf{v}$. Hence $Q_{\xi}(\mathbf{v}, \cdot)$ may be quite small when the distribution of $\mathbf{v}$ is ``spiky'', an adjective we can certainly give to the sampling vectors used in this thesis. After all, the rows of $\mathbf{A}$ are drawn among the standard basis vectors in $\mathbb{R}^{n}$, so the distribution of our sampling vectors is supported on $n$ points only. Meanwhile, the distribution of Gaussian vectors is supported on the whole of $\mathbb{R}^{n}$.
+
+For a concrete example of how large the marginal tail function can be for absolutely continuous random vectors, consider the following proposition.
+
+\begin{proposition}\label{prop:inf_gauss_tail}
+    If $\mathbf{g} \sim \mathcal{N}(\mathbf{0}, \mathbf{I}_n)$, then
+    \begin{equation}
+        \underset{\xi \to 0}{\lim} \enspace \underset{\mathbf{u} \in \mathbb{S}^{n-1}}{\inf} \mathbb{P} \left ( \left \{ | \langle \mathbf{g}, \mathbf{u}\rangle | \geq \xi \right \} \right ) = 1.
+    \end{equation}
+\end{proposition}
+
+\begin{proof}
+    \pf\ It suffices to realize that $\langle \mathbf{g}, \mathbf{u} \rangle \sim \mathcal{N}(\mathbf{0}, \underbrace{\|\mathbf{u}\|_{2}^2}_{=1})$ and compute
+    \begin{align*}
+        \underset{\xi \to 0}{\lim} \enspace \underset{\mathbf{u} \in \mathcal{S} \cap \mathbb{S}^{n-1}}{\inf} \mathbb{P} \left ( \left \{ | \langle \mathbf{g}, \mathbf{u}\rangle | \geq \xi \right \} \right ) & = \underset{\xi \to 0}{\lim} \enspace \frac{1}{\sqrt{2\pi}}\int_{-\infty}^{\infty} \mathbb{1}_{\{ |t| \geq \xi \}} e^{-t^2/2} dt \\
+        & = \underset{\xi \to 0}{\lim} \enspace \frac{2}{\sqrt{2\pi}}\int_{\xi}^{\infty} e^{-t^2/2} dt & \comment{$2\times$ Gaussian tail}\\
+        & = 1.
+    \end{align*}
+    \hfill\qedsymbol
+\end{proof}
+
+Now, contrast Proposition \ref{prop:inf_gauss_tail} with the next one concerning random vectors from the \acrfull{cswr} model.
+
+\begin{proposition}\label{prop:inf_cswr_tail}
+    Let $\mathbf{a} \in \mathbb{R}^{n}$ be distributed as an arbitrary row of a matrix following the \acrshort{cswr} model. Then,
+    \begin{equation}
+        \underset{\xi \to 0}{\lim} \enspace \underset{\mathbf{u} \in \mathbb{S}^{n-1}}{\inf} \mathbb{P} \left ( \left \{ | \langle \mathbf{a}, \mathbf{u}\rangle | \geq \xi \right \} \right ) \leq \frac{1}{n}.
+    \end{equation}
+\end{proposition}
+
+\begin{proof}
+    \pf\
+    \step{}{
+        The distribution of vector $\mathbf{a}$ is supported on the set of standard basis vectors $\{\mathbf{e}_i\}_{i=1}^n$. This distribution is parametrized as $\mathbb{P} \left ( \left \{  \mathbf{a} = \mathbf{e}_i \right \}\right ) = \pi_i, \forall i \in [n]$, where $\sum_{i=1}^{n} \pi_i = 1$.
+    }
+    \step{}{
+        Thus, $\mathbb{P} \left ( \left \{ | \langle \mathbf{a}, \mathbf{u}\rangle | \geq \xi \right \} \right ) = \sum_{i=1}^{n} \mathbb{1}_{\{ | \langle \mathbf{e}_i, \mathbf{u}\rangle | \geq \xi \}} \pi_i$.
+    }
+    \step{}{
+        We can pick $\mathbf{u} \in \mathbb{S}^{n-1}$ orthogonal to all but one of the standard basis vectors. Pick this non-orthogonal vector as the one associated with the smallest sampling probability. Then,
+        \begin{align*}
+            \underset{\xi \to 0}{\lim} \enspace \underset{\mathbf{u} \in \mathbb{S}^{n-1}}{\inf} \mathbb{P} \left ( \left \{ | \langle \mathbf{a}, \mathbf{u}\rangle | \geq \xi \right \} \right ) & = \underset{\xi \to 0}{\lim} \enspace \underset{\mathbf{u} \in \mathbb{S}^{n-1}}{\inf} \sum_{i=1}^{n} \mathbb{1}_{\{ | \langle \mathbf{e}_i, \mathbf{u}\rangle | \geq \xi \}} \pi_i \\
+            & = \underset{i \in [n]}{\min} \enspace \pi_i.
+        \end{align*}
+    }
+    \qedstep{The claim holds by noting that $\left ( n \cdot \underset{i \in [n]}{\min} \enspace \pi_i \right ) \leq \sum_{i=1}^{n} \pi_i = 1$.}
+\end{proof}
+
+Through Corollary~\ref{cor:sample_complexity_small_ball_method}, a marginal tail function as minuscule as in Proposition \ref{prop:inf_cswr_tail} would lead to a \emph{vacuous} sample complexity --- unless the mean empirical width were impractically small~\footnote{The related Gaussian width for convex cones commonly used in recovery problems varies between $\mathcal{O} \left( n \right)$ and $\mathcal{O} \left( \log n \right)$~\cite[Table 3.1]{amelunxen2014}}. That is for most practical convex functions in \eqref{eq:f_regression}, the corollary would guarantee robust recovery only if $m > n$, a number of coordinate samples larger than the total number of coordinates in the signal-to-be-recovered.
+
+This is the main roadblock in using the standard small-ball method to arrive at the sample complexity for the decoders in this thesis. Still, the reason why this roadblock was reached might help in future attempts to certify coordinate-sampled convex recovery programs via the minimum $q$-gain functional. My unsatisfactory estimate for our marginal tail functional was a consequence of being able to pick a vector $\mathbf{u} \in \mathbb{S}^{n-1}$ orthogonal to all but one of the standard basis vectors in $\mathbb{R}^{n}$. This means, however, that this pick is itself one of the standard basis vectors. But in employing Proposition~\ref{prop:inf_cswr_tail} I willfully ignored how the descent cone might restrict this choice~\footnote{We can safely ignore the descent cone in marginal tail function for random vectors satisfying a small-ball condition with large constants $\kappa, \delta$ (see Definition~\ref{def:small-ball-condition}). In such cases, the effects of the measurement vectors and the convex objective on the minimum gain functional essentially decouple: $Q_\xi$ is a sort of condition number for the measurements; $W_m$ deals with the geometry of the descent cone.}. If the vectors in $\mathcal{D}(f, \mathbf{x}) \cap \mathbb{S}^{n-1}$ are shown to be ``far'' from any given coordinate axis~\footnote{We could make this statement precise, as Mendelson does, by defining sets with ``regular coordinate structure''~\cite{mendelson2018a}.}, we might be able to get a better lower bound on $Q_{\xi}$ even when the small-ball condition does not strictly hold.
+
+Indeed, take the toy example $\mathcal{D}(f, \mathbf{x}) \equiv \operatorname{span} \left ( \mathbf{1} \right )$. Then, for any $\mathbf{u} \in \mathcal{D}(f, \mathbf{x}) \cap \mathbb{S}^{n-1}$, we have $| \langle \mathbf{a}, \mathbf{u}\rangle | = 1/\sqrt{n}$. Hence, $\underset{\xi \to 0}{\lim} \enspace \underset{\mathbf{u} \in \mathcal{D}(f, \mathbf{x}) \cap \mathbb{S}^{n-1}}{\inf} \mathbb{P} \left ( \left \{ | \langle \mathbf{a}, \mathbf{u}\rangle | \geq \xi \right \} \right ) = 1$, just as in the Gaussian case. In the next section I will further explore how the coordinate information of the descent cone could be used to bypass the shortcomings we found in the standard small-ball method.
+
+
+\section{Exploring the coordinate structure of the descent cone}
+
+I will focus in this section on the \acrfull{ber} of independent vertex sampling (see Chapter~\ref{ch:graphs_signals_sampling}). As a reminder, this model uses \acrshort{iid} Bernoulli selectors to build a measurement matrix $\mathbf{A} = \sum_{i=1}^{n} \delta_i \mathbf{e}_i \mathbf{e}_i^\top$. The $q$-gain of $\mathbf{A}$ for any vector $\mathbf{u} \in \mathbb{R}^{n}$ is then a sum,
+\begin{equation}
+    \|\mathbf{Au}\|_q^q = \sum_{i=1}^{n} \delta_i |\langle \mathbf{e}_i, \mathbf{u} \rangle |^q = \sum_{i=1}^{n} \delta_i |u_i|^q,
+\end{equation}
+of independent random variables whose expectation has the form
+\begin{align}
+    \mathbb{E} \left ( \|\mathbf{Au}\|_q^q \right ) = \sum_{i=1}^{n} \mathbb{E} \left ( \delta_i \right ) |u_i|^q = \sum_{i=1}^{n} \pi_i |u_i|^q.
+\end{align}
+
+A simple application of the Bernstein inequality shows that $\|\mathbf{Au}\|_q^q$ does not deviate too much from its expectation. The precise estimate --- whose proof I put in Appendix~\ref{ap:proof_q_gain_bound_berstein} --- is given the following lemma.
+
+\clearpage
+
+\begin{lemma}\label{lem:q_gain_bound_berstein}
+    Suppose that matrix $\mathbf{A} \in \mathbb{R}^{n \times n}$, with $n \geq 2$ rows comes from the \acrshort{ber} sampling model, and let $\mathbf{u}$ be any vector in $\mathbb{R}^{n}$. Set $\tau := \sum_{i=1}^{n} \pi_i |u_i|^q$. If $\tau \geq \frac{32}{3n} \|\mathbf{u}\|_{\infty}^q \log \left ( \frac{2}{\varepsilon} \right )$, we then observe
+    \begin{equation}
+        \frac{\tau}{2} \leq \|\mathbf{Au}\|_q^q \leq \frac{3\tau}{2}
+    \end{equation}
+    with probability at least $1 - \varepsilon$.
+\end{lemma}
+
+The condition $\sum_{i=1}^{n} \pi_i |u_i|^q \geq \frac{32}{3n} \|\mathbf{u}\|_{\infty}^q \log \left ( \frac{2}{\varepsilon} \right )$ has to do with the geometry of the set to which vector $\mathbf{u}$ belongs. If it holds, then $\mathbf{u}$ belongs --- as Mendelson~\cite{mendelson2018a} would say --- to a set of ``regular coordinate structure'', because enough coordinates in $\mathbf{u}$ are larger than some constant. Such vectors are in some sense ``far'' from the coordinate axes (when measuring distances by angle, for example). The set $\operatorname{span} \left ( \mathbf{1} \right )$, evoked in the end of the previous section, is an extreme example of a set with regular coordinate structure. Note in passing that the vertex probabilities, $\pi_1, \dots, \pi_n$, in the condition, indicating where the sampling design may affect the recovery guarantees.
+
+Still, Lemma~\ref{lem:q_gain_bound_berstein} is not the end of the story; a direct certificate for problem \eqref{eq:l1_regression} is only obtained if we have a lower bound on $\underset{\mathbf{u} \in \mathcal{D}( \|\mathbf{D} \cdot \|_1, \mathbf{x}) \cap \mathbb{S}^{n-1}}{\inf} \enspace \|\mathbf{Au}\|_q^q$. One possible line of attack towards this goal is an $\epsilon$-net argument. That is, show that all points in $\mathcal{D}( \|\mathbf{D} \cdot \|_1, \mathbf{x}) \cap \mathbb{S}^{n-1}$ are at most $\epsilon$-far from a finite set $\mathcal{F}$ with regular coordinate structure, and then apply the previous lemma in a union bound over $\mathbf{u} \in \mathcal{F}$~\footnote{This is the strategy employed by Mendelson~\cite{mendelson2018a} in the context of sparse recovery problems from subsampled, random convolutions.}.
+
+But even then a question remains open: what finite set $\mathcal{F}$ with a regular coordinate structure forms an $\epsilon$-net for $\mathcal{D}( \|\mathbf{D} \cdot \|_1, \mathbf{x}) \cap \mathbb{S}^{n-1}$? Or, even more fundamentally, \emph{when} is the intersection $\mathcal{D}( \|\mathbf{D} \cdot \|_1, \mathbf{x}) \cap \mathbb{S}^{n-1}$ close to such an $\mathcal{F}$? Answers to these questions require a better geometric characterization of the descent cone induced by the \acrshort{gtv} semi-norm for different classes of graphs and signals. I do not have this characterization, but looking for it should be an interesting endeavor.
+
+
+\section{Summary and further notes}
+
+This chapter delved into the possibility of providing a direct recovery certificate for the \acrlong{gtv} regression \eqref{eq:l1_regression} by lower-bounding a minimum $q$-gain functional.
+
+Coordinate sampling ensembles such as ours are somewhat unusual in compressed sensing, so I chose to show first what would happen if we had Gaussian measurements instead. In this exercise, we saw how the size of the descent cone (via the conic Gaussian width) informs how many Gaussian vectors it takes to encode enough information about the ground-truth signal and ensure a robust recovery. Other notions of width appear in similar settings in the literature, induced by other specific classes of linear measurements. For instance, Sivakumar et al.~\cite{sivakumar2015a} define a mean \emph{exponential} width to deal with measurement vectors with sub-exponential tails. In any case, the conclusion is always the same: narrower cones lead to better sample complexities.
+
+Mendelson's small-ball method has been involved in many success stories regarding lower-bounds for non-negative empirical processes like our minimum $q$-gain functional. But the small-ball condition of our coordinate sampling vectors is very poor. It predicts a marginal tail function that is too small and finally leads to a vacuous sample complexity for practical convex decoders. I should mention that Mendelson has kept building upon the original method. A somewhat recent improvement was replacing the small-ball assumption by a \emph{stable lower bound condition}~\cite{mendelson2017}, extending the scope of empirical processes can be dealt with.
+
+By the end of this chapter I can but point towards a direction where the \acrshort{gtv} regression \eqref{eq:l1_regression} might be given a direct recovery certificate. The path requires a better understanding of the geometry of the descent cone $\mathcal{D}( \|\mathbf{D} \cdot \|_1, \mathbf{x})$, especially in what concerns the coordinate structure of the set $\mathcal{D}( \|\mathbf{D} \cdot \|_1, \mathbf{x}) \cap \mathbb{S}^{n-1}$. But this characterization I leave as an open problem.
+
+In the next chapter I will finally show a recovery certificate -- even if only for the noiseless, interpolation program  \eqref{eq:l1_interpolation}. An optimal sampling design will then be revealed as the one that minimizes the number of samples the certificate demands.
+
+\clearpage
+
+\begin{subappendices}
+    \section{Proofs}
+
+    \subsection{Proof of Proposition~\ref{prop:lower_bound_min_q_gain}}
+    \label{ap:proof_small_ball}
+    \input{main/proofs/proof-small-ball.tex}
+
+    \subsection{Proof of Lemma~\ref{lem:upper_bound_mean empirical_width}}
+    \label{ap:proof_empirical_width_l1}
+    \input{main/proofs/proof-upper-bound-empirical-width-l1.tex}
+
+    \subsection{Proof of Lemma~\ref{lem:q_gain_bound_berstein}}
+    \label{ap:proof_q_gain_bound_berstein}
+    \input{main/proofs/proof-q-gain-bound-berstein.tex}
+\end{subappendices}

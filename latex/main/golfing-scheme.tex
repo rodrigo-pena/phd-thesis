@@ -1,0 +1,148 @@
+In the same spirit of the classic golfing scheme~\cite{gross2011}, we will start with a simple guess $\mathbf{u}^{(0)}$ which is then iteratively updated --- via statistically independent adjustments --- becoming some vector $\mathbf{u}^{(L)}$ after $L$ steps. The exact number of steps is specified later on, but if $\mathbf{u}^{(L)}$ is to be an inexact dual certificate, we need to make sure that the error vectors
+ \begin{equation}
+    \mathbf{w}^{(l)} := \mathbf{P}_\mathcal{S} \left( \operatorname{sign} \left ( \mathbf{Dx} \right ) - \mathbf{u}^{(l)} \right), \enspace l \in [L],
+    \label{eq:golf_error_vec}
+\end{equation}
+end up into the origin-centered Euclidean ball of radius $\frac{1}{3}$. At the same time, we have to guarantee that $(\mathbf{I}_N - \mathbf{P}_\mathcal{S}) \mathbf{u}^{(L)}$ is within the cube $\frac{1}{3} \mathbb{B}_{\infty}^N$. The name of the iterative scheme gets is thus a metaphor: we imagine a ball at the initial position $\mathbf{u}^{(0)}$ and push it towards some ideal point $\mathbf{u}^\star$ specified by $\mathbf{P}_{\mathcal{S}} \mathbf{u}^\star =  \operatorname{sign} \left ( \mathbf{Dx} \right )$ and $\left \| \left ( \mathbf{I}_N - \mathbf{P}_\mathcal{S} \right ) \mathbf{u}^\star \right \|_{\infty} \leq 1$. Each iteration draws us closer to $\mathbf{u}^\star$, just as each golf shot should bring the ball closer to the hole (see Figure~\ref{fig:illustration_golfing_scheme}).
+
+\begin{figure}[H]
+    \centering
+    \input{images/golfing-scheme.tex}
+    \caption[The golfing scheme]{The golfing scheme. Pick an initial guess $\mathbf{u}^{(0)}$ and iteratively push it towards a region where inexact dual certificates are located. The admissible cylinder is given by the set $\left \{\mathbf{u} \in \mathbb{R}^{N} : \enspace \mathbf{P}_\mathcal{S} \mathbf{u} - \operatorname{sign} \left ( \mathbf{Dx} \right) \in \frac{1}{3}\mathbb{B}_{2}^N \enspace \text{and} \enspace (\mathbf{I}_N - \mathbf{P}_\mathcal{S}) \mathbf{u} \in \frac{1}{3}\mathbb{B}_{\infty}^N \right\}$, according to Lemma \ref{lem:inexact_dc}. The red line segment represents the region of $\mathbb{R}^{N}$ containing the vectors that satisfy the \acrshort{kkt} conditions \eqref{eq:kkt1} and \eqref{eq:kkt2} exactly.}
+    \label{fig:illustration_golfing_scheme}
+\end{figure}
+
+A good place for picking the the initial guess $\mathbf{u}^{(0)}$ is within the slab
+\begin{equation*}
+    \left\{\mathbf{u} \in \mathbb{R}^{N} : \left \| \left ( \mathbf{I}_N - \mathbf{P}_\mathcal{S} \right ) \mathbf{u}^\star \right \|_{\infty} \leq \frac{1}{3} \right\}.
+\end{equation*}
+Then, we could simply update each next iterate in the direction of the error vector $\mathbf{w}^{(l)}$, an assignment like the one below.
+\begin{algorithm}[H]
+    \begin{algorithmic}[1]
+        \State{$\ldots$}
+        \State $\mathbf{u}^{(l)} \gets \mathbf{u}^{(l- 1)} + \mathbf{w}^{(l)}$
+        \State{$\ldots$}
+    \end{algorithmic}
+\end{algorithm}
+
+If we choose, for example, $\mathbf{u}^{(0)} = \mathbf{0}$ then within a single iteration $\mathbf{u}^{(1)} = \operatorname{sign} \left ( \mathbf{Dx} \right)$ would immediate yield a perfect certificate according to the \acrshort{kkt} conditions \eqref{eq:kkt1} and \eqref{eq:kkt2}. But the procedure above ignored an important detail: a valid dual certificate $\mathbf{u}^{(L)}$ should \emph{also} satisfy $\mathbf{D}^{\top}\mathbf{u}^{(L)} \in \operatorname{range} \left ( \mathbf{A^{\top}} \right )$.
+
+But the range condition in \eqref{ass:range} is stated in the \emph{primal} domain, because $\mathbf{D}^\top$ maps vectors in $\mathbb{R}^{N}$ to $\mathbb{R}^{n}$. To transform it into a condition on the \emph{dual} domain (where $\mathbf{u}^{(0)}, \mathbf{u}^{(1)}, \dots, \mathbf{u}^{(L)}$ live), I will employ assumption \eqref{ass:null}. The trivial intersection $\operatorname{null} \left ( \mathbf{D} \right ) \cap \operatorname{null} \left ( \mathbf{A} \right ) = \{ \mathbf{0} \}$ implies the one-to-one equivalence~\footnote{It suffices to note that $\operatorname{null} \left ( \mathbf{D} \right ) \cap \operatorname{null} \left ( \mathbf{A} \right ) = \{ \mathbf{0} \}$ implies that the orthogonal projection operators defined by $\mathbf{D}$ and $\mathbf{A}$ \emph{commute}.}
+\begin{equation}
+    \mathbf{D}^{\top}\mathbf{u} \in \operatorname{range} \left ( \mathbf{A^{\top}} \right ) \iff \underbrace{(\mathbf{D}^{+})^{\top}\mathbf{D}^{\top}}_{= \mathbf{D} \mathbf{D}^{+}}\mathbf{u} \in \operatorname{range} \left ( (\mathbf{D}^{+})^{\top}\mathbf{A^{\top}} \right ),
+    \label{eq:equiv_range_primal_dual}
+\end{equation}
+for any $\mathbf{u} \in \mathbb{R}^{N}$. Each iterate $\mathbf{u}^{(l)}$ can be expressed as $\mathbf{u}^{(l)} = \mathbf{D} \mathbf{D}^{+} \mathbf{u}^{(l)} + \left ( \mathbf{I}_N - \mathbf{D} \mathbf{D}^{+}\right )\mathbf{u}^{(l)}$, by means of a direct sum of $\mathbb{R}^{N}$. Hence, by the equivalence \eqref{eq:equiv_range_primal_dual}, we are only required to write the orthogonal projection of $\mathbf{u}^{(l)}$ onto the range of $\mathbf{D}$ as $(\mathbf{D}^{+})^{\top}\mathbf{A^{\top}} \mathbf{v}$, for some vector $\mathbf{v} \in \mathbb{R}^{m}$.
+
+We can now improve be prototypical assignment by incorporating this new constraint using an additional sequence of vectors, $\{\mathbf{v}^{(l)}\}_{l \in [L]}$. Instead of simply adding the error vector $\mathbf{w}^{(l)}$, modify the part of it which lies within the range of $\mathbf{D}$ and add the result to the current iterate:
+\begin{algorithm}[H]
+    \begin{algorithmic}[1]
+        \State{$\ldots$}
+        \State $\mathbf{u}^{(l)} \gets \mathbf{u}^{(l-1)} + \left ( \mathbf{I}_N - \mathbf{D} \mathbf{D}^{+}\right ) \mathbf{w}^{(l)} + (\mathbf{D}^{+})^{\top}\mathbf{A}^{\top} \mathbf{v}^{(l)}$
+        \State{$\ldots$}
+    \end{algorithmic}
+\end{algorithm}
+
+As long as $\mathbf{u}^{(0)}$ starts in $\left\{\mathbf{u} \in \mathbb{R}^{N} : \mathbf{D} \mathbf{D}^{+}\mathbf{u} \in \operatorname{range} \left ( (\mathbf{D}^{+})^{\top}\mathbf{A^{\top}} \right ) \right\}$, we can rest assured that each subsequent $\mathbf{u}^{(l)}$ will remain in the same set. Fortunately, picking $\mathbf{u}^{(0)} = \mathbf{0}$ will always guarantee this situation. But which form should the vectors $\mathbf{v}^{(1)}, \dots, \mathbf{v}^{(L)}$ take?
+
+It would be convenient if each $\mathbf{v}^{(l)}$ were a function of $\mathbf{w}^{(l)}$, so we would not have to deal with a separate sequence of vectors. Consider the following parametrization: $\mathbf{v}^{(l)} = \mathbf{B}^\top \mathbf{D}^{\top}\mathbf{w}^{(l)}$, for some matrix $\mathbf{B} \in \mathbb{R}^{n \times m}$ to be chosen later. This expression --- although not intuitive --- allows the update directions to be then expressed as linear transformation of the error vector using familiar matrices:
+\begin{align*}
+    \left ( \mathbf{I}_N - \mathbf{D} \mathbf{D}^{+}\right ) \mathbf{w}^{(l)} + (\mathbf{D}^{+})^{\top}\mathbf{A}^{\top} \mathbf{v}^{(l)} & = \left [ \mathbf{I}_N - \mathbf{D} \mathbf{D}^{+} + (\mathbf{D}^{+})^{\top}\mathbf{A}^{\top} \mathbf{B}^\top \mathbf{D}^{\top} \right ] \mathbf{w}^{(l)}\\
+    & = \left [ \mathbf{I}_N - (\mathbf{D}^{+})^{\top} \left (\mathbf{I}_n - \mathbf{B} \mathbf{A} \right)^{\top} \mathbf{D}^{\top} \right ] \mathbf{w}^{(l)}\\
+    & = \left [ \mathbf{I}_N - \underbrace{\left ( \mathbf{D} \left (\mathbf{I}_n - \mathbf{B} \mathbf{A} \right) \mathbf{D}^{+} \right)^{\top}}_{= \mathbf{M}} \right ] \mathbf{w}^{(l)}.
+\end{align*}
+The matrix $\mathbf{M} \in \mathbb{R}^{N \times N}$ is the same as the one in the statement of Lemma~\ref{lem:inexact_dc}. By retracing our steps, we can now see that multiplying any vector in $\mathbb{R}^{N}$ by $\mathbf{I}_N - \mathbf{M}$ forces the result to be in the set $\left\{\mathbf{u} \in \mathbb{R}^{N} : \mathbf{D} \mathbf{u} \in \operatorname{range} \left ( \mathbf{A^{\top}} \right ) \right\}$. But unlike $\mathbf{D} \mathbf{D}^{+}$ or $\mathbf{A} \mathbf{A}^{+}$, the matrix $\mathbf{I}_N - \mathbf{M}$ does not represent an orthogonal projection, in general. The need to control certain semi-norms of $\mathbf{M}$ in Lemma~\ref{lem:inexact_dc} should seem less alien now. With matrix $\mathbf{M}$, our working version of the golfing scheme update reads as
+\begin{algorithm}[H]
+    \begin{algorithmic}[1]
+        \State{$\ldots$}
+        \State $\mathbf{u}^{(l)} \gets \mathbf{u}^{(l-1)} + \left ( \mathbf{I}_N - \mathbf{M} \right ) \mathbf{w}^{(l)}$
+        \State{$\ldots$}
+    \end{algorithmic}
+\end{algorithm}
+
+Keep in mind that we still have an an unspecified matrix $\mathbf{B}$ hidden within the assignment above. Let us address it now. Our measurement operator is a random matrix, so matrix $\mathbf{M}$ --- being a function of $\mathbf{A}$ --- is also random. If $\mathbf{M}$ is zero-mean, then $\mathbf{u}^{(l)}$ is updated as initially intended at least on average. That is, $\mathbb{E} \left ( \mathbf{u}^{(l)} - \mathbf{u}^{(l-1)} \right )$ points straight in the direction of the error vector $\mathbf{w}^{(l)}$. So how can we make $\mathbf{M}$ zero mean? Assume that $\mathbf{A}$ has a full rank covariance matrix~\footnote{This is true of both \acrshort{ber} and \acrshort{cswr} sampling models in this thesis.}, then $\mathbb{E} \left ( \mathbf{M} \right ) = \mathbf{0}$ if
+\begin{equation}
+    \mathbf{B} = \mathbb{E} \left ( \mathbf{A}^{\top}\mathbf{A} \right )^{-1}\mathbf{A}^{\top}.
+\end{equation}
+From now on, assume $\mathbf{B}$ as in the expression above. Not only will it have the aforementioned effect on the average direction of the updates, but it will also simplify some probabilistic estimates of $\mathbf{M}$ later on in the chapter. I leave open the question of whether other choices of this conditioning matrix are useful or not.
+
+Regardless, the vector $\mathbf{u}^{(L)}$ at the final iteration is only a proper inexact certificate if we can properly control the semi-norms $\| \mathbf{P}_\mathcal{S} ( \mathbf{u}^{(L)} - \operatorname{sign} \left ( \mathbf{Dx} \right ) ) \|_2$ and $\| (\mathbf{I}_N - \mathbf{P}_\mathcal{S}) \mathbf{u}^{(L)} \|_{\infty}$. The first of these concerns directly the error vector $\mathbf{w}^{(L)}$, which can now be unpacked as \footnote{Keep in mind that $\mathbf{w}^{(L)} = \mathbf{P}_\mathcal{S}\mathbf{w}^{(L)}$.}
+\begin{align*}
+    \mathbf{w}^{(L)} & := \mathbf{P}_\mathcal{S} ( \operatorname{sign} \left ( \mathbf{Dx} \right ) - \mathbf{u}^{(L)} ) \\
+    & = \mathbf{P}_\mathcal{S} \left( \operatorname{sign} \left ( \mathbf{Dx} \right ) - \mathbf{u}^{(L-1)} - \left ( \mathbf{I}_N - \mathbf{M} \right ) \mathbf{w}^{(L-1)} \right)\\
+    & = \mathbf{P}_\mathcal{S} \left( \mathbf{w}^{(L-1)} - \mathbf{w}^{(L-1)} + \mathbf{M} \mathbf{w}^{(L-1)} \right)\\
+    & = \mathbf{P}_\mathcal{S} \mathbf{M} \mathbf{P}_\mathcal{S} \mathbf{w}^{(L-1)} \\
+    & \dots \\
+    & = \left [ \mathbf{P}_\mathcal{S} \mathbf{M} \mathbf{P}_\mathcal{S} \right ]^{L} \mathbf{w}^{(0)}\\
+    & =: \left [ \mathbf{P}_\mathcal{S} \mathbf{M} \mathbf{P}_\mathcal{S} \right ]^{L} \operatorname{sign} \left ( \mathbf{Dx} \right ).
+\end{align*}
+If we show $\mathbf{P}_\mathcal{S} \mathbf{M} \mathbf{P}_\mathcal{S}$ to be a contraction then the length of the error vectors decreases geometrically with each update. More precisely, if at each iteration $l \in [L]$ there is a constant $\alpha \in (0, 1)$ such that $\left \| \mathbf{P}_\mathcal{S} \mathbf{M} \mathbf{P}_\mathcal{S} \mathbf{w}^{(l)} \right \|_2 < \alpha \left \| \mathbf{w}^{(l)} \right \|_2$, then the norm of the error vector at the end of the of golfing steps is
+\begin{align}
+    \| \mathbf{P}_\mathcal{S} ( \mathbf{u}^{(L)} - \operatorname{sign} \left ( \mathbf{Dx} \right ) ) \|_2 & = \|\mathbf{w}^{(L)}\|_2 \nonumber \\
+    & = \left \| \mathbf{P}_\mathcal{S} \mathbf{M} \mathbf{P}_\mathcal{S} \mathbf{w}^{(L-1)} \right \|_2 \nonumber \\
+    & \leq \alpha \left \| \mathbf{w}^{(L-1)}  \right \|_2 \nonumber \\
+    & \dots \nonumber \\
+    & \leq \alpha^{L} \| \operatorname{sign} \left ( \mathbf{Dx} \right ) \|_2 \nonumber \\
+    & = \alpha^{L} \sqrt{|\mathcal{S}|}\label{eq:golf_bound_error}.
+\end{align}
+For the second semi-norm that we need to control, suppose that $\mathbf{P}_\mathcal{S} \mathbf{M} \mathbf{P}_\mathcal{S}$ \emph{as well as} its complement, $\left(\mathbf{I}_N - \mathbf{P}_\mathcal{S}\right) \mathbf{M} \mathbf{P}_\mathcal{S}$, are contractions --- now in the infinity norm. In other words, let all steps $l \in [L]$ admit some constant $\beta \in (0,1)$ such that $\left \| \mathbf{P}_\mathcal{S} \mathbf{M} \mathbf{P}_\mathcal{S} \mathbf{w}^{(l)} \right \|_{\infty}$ and $\left \| \left(\mathbf{I}_N - \mathbf{P}_\mathcal{S}\right) \mathbf{M} \mathbf{P}_\mathcal{S} \mathbf{w}^{(l)} \right \|_{\infty}$ are smaller than $\beta \left \| \mathbf{w}^{(l)} \right \|_{\infty}$~\footnote{This simultaneous control over the infinity norms of $\mathbf{P}_\mathcal{S} \mathbf{M} \mathbf{P}_\mathcal{S}$ and $\left(\mathbf{I}_N - \mathbf{P}_\mathcal{S}\right) \mathbf{M} \mathbf{P}_\mathcal{S}$ is an idea taken from Boyer~\etal~\cite{boyer2019} to avoid having $\| \left(\mathbf{I}_N - \mathbf{P}_\mathcal{S}\right) \mathbf{M} \mathbf{P}_\mathcal{S} \mathbf{u}^{(L)} \|_\infty$ depend on the size to the support $\mathcal{S} := \operatorname{supp}\left ( \mathbf{Dx} \right )$.}. Then we could see that the coordinates in the orthogonal complement of the error vectors $\mathbf{w}^{(1)}, \dots, \mathbf{w}^{(L+1)}$ do not drift far from zero throughout the process:
+\begingroup
+\allowdisplaybreaks
+\begin{align}
+    \| \left(\mathbf{I}_N - \mathbf{P}_\mathcal{S}\right) \mathbf{M} \mathbf{P}_\mathcal{S} \mathbf{u}^{(L)} \|_\infty & = \left \| \sum_{i=1}^{L} \left(\mathbf{I}_N - \mathbf{P}_\mathcal{S}\right) \left(\mathbf{I}_N - \mathbf{M}\right) \mathbf{P}_{\mathcal{S}} \mathbf{w}^{(l-1)} \right \|_{\infty} \nonumber \\
+    & = \left \| \sum_{i=1}^{L} \left(\mathbf{I}_N - \mathbf{P}_\mathcal{S}\right) \mathbf{M} \mathbf{P}_{\mathcal{S}} \mathbf{w}^{(l-1)} \right \|_{\infty} \nonumber \\
+    \comment{triangle ineq.} & \leq \sum_{i=1}^{L} \left \| \left(\mathbf{I}_N - \mathbf{P}_\mathcal{S}\right) \mathbf{M} \mathbf{P}_{\mathcal{S}} \mathbf{w}^{(l-1)} \right \|_{\infty} \nonumber \\
+    & \leq \sum_{i=1}^{L} \beta \left \| \mathbf{w}^{(l-1)} \right \|_{\infty} \nonumber \\
+    & = \sum_{i=1}^{L} \beta \left \| \mathbf{P}_\mathcal{S} \mathbf{M} \mathbf{P}_\mathcal{S} \mathbf{w}^{(l-2)} \right \|_{\infty} \nonumber \\
+    & \leq \sum_{i=1}^{L} \beta^2 \left \| \mathbf{w}^{(l-2)} \right \|_{\infty} \nonumber \\
+    & \dots \nonumber \\
+    & \leq \sum_{i=1}^{L} \beta^l \left \| \mathbf{w}^{(0)} \right \|_{\infty} \nonumber \\
+    & = \sum_{i=1}^{L} \beta^l \underbrace{\left \| \operatorname{sign} \left ( \mathbf{Dx} \right ) ) \right \|_{\infty}}_{=1} \nonumber \\
+    & = \frac{1 - \beta^L}{1 - \beta}\label{eq:golf_bound_off_support}.
+\end{align}
+\endgroup
+If we wish $\mathbf{u}^{(L)}$ to an inexact dual certificate as predicted by Lemma \ref{lem:inexact_dc}, our new objective is then to find out when we can guarantee contraction constants $\alpha, \beta \in (0,1)$ that satisfy $\alpha^{L} \sqrt{|\mathcal{S}|} \leq \frac{1}{3}$ and $\frac{1 - \beta^L}{1 - \beta} \leq \frac{1}{3}$.
+
+Recall that $\mathbf{M}$ is a random matrix, so the desired contraction inequalities have to be probabilistic estimates. At this stage, such estimates are somewhat hampered by the statistical dependence between $\mathbf{M}$ and each error vector $\mathbf{w}^{(l)}$~\footnote{To get a feeling for this, consider the semi-norm $\left \| \left(\mathbf{I}_N - \mathbf{P}_\mathcal{S}\right) \mathbf{M} \mathbf{P}_{\mathcal{S}} \mathbf{w}^{(l)} \right \|_{\infty} := \underset{k \notin \mathcal{S}}{\max} \enspace \left | \left \langle \tilde{\mathbf{e}}_k, \mathbf{M} \mathbf{P}_{\mathcal{S}} \mathbf{w}^{(l)} \right \rangle \right |$. The moments of the quantities $\left \langle \mathbf{P}_{\mathcal{S}} \mathbf{M}^\top \tilde{\mathbf{e}}_k, \mathbf{w}^{(l)} \right \rangle$
+inside the maximum cannot be factored into a product with a term depending only $\mathbf{M}$ and another relying only on $\mathbf{w}^{(l)}$. This is because both these objects are functions of the same random matrix $\mathbf{A}$. As a result, it is infeasible to condition on $\mathbf{w}^{(l)}$ in order to obtain a bound of the type $\left \| \left(\mathbf{I}_N - \mathbf{P}_\mathcal{S}\right) \mathbf{M} \mathbf{P}_{\mathcal{S}} \mathbf{w}^{(l)} \right \|_{\infty} \leq \beta \left \| \mathbf{w}^{(l)} \right \|_{\infty}$ without having detailed knowledge on how the distribution of $\mathbf{A}$ affects the action of $\mathbf{M}$ on $\mathbf{w}^{(l)}$}. The traditional way around this issue is to \emph{force} each iterate $\mathbf{u}^{(l)}$ to be \emph{independent} of each other by using different matrices in the place of $\mathbf{M}$ for each update. This idea goes back to Gross \cite{gross2011} --- who introduced the golfing scheme --- and is based on selecting $L$ independent matrices, $\mathbf{A}^{(1)} \in \mathbb{R}^{m_1 \times n}, \dots, \mathbf{A}^{(L)} \in \mathbb{R}^{m_L \times n}$ such that
+\begin{equation}
+    \bigcup_{l=1}^{L} \operatorname{range} \left( \mathbf{A}^{(l)\top} \right) \subset \operatorname{range} \left( \mathbf{A}^{\top} \right) \enspace \text{and} \enspace m_1 + m_2 + \dots + m_L = m.
+\end{equation}
+The way I will define each of these smaller matrices is by simply stacking successive rows of our sampling operator. That is, $\mathbf{A}^{(1)}$ consists of the first $m_1$ rows of $\mathbf{A}$, $\mathbf{A}^{(2)}$ the next $m_2$ rows, an so on. This strategy works whenever the original matrix has independent rows, like the ones in this thesis~\footnote{The same idea can work in other contexts. For example, Boyer \etal \cite{boyer2019} study row-block measurements, so their matrices $\mathbf{A}^{(1)}, \dots, \mathbf{A}^{(L)}$ are built by stacking independent \emph{blocks of rows}.}.
+
+We now use each of the independent chunks of $\mathbf{A}$ at its corresponding iteration. By that I mean to  define an operator analogous to the matrix $\mathbf{M}$, for each $l \in [L]$, via the expression
+\begin{equation}\label{eq:def_M^l}
+    \mathbf{M}^{(l)} := \left[ \mathbf{D} \left( \mathbf{I}_n - \mathbb{E} \left ( \mathbf{A}^{(l)\top}\mathbf{A}^{(l)} \right )^{-1} \mathbf{A}^{(l)\top} \mathbf{A}^{(l)} \right) \mathbf{D}^+ \right]^{\top}.
+\end{equation}
+Once that is done, we can finally settle on the final version of the golfing scheme, which I record here as Algorithm~\ref{algo:golf}. Notice how $\mathbf{M}^{(l)}$ and $ \mathbf{w}^{(l)}$ are now independent because the error vector is only a function of $\mathbf{M}^{(l-1)}, \mathbf{M}^{(l-2)}, \dots, \mathbf{M}^{(1)}$ but not $\mathbf{M}^{(l)}$.
+
+\begin{algorithm}[H]
+    \caption{Golfing scheme}\label{algo:golf}
+	\begin{algorithmic}[1]
+        \State{Set $\mathbf{u}^{(0)} = \mathbf{0}$}
+        \For{$l = 1, \dots, L$}
+        \State {$\mathbf{u}^{(l)} \gets \mathbf{u}^{(l-1)} + \left[ \mathbf{I}_N - \mathbf{M}^{(l)} \right] \mathbf{w}^{(l)} $}\Comment{with $\mathbf{M}^{(l)}$ as in \eqref{eq:def_M^l}, and $\mathbf{w}^{(l)}$ as in \eqref{eq:golf_error_vec}}
+        \EndFor
+        \State{\textbf{return} $\mathbf{u}^{(L)}$ as a potential certificate}
+    \end{algorithmic}
+\end{algorithm}
+
+Some readers may rightfully wonder, is the range constraint $\mathbf{D}^{\top}\mathbf{u}^{(L)} \in \operatorname{range} \left ( \mathbf{A^{\top}} \right )$ still satisfied with the artificially introduced independent iterates? The answer is yes, because $\mathbf{D}^{\top}\mathbf{u}^{(L)} \in \bigcup_{l=1}^{L} \operatorname{range} \left( \mathbf{A}^{(l)\top} \right)$ and the \acrlong{rhs} belongs to $\operatorname{range} \left( \mathbf{A}^\top \right)$ by construction. Still, notice the trade-off as we exchange a potentially larger certificate search space for the chance to work with independent iterates.
+
+In the end, any iterative scheme proposing inexact dual certificates is only useful if the returned vector, $\mathbf{u}^{(L)}$, has all the qualities laid out by Lemma~\ref{lem:inexact_dc} --- at least with high probability. The following lemma makes this wish precise in what concerns the golfing scheme of Algorithm~\ref{algo:golf}. I include its proof in Appendix~\ref{ap:proof_tails_golf}, but it essentially just assigns probabilistic figures to the assumptions we have gathered up to this point.
+
+\begin{lemma}\label{lem:tails_golf} The vector $\mathbf{u}^{(L)}$ produced by Algorithm \ref{algo:golf} after $L := 1 + \left \lceil \frac{\log |S|}{2 \log 3} \right \rceil$ steps is, with probability larger than $1 - \varepsilon$, an inexact dual certificate for $\mathbf{x}$ as the unique solution of \ref{eq:l1_interpolation} if
+\begin{align*}
+    \tag{A1} \operatorname{null} \left ( \mathbf{D} \right ) \cap \operatorname{null} \left ( \mathbf{A} \right ) = \{ 0 \}, \\
+    \tag{A2} \label{ass:approxPSProb} \mathbb{P} \left ( \left \{  \left \| \mathbf{P}_\mathcal{S} \mathbf{M} \mathbf{P}_\mathcal{S} \right \|_{2} > 1 / 3 \right \}\right ) \leq \frac{\varepsilon}{3}, \\
+    \tag{A3} \label{ass:boundOffSupportProb} \mathbb{P} \left ( \left \{  \underset{k \notin \mathcal{S}}{\max} \left \| \mathbf{P}_\mathcal{S} \mathbf{M}^{\top} \mathbf{e}_k \right \|_2 > 1 \right \}\right ) \leq\frac{\varepsilon}{3}, \\
+\end{align*}
+and, for all $\mathbf{v} \in \mathbb{R}^{N}$ and $l \in [L]$,
+\begin{align}
+    \tag{A5-l} \label{ass:lOnSupport2} \mathbb{P} ( \{ \| \mathbf{P}_\mathcal{S} \mathbf{M}^{(l)} \mathbf{P}_\mathcal{S} \mathbf{v} \|_2 > (1/3) \| \mathbf{v} \|_2 \} ) \leq \varepsilon / 3 L, \\
+    \tag{A6(a)-l} \label{ass:lOnSupportInf} \mathbb{P} ( \{ \| \mathbf{P}_\mathcal{S} \mathbf{M}^{(l)} \mathbf{P}_\mathcal{S} \mathbf{v} \|_\infty > (1/4) \| \mathbf{v} \|_\infty \} ) \leq \varepsilon / 3 L, \\
+    \tag{A6(b)-l} \label{ass:lOffSupportInf} \mathbb{P} ( \{ \| (\mathbf{I}_N - \mathbf{P}_\mathcal{S}) \mathbf{M}^{(l)} \mathbf{P}_\mathcal{S} \mathbf{v} \|_\infty > (1/4) \| \mathbf{v} \|_\infty \} ) \leq \varepsilon / 3 L.
+\end{align}
+\end{lemma}
+
+The correctness of the golfing scheme is but a means towards knowing how many samples it takes for $\mathbf{x}$ to be the unique vector decoded by \ref{eq:l1_interpolation}. As usual in \acrlong{cs}, such sample complexities appear as a consequence of enforcing tail bounds like the ones in Lemma~\ref{lem:tails_golf}. To be concrete, imagine that assumptions \ref{ass:approxPSProb} and \ref{ass:boundOffSupportProb} were to hold as long as $m = m^{\prime}$, and assumptions \ref{ass:lOnSupport2}--\ref{ass:lOffSupportInf} if $m_1 = m_2 = \dots = m_L = m^{\prime\prime}$~\footnote{Recall that $m_1, \dots, m_L$ are the number of rows, respectively, of the independent sub-matrices $\mathbf{A}^{(1)}, \dots, \mathbf{A}^{(L)}$ induced by $\mathbf{A}$.} Then we would be allowed to conclude, with high probability, that problem \ref{eq:l1_interpolation} outputs only $\mathbf{x}$, provided that $\mathbf{A}$ has at least $m = \max \left \{ m^{\prime}, L \cdot m^{\prime\prime}\right \}$ rows. I will finish this chapter giving precise figures to this argument, as it applies to the \acrfull{cswr} model.

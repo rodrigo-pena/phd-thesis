@@ -1,0 +1,93 @@
+As a reminder, I use the symbols $\mathcal{S} := \operatorname{supp}\left ( \mathbf{Dx} \right )$ for the jump-set of $\mathbf{x}$, $\mathbf{P}_\mathcal{S} := \sum_{i \in \mathcal{S}} \mathbf{e}_i \mathbf{e}_i^\top$ for the corresponding orthogonal projection operator, and $\mathbf{h} := \frac{1}{\sqrt{m}} \sum_{i=1}^{m} \varepsilon_i \mathbf{a}_i$ for the Rademacher average of vectors $\mathbf{a}_1, \dots, \mathbf{a}_m$. I will prove the bound
+\begin{equation*}
+    W_{m}(\mathbf{a}, \mathcal{D}( \|\mathbf{D} \cdot \|_1, \mathbf{x}))^2 \leq \mathbb{E} \left ( \|\mathbf{a}\|_2^2 \right ) - \left [ \frac{\mathbb{E} \left ( \left \|(\mathbf{I}_N - \mathbf{P}_\mathcal{S}) \mathbf{Dh} \right \|_1 \right )}{\underset{\|\mathbf{z}\|_2 \leq 1}{\max} \| \mathbf{Dz} \|_1} \right ]^2
+\end{equation*}
+for the mean empirical width of the \acrshort{gtv} descent cone, as measured by \acrshort{iid} copies, $\mathbf{a}_1, \dots, \mathbf{a}_m$, of a random vector $\mathbf{a}$.
+
+The argument --- an adaptation of \cite[Lem. 1 \& Thm. 3]{kabanava2015a} --- works by relating the descent cone $\mathcal{D}( \|\mathbf{D} \cdot \|_1, \mathbf{x})$ to the subdifferential
+\begin{equation}
+    \partial \|\mathbf{D} \cdot \|_1 (\mathbf{x}) := \left\{ \mathbf{v} \in \mathbb{R}^{n} : \langle \mathbf{v},  \mathbf{z} - \mathbf{x}\rangle \leq \|\mathbf{Dz} \|_1 - \|\mathbf{Dx} \|_1, \forall \mathbf{z} \in \mathbb{R}^{n} \right\}.
+\end{equation}
+In particular, the defining expressions of the subdifferential are called upon (see Proposition~\ref{prop:character_subdifferential_l1}).
+
+\begin{proof}
+    \pf\
+    \step{}{
+        Tropp~\cite[Prop. 7.1]{tropp2015a} gives us the initial upper bound
+        \begin{equation*}
+            W_{m}(\mathbf{a}, \mathcal{D}( \|\mathbf{D} \cdot \|_1, \mathbf{x}))^2 \leq \mathbb{E} \left ( \underset{\tau \geq 0}{\inf} \enspace \underset{\mathbf{v} \in \partial \| \mathbf{D} \cdot \|_1(\mathbf{x})}{\inf} \| \mathbf{h} - \tau \mathbf{v} \|_2^2  \right )
+        \end{equation*}
+    }
+    \step{}{
+        We can exchange the expectation and the first infimum:
+        \begin{equation*}
+            \mathbb{E} \left ( \underset{\tau \geq 0}{\inf} \enspace \underset{\mathbf{v} \in \partial \| \mathbf{D} \cdot \|_1(\mathbf{x})}{\inf} \| \mathbf{h} - \tau \mathbf{v} \|_2^2  \right ) \leq \underset{\tau \geq 0}{\inf} \enspace \mathbb{E} \left ( \underset{\mathbf{v} \in \partial \| \mathbf{D} \cdot \|_1(\mathbf{x})}{\inf} \| \mathbf{h} - \tau \mathbf{v} \|_2^2  \right )
+        \end{equation*}
+    }
+    \step{}{
+        Consider a fixed $\tau \geq 0$. I claim that $\mathbb{E} \left ( \underset{ \mathbf{v} \in \partial \| \mathbf{D} \cdot \|_1(\mathbf{x})}{\inf} \| \mathbf{h} - \tau \mathbf{v} \|_2^2  \right ) \leq \mathbb{E} \left ( \| \mathbf{h} \|_2^2 \right ) - \left [ \frac{\mathbb{E} \left ( \left \|(\mathbf{I}_N - \mathbf{P}_\mathcal{S}) \mathbf{Dh} \right \|_1 \right )}{\underset{\|\mathbf{z}\|_2 \leq 1}{\max} \| \mathbf{Dz} \|_1} \right ]^2$
+    }
+        \begin{proof}
+            \pf\
+            \step{}{
+                Start with the following characterization from subdifferential calculus:
+                \begin{align*}
+                    \mathbf{v} \in \partial \| \mathbf{D} \cdot \|_1(\mathbf{x}) & \iff \mathbf{v} \in \mathbf{D}^\top \partial \| \cdot \|_1(\mathbf{Dx}) \\
+                    & \iff \exists \mathbf{u} \in \mathbb{B}_{\infty}^{N} : \mathbf{v} = \mathbf{D}^\top \left [\underbrace{\mathbf{P}_\mathcal{S} \operatorname{sign} \left ( \mathbf{Dx} \right )}_{= \operatorname{sign} \left ( \mathbf{Dx} \right )} + (\mathbf{I}_N - \mathbf{P}_\mathcal{S}) \mathbf{u} \right ]
+                \end{align*}
+            }
+            \step{}{
+                Note that $\partial \| \mathbf{D} \cdot \|_1(\mathbf{x})$ is a compact set, because it is the linear image of points in $\mathbb{B}_{\infty}^{N}$ by the finite-dimensional linear operator $\mathbf{D}^\top$.
+            }
+            \step{}{
+                Therefore, there exists at least one $\mathbf{v}^\star$ in  $\partial \| \mathbf{D} \cdot \|_1(\mathbf{x})$ for which the maximum $\underset{\mathbf{v} \in \partial \| \mathbf{D} \cdot \|_1(\mathbf{x})}{\max} \langle \mathbf{h}, \mathbf{v} \rangle =: \langle \mathbf{h}, \mathbf{v}^\star \rangle$ is achieved.
+            }
+            \step{}{
+                Fix this $\mathbf{v}^\star \in \partial \| \mathbf{D} \cdot \|_1(\mathbf{x})$, and compute
+                \begin{align*}
+                    \underset{ \mathbf{v} \in \partial \| \mathbf{D} \cdot \|_1(\mathbf{x})}{\inf} \enspace \| \mathbf{h} - \tau \mathbf{v} \|_2^2 & \leq \|\mathbf{h}\|_2^2 - \tau \langle \mathbf{h}, \mathbf{v}^\star \rangle + \tau^2 \| \mathbf{v}^\star \|_2^2 \\
+                    & = \|\mathbf{h}\|_2^2 - 2\tau \underset{\mathbf{v} \in \partial \| \mathbf{D} \cdot \|_1(\mathbf{x})}{\max} \langle \mathbf{h}, \mathbf{v} \rangle + \tau^2 \underset{\|\mathbf{z}\|_2 \leq 1}{\max} \langle \mathbf{z}, \mathbf{v}^\star \rangle \\
+                    & = \|\mathbf{h}\|_2^2 - 2\tau \langle \mathbf{h}, \mathbf{D}^\top \operatorname{sign} \left ( \mathbf{Dx} \right )\rangle - 2\tau \underset{\mathbf{u} \in \mathbb{B}_{\infty}^N}{\max} \left \langle \mathbf{h}, \mathbf{D}^\top (\mathbf{I}_N - \mathbf{P}_\mathcal{S}) \mathbf{u} \right \rangle \\
+                    & \qquad + \tau^2 \underset{\|\mathbf{z}\|_2 \leq 1}{\max} \left \langle \mathbf{z},  \underbrace{\mathbf{D}^\top \left [ \operatorname{sign} \left ( \mathbf{Dx} \right ) + (\mathbf{I}_N - \mathbf{P}_\mathcal{S}) \mathbf{u}^\star\right ]}_{\comment{For some $\mathbf{u}^\star \in \mathbb{B}_{\infty}^N$}} \right \rangle \\
+                    & = \|\mathbf{h}\|_2^2 - 2\tau \langle \mathbf{h}, \mathbf{D}^\top \operatorname{sign} \left ( \mathbf{Dx} \right )\rangle - 2\tau \| (\mathbf{I}_N - \mathbf{P}_\mathcal{S})\mathbf{Dh} \|_1 \\
+                    & \qquad + \tau^2 \underset{\|\mathbf{z}\|_2 \leq 1}{\max} \left \langle \mathbf{Dz}, \left[ \operatorname{sign} \left ( \mathbf{Dx} \right ) + (\mathbf{I}_N - \mathbf{P}_\mathcal{S}) \mathbf{u}^\star \right] \right \rangle \\
+                    \comment{H\"older ineq.} & \leq \|\mathbf{h}\|_2^2 - 2\tau \langle \mathbf{h}, \mathbf{D}^\top \operatorname{sign} \left ( \mathbf{Dx} \right )\rangle - 2\tau \| (\mathbf{I}_N - \mathbf{P}_\mathcal{S})\mathbf{Dh} \|_1 \\
+                    & \qquad + \tau^2 \underset{\|\mathbf{z}\|_2 \leq 1}{\max} \| \mathbf{Dz} \|_1 \cdot \underbrace{\left\| \operatorname{sign} \left ( \mathbf{Dx} \right ) + (\mathbf{I}_N - \mathbf{P}_\mathcal{S}) \mathbf{u}^\star \right\|_{\infty}}_{\leq 1} \\
+                \end{align*}
+            }
+            \step{}{
+                Recall that $\mathbb{E} \left ( \mathbf{h} \right ) = \mathbf{0}$, so taking the expectation on both sides of the previous inequality yields
+                \begin{equation*}
+                    \mathbb{E} \left ( \underset{ \mathbf{v} \in \partial \| \mathbf{D} \cdot \|_1(\mathbf{x})}{\inf} \| \mathbf{h} - \tau \mathbf{v} \|_2^2 \right ) \leq \|\mathbf{h}\|_2^2 - 2\tau \mathbb{E} \left ( \| (\mathbf{I}_N - \mathbf{P}_\mathcal{S})\mathbf{Dh} \|_1 \right ) + \tau^2 \underset{\|\mathbf{z}\|_2 \leq 1}{\max} \| \mathbf{Dz} \|_1.
+                \end{equation*}
+            }
+            \step{}{
+                Calculus tells us that $\tau = \frac{ \mathbb{E} \| (\mathbf{I}_N - \mathbf{P}_\mathcal{S})\mathbf{Dh} \|_1}{\underset{\|\mathbf{z}\|_2 \leq 1}{\max} \| \mathbf{Dz} \|_1^2}$ is the minimizer of the \acrshort{rhs} above. Replace this value of $\tau$ onto the inequality to reach the claim.~\qedsymbol
+            }
+        \end{proof}
+    \step{}{
+        Finally, check that $\mathbb{E} \left ( \| \mathbf{h} \|_2^2 \right ) = \mathbb{E} \left ( \| \mathbf{a} \|_2^2 \right )$.
+    }
+        \begin{proof}
+            \pf\ By direct calculation,
+            \begingroup
+            \allowdisplaybreaks
+            \begin{align*}
+                \mathbb{E} \left ( \| \mathbf{h} \|_2^2 \right ) & := \mathbb{E} \left ( \left \| \frac{1}{\sqrt{m}} \sum_{i=1}^{m} \varepsilon_i \mathbf{a}_i \right \|_2^2 \right ) \\
+                & = \frac{1}{m} \sum_{i,j} \mathbb{E} \left ( \varepsilon_i \varepsilon_j \right ) \mathbb{E} \left ( \langle \mathbf{a}_i, \mathbf{a}_j \rangle \right ) \\
+                & \quad \comment{Independence of $\mathbf{a}$ and $\varepsilon$} \\
+                & = \frac{1}{m} \left [ \sum_{i \neq j} \underbrace{\mathbb{E} \left ( \varepsilon_i \varepsilon_j \right )}_{=\mathbb{E}( \varepsilon_i)\mathbb{E}( \varepsilon_j) = 0} \mathbb{E} \left ( \langle \mathbf{a}_i, \mathbf{a}_j \rangle \right ) \right. \\
+                & \qquad\quad \left. + \sum_{i = 1}^m \underbrace{\mathbb{E} \left ( \varepsilon_i^2 \right )}_{= 1} \mathbb{E} \left ( \langle \mathbf{a}_i, \mathbf{a}_i \rangle \right )\right]\\
+                & \quad \comment{Independence and zero mean of $\varepsilon_1, \dots, \varepsilon_m$}\\
+                & = \frac{1}{m} \sum_{i=1}^m \mathbb{E} \left ( \| \mathbf{a}_i \|_2^2 \right ) \\
+                & = \frac{1}{m} \sum_{i=1}^m \mathbb{E} \left ( \| \mathbf{a} \|_2^2 \right ) \\
+                & \quad \comment{Identical distribution of $\mathbf{a}_1, \dots, \mathbf{a}_m \sim \mathbf{a}$}\\
+                & = \mathbb{E} \left ( \| \mathbf{a} \|_2^2 \right ) \enspace \qedsymbol\\
+            \end{align*}
+            \endgroup
+        \end{proof}
+    \qedstep{
+        Join the estimates in each step to unveil $W_{m}(\mathbf{a}, \mathcal{D}( \|\mathbf{D} \cdot \|_1, \mathbf{x}))^2 \leq \mathbb{E} \left ( \|\mathbf{a}\|_2^2 \right ) - \left [ \frac{\mathbb{E} \left ( \left \|(\mathbf{I}_N - \mathbf{P}_\mathcal{S}) \mathbf{Dh} \right \|_1 \right )}{\underset{\|\mathbf{z}\|_2 \leq 1}{\max} \| \mathbf{Dz} \|_1} \right ]^2$, the desired upper bound.
+    }
+\end{proof}
+

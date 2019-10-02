@@ -1,0 +1,163 @@
+\begin{proof}
+    \pf\ The argument consists on going through each of the conditions in Lemma \ref{lem:tails_golf}, ensuring that the golfing scheme will produce an inexact dual certificate for the uniqueness of $\mathbf{x}$ as the solution of \eqref{eq:l1_interpolation}. All the operators we have to deal with are sums of bounded, independent random matrices, allowing us to employ the Bernstein inequalities in Appendix \ref{ap:probabilistic_inequalities} to derive the necessary tail bounds.
+
+    \step{bound_spec_norm_PSMPS}{
+        I claim that $\mathbb{P} \left ( \left \{  \left \| \mathbf{P}_\mathcal{S} \mathbf{M} \mathbf{P}_\mathcal{S} \right \|_{2 \to 2} > 1 / 3 \right \}\right ) \leq \frac{\varepsilon}{3}$ if $m \geq 24 \cdot \Theta (\mathcal{S}, \bm{\pi}) \cdot \log \left ( \frac{6 |\mathcal{S}|}{\varepsilon} \right )$ .
+    }
+        \begin{proof}
+            \pf\ Write
+            \begin{align*}
+                \mathbf{X} := \mathbf{P}_\mathcal{S} \mathbf{M} \mathbf{P}_\mathcal{S} = \frac{1}{m} \sum_{i=1}^{m} \underbrace{\mathbf{P}_\mathcal{S}\left [ \mathbf{D} \left ( \mathbf{I}_n - \frac{1}{\pi_{\omega_i}}\mathbf{e}_{\omega_i} \mathbf{e}_{\omega_i}^\top \mathbf{P}_\mathcal{S} \right ) \mathbf{D}^{+} \right ]^\top \mathbf{P}_\mathcal{S}}_{=: \mathbf{X}_i},
+            \end{align*}
+            a sum of independent, zero-mean random matrices $\{\mathbf{X}_i\}_i$.
+            \step{}{
+                Bound each $\mathbf{X}_i$ almost surely with $\Theta (\mathcal{S}, \bm{\pi})$:
+                \begin{align*}
+                    \| \mathbf{X}_i \|_{2 \to 2} & \leq \underbrace{\left \| \mathbf{P}_\mathcal{S} \right \|_{2 \to 2}}_{= 1} \cdot \left \| \left [ \mathbf{D} \left ( \mathbf{I}_n - \frac{1}{\pi_{\omega_i}}\mathbf{e}_{\omega_i} \mathbf{e}_{\omega_i}^\top \right ) \mathbf{D}^{+} \right ]^\top \mathbf{P}_\mathcal{S} \right \|_{2 \to 2}\\
+                    & \leq \underset{i \in [n]}{\max} \enspace \left \| \left [ \mathbf{D} \left ( \mathbf{I}_n - \frac{1}{\pi_{i}}\mathbf{e}_{_i} \mathbf{e}_{i}^\top \right ) \mathbf{D}^{+} \right ]^\top \mathbf{P}_\mathcal{S} \right \|_{2 \to 2}\\
+                    & \leq \Theta (\mathcal{S}, \bm{\pi}).
+                \end{align*}
+            }
+            \step{}{
+                Bound the second moment matrices in the positive definite order:
+                \begin{align*}
+                    \mathbf{0} \preceq \mathbb{E} \left ( \mathbf{X}_i \mathbf{X}_{i}^\top \right ) & = \mathbf{P}_\mathcal{S} \mathbf{D} \mathbf{D}^{+} \underbrace{\mathbb{E} \left ( \left [ \mathbf{D} \left ( \mathbf{I}_n - \frac{1}{\pi_{\omega_i}}\mathbf{e}_{\omega_i} \mathbf{e}_{\omega_i}^\top \right ) \mathbf{D}^{+} \right ]^\top \mathbf{P}_\mathcal{S} \right ) }_{= \mathbf{0}} \\
+                    & \qquad + \mathbb{E} \left ( \frac{1}{\pi_{\omega_i}}\left [ \mathbf{D}^{+} \right ]^{\top} \mathbf{e}_{\omega_i} \mathbf{e}_{\omega_i}^\top \mathbf{D}^{\top}  \mathbf{P}_\mathcal{S} \left [ \mathbf{D} \left ( \mathbf{I}_n - \frac{1}{\pi_{\omega_i}}\mathbf{e}_{\omega_i} \mathbf{e}_{\omega_i}^\top \right ) \mathbf{D}^{+} \right ]^\top \mathbf{P}_\mathcal{S} \right ) \\
+                    & \preceq \mathbb{E} \left ( \frac{1}{\pi_{\omega_i}}\left [ \mathbf{D}^{+} \right ]^{\top} \mathbf{e}_{\omega_i} \mathbf{e}_{\omega_i}^\top \mathbf{D}^{\top}  \mathbf{P}_\mathcal{S} \right ) \\
+                    & \qquad \times \underset{i \in [n]}{\max} \enspace \left \| \left [ \mathbf{D} \left ( \mathbf{I}_n - \frac{1}{\pi_{i}}\mathbf{e}_{_i} \mathbf{e}_{i}^\top \right ) \mathbf{D}^{+} \right ]^\top \mathbf{P}_\mathcal{S} \right \|_{2 \to 2}\\
+                    & \preceq \Theta (\mathcal{S}, \bm{\pi}) \cdot \mathbf{D} \mathbf{D}^{+} \mathbf{P}_\mathcal{S} \\
+                    & \preceq \Theta (\mathcal{S}, \bm{\pi}) \cdot \mathbf{I}_N, \enspace \comment{$\mathbf{D} \mathbf{D}^{+}$ is an orthogonal projector}
+                \end{align*}
+                and, by symmetry, $\mathbb{E} \left ( \mathbf{X}_i^{\top} \mathbf{X}_{i} \right ) \preceq \Theta (\mathcal{S}, \bm{\pi}) \cdot \mathbf{I}_N$.
+            }
+            \step{}{
+                Set the variance parameter $v(\mathbf{X}) := \max \left \{ \mathbb{E} \left ( \mathbf{X} \mathbf{X}^\top \right ), \mathbb{E} \left ( \mathbf{X}^\top \mathbf{X} \right ) \right \} = \frac{1}{m} \Theta (\mathcal{S}, \bm{\pi})$.
+            }
+            \step{}{
+                With these moment bounds, the matrix Bernstein inequality in Lemma \ref{lem:matrix_bern} gives the tail bound
+                \begin{align*}
+                    \mathbb{P} \left ( \left \{  \left \| \mathbf{P}_\mathcal{S} \mathbf{M} \mathbf{P}_\mathcal{S} \right \|_{2 \to 2} > 1 / 3 \right \}\right ) \leq 2 |\mathcal{S}| \cdot \exp \left ( -\frac{m}{24 \Theta (\mathcal{S}, \bm{\pi})} \right ).
+                \end{align*}
+            }
+            \step{}{
+                This probability is less than $\varepsilon / 3$ if $m \geq 24 \cdot \Theta (\mathcal{S}, \bm{\pi}) \cdot \log \left ( \frac{6 |\mathcal{S}|}{\varepsilon} \right )$.
+            }
+            \qedsymbol
+        \end{proof}
+
+    \step{}{
+        I claim that $\mathbb{P} \left ( \left \{  \underset{k \notin \mathcal{S}}{\max} \left \| \mathbf{P}_\mathcal{S} \mathbf{M}^{\top} \mathbf{e}_k \right \|_2 > 1 \right \}\right ) \leq\frac{\varepsilon}{3}$ if $m \geq 24 \cdot \Theta (\mathcal{S}, \bm{\pi}) \cdot \log \left ( \frac{6 (N - |\mathcal{S}|)}{\varepsilon} \right )$.
+    }
+        \begin{proof}
+            \pf\ Note the domination relation
+            \begin{align*}
+                \underset{k \notin \mathcal{S}}{\max} \left \| \mathbf{P}_\mathcal{S} \mathbf{M}^{\top} \mathbf{e}_k \right \|_2 \leq \left \| \mathbf{P}_\mathcal{S} \mathbf{M}^{\top} \left ( \mathbf{I}_N - \mathbf{P}_\mathcal{S} \right ) \right \|_{2 \to 2} = \left \| \left ( \mathbf{I}_N - \mathbf{P}_\mathcal{S} \right ) \mathbf{M} \mathbf{P}_\mathcal{S}  \right \|_{2 \to 2},
+            \end{align*}
+            implying $\mathbb{P} \left ( \left \{  \underset{k \notin \mathcal{S}}{\max} \left \| \mathbf{P}_\mathcal{S} \mathbf{M}^{\top} \mathbf{e}_k \right \|_2 > 1 \right \}\right ) \leq \mathbb{P} \left ( \left \{  \left \| \left ( \mathbf{I}_N - \mathbf{P}_\mathcal{S} \right ) \mathbf{M} \mathbf{P}_\mathcal{S}  \right \|_{2 \to 2} > 1 \right \}\right )$. The \acrlong{rhs} is less than $\varepsilon / 3$ if $m \geq 24 \cdot \Theta (\mathcal{S}, \bm{\pi}) \cdot \log \left ( \frac{6 (N - |\mathcal{S}|)}{\varepsilon} \right )$, by precisely the same arguments given in step \stepref{bound_spec_norm_PSMPS}.
+            \qedsymbol
+        \end{proof}
+
+    \step{}{
+        For each $l \in [L]$, I claim that $\mathbb{P} \left( \left\{ \left\| \mathbf{P}_\mathcal{S} \mathbf{M}^{(l)} \mathbf{P}_\mathcal{S} \mathbf{v} \right\|_2 > (1/3) \| \mathbf{v} \|_2 \right\} \right) \leq \varepsilon / 3 L$, as long as the row size satisfies $m_l \geq 8 \cdot \max \left \{ 3\Upsilon (\mathcal{S}, \bm{\pi}), \Theta (\mathcal{S}, \bm{\pi})\right \} \cdot \log \left ( \frac{6 L}{\varepsilon} \right )$.
+    }
+        \begin{proof}
+            \pf\ The problem is the same for each $l \in [L]$, so we consider only $l=1$. Fix $\mathbf{v} \in \mathbb{B}_{2}^N$ and write
+            \begin{align*}
+                \mathbf{P}_\mathcal{S} \mathbf{M}^{(1)} \mathbf{P}_\mathcal{S} \mathbf{v} = \frac{1}{m_1} \sum_{i=1}^{m_1} \underbrace{\mathbf{P}_\mathcal{S}\left [ \mathbf{D} \left ( \mathbf{I}_n - \frac{1}{\pi_{\omega_i}}\mathbf{e}_{\omega_i} \mathbf{e}_{\omega_i}^\top \mathbf{P}_\mathcal{S} \right ) \mathbf{D}^{+} \right ]^\top \mathbf{P}_\mathcal{S} \mathbf{v}}_{=: \mathbf{v}_i},
+            \end{align*}
+            a sum of independent, zero-mean random vectors $\{\mathbf{v}_i\}_i$.
+            \step{}{
+                Bound each $\mathbf{v}_i$ almost surely with $\Theta (\mathcal{S}, \bm{\pi})$:
+                \begin{align*}
+                    \| \mathbf{v}_i \|_{2} & \leq \left \| \left [ \mathbf{D} \left ( \mathbf{I}_n - \frac{1}{\pi_{\omega_i}}\mathbf{e}_{\omega_i} \mathbf{e}_{\omega_i}^\top \right ) \mathbf{D}^{+} \right ]^\top \mathbf{P}_\mathcal{S} \right \|_{2 \to 2} \cdot \underbrace{\left \| \mathbf{v} \right \|_{2}}_{\leq 1} \cdot \\
+                    & \leq \Theta (\mathcal{S}, \bm{\pi}).
+                \end{align*}
+            }
+            \step{}{
+                Bound the second moment as
+                \begin{align*}
+                    \mathbb{E} \left ( \| \mathbf{v}_i \|_2^2 \right ) & = \sum_{i=1}^{n} \pi_i \left \| \mathbf{P}_\mathcal{S}\left [ \mathbf{D} \left ( \mathbf{I}_n - \frac{1}{\pi_{\omega_i}}\mathbf{e}_{\omega_i} \mathbf{e}_{\omega_i}^\top \mathbf{P}_\mathcal{S} \right ) \mathbf{D}^{+} \right ]^\top \mathbf{P}_\mathcal{S} \mathbf{v }\right \|_2^2\\
+                    & \leq \sum_{i=1}^{n} \pi_i \left \| \left [ \mathbf{D} \left ( \mathbf{I}_n - \frac{1}{\pi_{\omega_i}}\mathbf{e}_{\omega_i} \mathbf{e}_{\omega_i}^\top \mathbf{P}_\mathcal{S} \right ) \mathbf{D}^{+} \right ]^\top \mathbf{P}_\mathcal{S} \mathbf{v }\right \|_2^2\\
+                    & \leq \Upsilon (\mathcal{S}, \bm{\pi}).
+                \end{align*}
+            }
+            \step{}{
+                Set the variance parameter $\sigma^2 = \frac{1}{m_{1}^2} \sum_{i=1}^{m_1} \mathbb{E} \left ( \| \mathbf{v}_i \|_2^2 \right ) \leq \frac{1}{m_1} \Upsilon (\mathcal{S}, \bm{\pi})$.
+            }
+            \step{}{
+                With these moment bounds, the vector Bernstein inequality in Lemma \ref{lem:vector_bern} gives the tail bound
+                \begin{align*}
+                    \mathbb{P} \left( \left\{ \left\| \mathbf{P}_\mathcal{S} \mathbf{M}^{(l)} \mathbf{P}_\mathcal{S} \mathbf{v} \right\|_2 > (1/3) \| \mathbf{v} \|_2 \right\} \right) \leq 2 \exp \left ( - \frac{m_1}{8} \min \left \{ \frac{1}{3\Upsilon (\mathcal{S}, \bm{\pi})}, \frac{1}{\Theta (\mathcal{S}, \bm{\pi})}\right \} \right ).
+                \end{align*}
+            }
+            \step{}{
+                This probability is less than $\varepsilon / 3L$ if $m_1 \geq 8 \cdot \max \left \{ 3\Upsilon (\mathcal{S}, \bm{\pi}), \Theta (\mathcal{S}, \bm{\pi})\right \} \cdot \log \left ( \frac{6 L}{\varepsilon} \right )$.
+            }
+            \qedsymbol
+        \end{proof}
+
+    \step{}{
+        For each $l \in [L]$, I claim that both $\mathbb{P} ( \{ \| \mathbf{P}_\mathcal{S} \mathbf{M}^{(l)} \mathbf{P}_\mathcal{S} \mathbf{v} \|_\infty > (1/4) \| \mathbf{v} \|_\infty \} ) \leq \varepsilon / 3 L$ and its complement $\mathbb{P} ( \{ \| (\mathbf{I}_N - \mathbf{P}_\mathcal{S}) \mathbf{M}^{(l)} \mathbf{P}_\mathcal{S} \mathbf{v} \|_\infty > (1/4) \| \mathbf{v} \|_\infty \} ) \leq \varepsilon / 3 L$ hold, provided that the number of rows satisfies $m_l \geq 8 \cdot \max \left \{ 3\Upsilon (\mathcal{S}, \bm{\pi}), \Theta (\mathcal{S}, \bm{\pi})\right \} \cdot \log \left ( \frac{6 N}{\varepsilon} \right )$.
+    }
+        \begin{proof}
+            \pf\ Once again, the problem is the same for each $l \in [L]$, so we consider only $l=1$. Fix $k \in [N]$, some $\mathbf{v} \in \mathbb{B}_{\infty}^N$, and write
+            \begin{align*}
+                X := \left \langle \tilde{\mathbf{e}}_k, \mathbf{M}^{(l)} \mathbf{P}_\mathcal{S} \mathbf{v} \right \rangle = \frac{1}{m_1} \sum_{i=1}^{m_1}  \underbrace{\left \langle \tilde{\mathbf{e}}_k, \left [ \mathbf{D} \left ( \mathbf{I}_n - \frac{1}{\pi_{\omega_i}}\mathbf{e}_{\omega_i} \mathbf{e}_{\omega_i}^\top \mathbf{P}_\mathcal{S} \right ) \mathbf{D}^{+} \right ]^\top \mathbf{P}_\mathcal{S} \mathbf{v} \right \rangle}_{=: X_i}
+            \end{align*}
+            a sum of independent, zero-mean random variables $\{X_i\}_i$.
+            \step{}{
+                Bound each $X_i$ almost surely with $\Theta (\mathcal{S}, \bm{\pi})$:
+                \begin{align*}
+                    |X_i| & = \left \| \tilde{\mathbf{e}}_k^\top \left [ \mathbf{D} \left ( \mathbf{I}_n - \frac{1}{\pi_{\omega_i}}\mathbf{e}_{\omega_i} \mathbf{e}_{\omega_i}^\top \mathbf{P}_\mathcal{S} \right ) \mathbf{D}^{+} \right ]^\top \mathbf{P}_\mathcal{S} \right \|_1 \cdot \underbrace{\| \mathbf{v} \|_{\infty}}_{\leq 1}\\
+                    & \leq \Theta (\mathcal{S}, \bm{\pi}).
+                \end{align*}
+            }
+            \step{}{
+                Bound the second moment as
+                \begin{align*}
+                    \mathbb{E} \left ( | X_i |^2 \right ) & = \sum_{i=1}^{n} \pi_i \left | \left \langle \tilde{\mathbf{e}}_k, \left [ \mathbf{D} \left ( \mathbf{I}_n - \frac{1}{\pi_{\omega_i}}\mathbf{e}_{\omega_i} \mathbf{e}_{\omega_i}^\top \mathbf{P}_\mathcal{S} \right ) \mathbf{D}^{+} \right ]^\top \mathbf{P}_\mathcal{S} \mathbf{v} \right \rangle \right |^2\\
+                    & \leq \Upsilon (\mathcal{S}, \bm{\pi}).
+                \end{align*}
+            }
+            \step{}{
+                Set the variance parameter $\sigma^2 = \frac{1}{m_1^2} \sum_{i=1}^{m_1} \mathbb{E} \left ( | X_i |^2 \right ) \leq \frac{1}{m_1} \Upsilon (\mathcal{S}, \bm{\pi})$.
+            }
+            \step{}{
+                The scalar Bernstein inequality in Lemma \ref{lem:scalar_bern} gives the tail bound
+                \begin{align*}
+                    \mathbb{P} \left( \left\{ \left \langle \tilde{\mathbf{e}}_k, \mathbf{M}^{(l)} \mathbf{P}_\mathcal{S} \mathbf{v} \right \rangle > (1/4) \| \mathbf{v} \|_2 \right\} \right) \leq 2 \exp \left ( - \frac{3m_1}{32} \min \left \{ \frac{1}{4\Upsilon (\mathcal{S}, \bm{\pi})}, \frac{1}{\Theta (\mathcal{S}, \bm{\pi})}\right \} \right )
+                \end{align*}
+                for each fixed $k \in [N]$.
+            }
+            \step{}{
+                Taking the union bound over $\mathcal{S}$ and then over $N \setminus [N]$ yields in turn
+                \begin{align*}
+                    \mathbb{P} \left( \left\{ \left \langle \tilde{\mathbf{e}}_k, \mathbf{M}^{(l)} \mathbf{P}_\mathcal{S} \mathbf{v} \right \rangle > (1/4) \| \mathbf{v} \|_2 \right\} \right) & \leq 2 |\mathcal{S}| \times \\
+                    & \qquad \exp \left ( - \frac{3m_1}{32} \min \left \{ \frac{1}{4\Upsilon (\mathcal{S}, \bm{\pi})}, \frac{1}{\Theta (\mathcal{S}, \bm{\pi})}\right \} \right )\\
+                    \mathbb{P} \left( \left\{ \left \langle \tilde{\mathbf{e}}_k, \mathbf{M}^{(l)} \mathbf{P}_\mathcal{S} \mathbf{v} \right \rangle > (1/4) \| \mathbf{v} \|_2 \right\} \right) & \leq 2 (N - |\mathcal{S}|) \times \\
+                    & \qquad \exp \left ( - \frac{3m_1}{32} \min \left \{ \frac{1}{4\Upsilon (\mathcal{S}, \bm{\pi})}, \frac{1}{\Theta (\mathcal{S}, \bm{\pi})}\right \} \right )
+                \end{align*}
+            }
+            \step{}{
+                Both these probabilities are less than $\varepsilon / 3 L$ if $m_1 \geq \frac{32}{3} \cdot \max \left \{ 4\Upsilon (\mathcal{S}, \bm{\pi}), \Theta (\mathcal{S}, \bm{\pi})\right \} \cdot \log \left ( \frac{6 N L}{\varepsilon} \right )$.
+            }
+        \end{proof}
+
+    \step{}{
+        We now call upon the definition of $\Gamma (\mathcal{S}, \bm{\pi}) := \max \left \{ 4\Upsilon (\mathcal{S}, \bm{\pi}), \Theta (\mathcal{S}, \bm{\pi})\right \}$. All requirements in Lemma \ref{lem:tails_golf} depending on matrices $\mathbf{M}^{(l)}$ are simultaneously attained if
+        \begin{align*}
+            m = \sum_{l=1}^{L} m_l \geq \frac{32L}{3} \cdot \Gamma (\mathcal{S}, \bm{\pi}) \cdot \log \left ( \frac{6 N L}{\varepsilon} \right ),
+        \end{align*}
+        whereas the requirements depending on matrix $\mathbf{M}$ are enforced if
+        \begin{align*}
+            m \geq 24 \cdot \Theta (\mathcal{S}, \bm{\pi}) \cdot \log \left ( \frac{6 N}{\varepsilon} \right ).
+        \end{align*}
+        Recalling that $L \geq 2 + \left \lceil \frac{\log |S|}{2 \log 3} \right \rceil$, if suffices then to set
+        \begin{align*}
+            m \geq \frac{32}{3} \left ( 2 + \frac{\log |\mathcal{S}|}{2 \log(3)} \right ) \cdot \Gamma(\mathcal{S}, \bm{\pi}) \cdot \log(|\mathcal{S}|) \cdot \log \left ( \frac{6 \cdot N \cdot \left ( 2 + \frac{\log |\mathcal{S}|}{2 \log(3)} \right )}{\varepsilon} \right ),
+        \end{align*}
+        which can be simplified to $m \geq 38 \cdot \Gamma(\mathcal{S}, \bm{\pi}) \cdot \log(|\mathcal{S}|) \cdot \log \left ( \frac{63 \cdot N \cdot\log (|\mathcal{S}|)}{\varepsilon} \right )$ if we assume $|\mathcal{S}| \geq 3$.~\footnote{We do not lose in doing so, since a co-support $\mathcal{S} = \operatorname{supp}\left ( \mathbf{Dx} \right )$ of $3$ is orders of magnitude below what is normally encountered in applications.}
+    }
+
+    \qedstep{All the conditions of Lemma \ref{lem:tails_golf} hold simutaneously with probability larger than $1 - \varepsilon$. Therefore --- with the same likelihood --- the golfing scheme certifies $\mathbf{x}$ to be the unique solution of \eqref{eq:l1_interpolation}.}
+\end{proof}

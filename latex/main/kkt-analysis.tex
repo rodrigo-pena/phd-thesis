@@ -1,0 +1,52 @@
+The method of Lagrange multipliers~\cite[Ch. 5]{boyd2009} gives us a dual perspective on problem \eqref{eq:l1_interpolation}. First, consider augmenting its objective function in the following way. Let $\bm{\nu} = (\nu_1, \dots, \nu_m) \in \mathbb{R}^{m}$ be a vector with an entry for each of the $m$ implicit equations in $\mathbf{Az} = \mathbf{Ax}$. The numbers $\nu_1, \dots, \nu_m$ will act as the Lagrange multipliers for the equality constraint $\mathbf{Az} - \mathbf{Ax} = \mathbf{0}$. The multipliers augment the objective through the map
+\begin{equation}
+    \mathbf{z}, \bm{\nu} \mapsto \mathfrak{L}(\mathbf{z}, \bm{\nu}) := \| \mathbf{D z} \|_1 + \left\langle \bm{\nu}, \mathbf{Az} - \mathbf{Ax}\right\rangle,
+\end{equation}
+The function $\mathfrak{L}: \mathbb{R}^{n} \times \mathbb{R}^{m} \to \mathbb{R}$ is then deemed the Lagrangian of the problem. Second, use the Lagrangian to define the dual problem~\footnote{Taking \eqref{eq:l1_interpolation} as the reference, \emph{primal} problem.}
+\begin{equation}
+    \underset{\bm{\nu} \in \mathbb{R}^{m}}{\max} \enspace \underset{\mathbf{z} \in \mathbb{R}^{n}}{\min} \enspace \| \mathbf{D z} \|_1 + \left\langle \bm{\nu}, \mathbf{Az} - \mathbf{Ax}\right\rangle \tag{P1-dual},
+    \label{eq:l1_interpolation_dual}
+\end{equation}
+whose objective has an optimal value identical to the one of \eqref{eq:l1_interpolation}~\footnote{This is guaranteed because the primal problem is convex and Slater's condition is satisfied: there is at least one strictly feasible point $\mathbf{z}$, namely $\mathbf{z} \equiv \mathbf{x}$, belonging to the relative interior of the primal's objective~\cite[Sec. 5.2.3]{boyd2009}.}.
+
+The just-defined \eqref{eq:l1_interpolation_dual} is a saddle-point problem, convex in $\mathbf{z}$ and concave~\footnote{It is actually \emph{linear} in $\bm{\nu}$, hence both convex \emph{and} concave.} in $\bm{\nu}$. Variational analysis~\cite[Thm. 8.15]{rockafellar2009} tells us that $(\mathbf{z}^\star, \bm{\nu}^\star)$ is the corresponding saddle-point (or optimal pair) if the inclusions
+\begin{align}
+    \label{eq:saddle_dual} \mathbf{0} & \in \partial_{\bm{\nu}} \mathfrak{L}(\mathbf{z}^\star, \bm{\nu}^\star), \enspace \text{and}\\
+    \label{eq:saddle_primal} \mathbf{0} & \in \partial_{\mathbf{z}} \mathfrak{L}(\mathbf{z}^\star, \bm{\nu}^\star)
+\end{align}
+take place~\footnote{In Calculus, this is analogous to finding the critical points of a differentiable function in the places where the derivative vanishes.}. The Lagrangian is differentiable with respect to $\bm{\nu}$, so we can unpack \eqref{eq:saddle_dual} as
+\begin{align*}
+    \mathbf{0} \in \partial_{\bm{\nu}} \mathfrak{L}(\mathbf{z}^\star, \bm{\nu}^\star) & \iff \mathbf{0} = \nabla_{\bm{\nu}} \left\{ \| \mathbf{D}\mathbf{z}^\star \|_1 + \left\langle \cdot, \mathbf{A}\mathbf{z}^\star - \mathbf{Ax}\right\rangle \right\} (\bm{\nu}^\star)\\
+    & \iff \mathbf{0} = \mathbf{A}\mathbf{z}^\star - \mathbf{Ax}.
+\end{align*}
+For the second inclusion, we have to deal with the subdifferential of $\|\mathbf{D} \cdot \|_1$ at $\mathbf{z}^\star$. It helps to recall this set's defining expressions from Proposition \ref{prop:character_subdifferential_l1}, which let us write $\mathbf{z} \in \partial \|\mathbf{D} \cdot \|_1 (\mathbf{z}^\star)$ $\iff$ $\mathbf{z} = \mathbf{D}^{\top} \left[ \operatorname{sign} \left ( \mathbf{Dx} \right ) + \left ( \mathbf{I}_N + \mathbf{P}_{\mathcal{S}} \right ) \mathbf{u} \right]$ for some $\mathbf{u} \in \mathbb{R}^{N}$ satisfying $\left\|(\mathbf{I}_N - \mathbf{P}_{\mathcal{S}}) \mathbf{u}\right\|_\infty \leq 1$. As a result, we can read \eqref{eq:saddle_primal} as
+\begin{align*}
+    \mathbf{0} \in \partial_{\mathbf{z}} \mathfrak{L}(\mathbf{z}^\star, \bm{\nu}^\star) & \iff \mathbf{0} = \partial \|\mathbf{D} \cdot \|_1 (\mathbf{z}^\star) + \nabla_{\mathbf{z}} \left\{ \left\langle \bm{\nu}^\star, \mathbf{A}\cdot - \mathbf{Ax}\right\rangle \right\} (\mathbf{z}^\star)\\
+    & \iff \mathbf{0} = \mathbf{D}^{\top} \left[ \operatorname{sign} \left ( \mathbf{Dx} \right ) + \left ( \mathbf{I}_N + \mathbf{P}_{\mathcal{S}} \right ) \mathbf{u}^\star \right] + \mathbf{A}^{\top} \bm{\nu}^\star,
+\end{align*}
+where $\mathbf{u}^\star$ is such that $\mathbf{z}^\star = \mathbf{D}^\top \mathbf{u}^\star$ \emph{and} $\left\|(\mathbf{I}_N - \mathbf{P}_{\mathcal{S}}) \mathbf{u}^\star \right\|_\infty \leq 1$.
+
+Together, the unpacked saddle-point expressions form the so-called \acrfull{kkt} conditions for the optimality of the primal-dual pair $(\mathbf{z}^\star, \bm{\nu}^\star)$:
+\begin{equation*}
+    \mathbf{A}\mathbf{z}^{\star} = \mathbf{Ax}
+\end{equation*}
+and
+\begin{equation*}
+    \mathbf{z}^\star = \mathbf{A}^{\top} \bm{\nu}^\star = \mathbf{D}^\top \mathbf{u}^\star \enspace : \enspace \left\{
+    \begin{matrix}
+        \mathbf{P}_{\mathcal{S}} \mathbf{u}^\star =  \operatorname{sign} \left ( \mathbf{Dx} \right )\\
+        \left \| \left ( \mathbf{I}_N - \mathbf{P}_\mathcal{S} \right ) \mathbf{u}^\star \right \|_{\infty} \leq 1
+    \end{matrix}
+    \right. \enspace .
+\end{equation*}
+The first of these just restates the interpolation constraint; the second lists the ingredients we will need in the rest of the chapter. Problem \eqref{eq:l1_interpolation} is only succesful if each of its optimal points $\mathbf{z}^\star$ is identical to $\mathbf{x}$. In this case the first of the \acrshort{kkt} conditions is trivially satisfied; let us focus on the second one then.
+
+Note that not much is demanded of the optimal dual point $..bm{\nu}^\star$: it just needs to be different than zero, lest $\mathbf{z}^\star$ be zero as well. The equation $\mathbf{z}^\star = \mathbf{A}^{\top} \bm{\nu}^\star$, in other words, just says that $\mathbf{z}^\star$ should be in the range of $\mathbf{A}^\top$. The only degree of freedom left is vector the $\mathbf{u}^\star$. If there is some such vector simultaneously satisfying
+\begin{align}
+    \label{eq:kkt0}\mathbf{D}^\top \mathbf{u}^\star \in \operatorname{range} \left( \mathbf{A}^\top \right),\\
+    \label{eq:kkt1}\mathbf{P}_{\mathcal{S}} \mathbf{u}^\star =  \operatorname{sign} \left ( \mathbf{Dx} \right )\\
+    \label{eq:kkt2}\left \| \left ( \mathbf{I}_N - \mathbf{P}_\mathcal{S} \right ) \mathbf{u}^\star \right \|_{\infty} \leq 1,
+\end{align}
+and $\mathbf{x} = \mathbf{D}^\top \mathbf{u}^\star$, then it certifies $\mathbf{x}$ as the solution of \eqref{eq:l1_interpolation}. We suddenly see in $\mathbf{u}^\star$ the (dual) certificate we had been looking for.
+
+But before we rush, remember the random nature of the sampling matrix $\mathbf{A}$. It turns impractical the search for a vector $\mathbf{u}^\star$ satisfying an equality constraint like $\mathbf{P}_{\mathcal{S}} \mathbf{u}^\star =  \operatorname{sign} \left ( \mathbf{Dx} \right )$, \emph{while} having a deterministic image $\mathbf{D}^\top \mathbf{u}^\star$ that lies in a random subspace. Fortunately, I show in the next section how some points $\mathbf{u} \in \mathbb{R}^{N}$ can be enough of a recovery certificate despite $\mathbf{P}_{\mathcal{S}} \mathbf{u}$ merely approximating $\operatorname{sign} \left ( \mathbf{Dx} \right )$. This relaxation does not come --- of course --- without a cost, for it demands a more precise control over the interplay between operators $\mathbf{D}$ and $\mathbf{A}$. Still, it pays off, later on, when the defining expressions for these inexact certificates are turned into the blueprint for an effective golfing scheme.

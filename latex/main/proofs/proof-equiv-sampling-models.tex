@@ -1,0 +1,81 @@
+This appendix adapts a reasoning found in \cite[Appendix]{candes2011a}, arguing for a certain equivalence between the sampling models introduced in Section \ref{sec:sampling}. For the purposes of the sort of decoders used in this thesis, a recovery guarantee obtained from one sampling model automatically implies a similar recovery guarantee for the other.
+
+Assume we have an algorithm that takes as input samples of some $n$-dimensional vector and outputs a vector in $\mathbb{R}^{n}$. Denote by $\texttt{Success}$ the event whereby this algorithm produces the correct output. The notion of success can be arbitrary, as long as its probability never decreases as the number of samples increases. In other words, if the samples are indexed by a set $\Omega$, the quantity $\mathbb{P} \left ( \left \{ \texttt{Success} \right \}\right )$ is monotonically increasing with increasing $|\Omega|$.
+
+Now, denote by $\mathbb{P}_{\text{\acrshort{ber}}} \left ( \left \{  \texttt{Success} \right \}\right )$ and $\mathbb{P}_{\text{\acrshort{cswr}}} \left ( \left \{  \texttt{Success} \right \}\right )$ the probabilities of success induced by the distributions of the \acrfull{ber} and the \acrfull{cswr}, respectively. Recall that \acrshort{cswr} always draws $m$ samples, while the number of samples produced by \acrshort{ber} is random, with mean denoted by $\mean{m} = \mathbb{E} \left ( |\Omega| \right )$. I will put the number of samples in evidence by referring to the \acrlong{ber} as Ber($\mean{m}$) and to the \acrlong{cswr} as CSWR($m$).
+
+\begin{lemma}
+    Let $\mean{m} = \frac{1}{1 + \varepsilon} m$, for any $\varepsilon > 0$. Then, a success probability of $P$ under CSWR($m$) implies a success probability of $P \left [ 1 - 2 \exp \left ( \frac{-3 \varepsilon \mean{m}}{8} \right ) \right ]$ under Ber($\mean{m}$) .
+\end{lemma}
+
+\begin{proof*}
+    \mainproof
+
+    \pf
+    \step{}{
+        A direct calculation reveals
+        \begin{align*}
+            \mathbb{P}_{\text{Ber}(\mean{m})} \left ( \left \{  \texttt{Success} \right \}\right ) & \geq \sum_{k=m}^{n} \mathbb{P}_{\text{Ber}(\mean{m})} \left ( \left \{  \texttt{Success} | |\Omega| = k \right \} \right ) \mathbb{P}_{\text{Ber}(\mean{m})} \left ( \left \{ |\Omega| = k \right \} \right ) \\
+            & \geq \mathbb{P}_{\text{CSWR}(m)} \left ( \left \{  \texttt{Success} \right \} \right ) \sum_{k=m}^{n} \mathbb{P}_{\text{Ber}(\mean{m})} \left ( \left \{  |\Omega| = k \right \}\right ) \\
+            & = \mathbb{P}_{\text{CSWR}(m)} \left ( \left \{  \texttt{Success} \right \} \right ) \mathbb{P}_{\text{Ber}(\mean{m})} \left ( \left \{ |\Omega| \geq m \right \} \right ) \\
+            & = \mathbb{P}_{\text{CSWR}(m)} \left ( \left \{ \texttt{Success} \right \} \right ) \left [ 1 - \mathbb{P}_{\text{Ber}(\mean{m})} \left ( \left \{  |\Omega| < c\mean{m} \right \}\right ) \right ] \\
+            & \geq \mathbb{P}_{\text{CSWR}(m)} \left ( \left \{ \texttt{Success} \right \} \right ) \left [ 1 - 2 \exp \left ( -3 c\mean{m} / 8 \right ) \right ]
+        \end{align*}
+    }
+    \begin{proof} \pf
+        \step{}{
+            Conditioned on its cardinality, the distribution of $\Omega$ under Ber($\mean{m}$) is equivalent to coordinate sampling \emph{without} replacement. A sample without replacement always implies more distinct elements in $\Omega$ than a sample with replacement (for the same number of measurements). Thus, for any $k \geq m$,
+            \begin{equation*}
+                \mathbb{P}_{\text{Ber($\mean{m}$)}} \left ( \left \{ \texttt{Success} | |\Omega = k|\right \}\right ) \geq \mathbb{P}_{\text{CSWR($m$)}} \left ( \left \{  \texttt{Success} \right \}\right ).
+            \end{equation*}
+        }
+        \step{}{
+            The mononicity assumption also implies, for every $k \leq m$,
+            \begin{equation*}
+                \mathbb{P}_{\text{CSWR($k$)}} \left ( \left \{  \texttt{Success} \right \}\right ) \leq \mathbb{P}_{\text{CSWR($m$)}} \left ( \left \{  \texttt{Success} \right \}\right ).
+            \end{equation*}
+        }
+        \step{}{
+            Finally, the scalar Bernstein inequality (Lemma \ref{lem:scalar_bern}) uncovers the tail bound
+            \begin{equation*}
+                \mathbb{P}_{\text{Ber($\mean{m}$)}} \left ( \left \{  |\Omega| < m \right \}\right ) = \mathbb{P}_{\text{Ber($\mean{m}$)}} \left ( \left \{  |\Omega| < (1 + \varepsilon)\mean{m} \right \}\right ) \leq 2 \exp \left ( -3 \varepsilon \mean{m} / 8 \right ).
+            \end{equation*}
+        }
+    \end{proof}
+    \qedstep
+\end{proof*}
+
+\begin{lemma}
+    There exists some $\varepsilon_1 \in (0, 1)$ such that if $m =  \frac{1 + \varepsilon}{1 - \varepsilon_1} \mean{m}$, then a success probability of $P$ under Ber($\mean{m}$) implies a corresponding success probability of $P - 2 \exp \left ( \frac{-3 \varepsilon_2 \mean{m}}{8} \right )$ under CSWR($m$), for any $\varepsilon_2 > 0$.
+\end{lemma}
+
+\begin{proof*}
+    \mainproof
+
+    \pf
+    \step{}{
+        There exists some $\varepsilon_1$ for which
+        \begin{align*}
+            \mathbb{P}_{\text{Ber}(\mean{m})} \left ( \left \{  \texttt{Success} \right \}\right ) & = \sum_{k=1}^{(1 - \varepsilon_1)m - 1} \mathbb{P}_{\text{Ber}(\mean{m})} \left ( \left \{  \texttt{Success} | |\Omega| = k \right \} \right ) \mathbb{P}_{\text{Ber}(\mean{m})} \left ( \left \{ |\Omega| = k \right \} \right ) \\
+            & \quad + \sum_{k=(1 - \varepsilon_1)m}^{n} \mathbb{P}_{\text{Ber}(\mean{m})} \left ( \left \{  \texttt{Success} | |\Omega| = k \right \} \right ) \mathbb{P}_{\text{Ber}(\mean{m})} \left ( \left \{ |\Omega| = k \right \} \right ) \\
+            & \leq \mathbb{P}_{\text{CSWR($m$)}} \left ( \left \{  \texttt{Success} \right \}\right ) + \mathbb{P}_{\text{Ber}(\mean{m})} \left ( \left \{ |\Omega| \geq (1 - \varepsilon_1)m \right \} \right ) \\
+            & \leq \mathbb{P}_{\text{CSWR($m$)}} \left ( \left \{  \texttt{Success} \right \}\right ) + 2 \exp \left ( \frac{-3 \varepsilon_2 \mean{m}}{8} \right ) \\
+        \end{align*}
+    }
+    \begin{proof} \pf
+        \step{}{
+            Conditioned on its cardinality, the distribution of $\Omega$ under Ber($\mean{m}$) is equivalent to coordinate sampling \emph{without} replacement. For the same number of measurements, a sample without replacement always implies more distinct elements in $\Omega$ than a sample with replacement with the same number of measurements. However, there exists some $\varepsilon$ such that the number of distinct elements in a sample without replacement of size $(1 - \varepsilon)m$ is smaller than the number of distinct elements in a sample with replacement of size $m$. Take $\varepsilon_1$ to be the infimum among such $\varepsilon$, and the monotonicity in the success likelihood for the algorithm will imply
+            \begin{equation*}
+                \mathbb{P}_{\text{Ber($\mean{m}$)}} \left ( \left \{ \texttt{Success} | |\Omega = k|\right \}\right ) \leq \mathbb{P}_{\text{CSWR($m$)}} \left ( \left \{  \texttt{Success} \right \}\right ),
+            \end{equation*}
+            for any $k \leq (1 - \varepsilon_1) m$.
+        }
+        \step{}{
+            Once again, the tail bound is given by the scalar Bernstein inequality (Lemma \ref{lem:scalar_bern}) uncovers
+            \begin{equation*}
+                \mathbb{P}_{\text{Ber($\mean{m}$)}} \left ( \left \{  |\Omega| > (1 - \varepsilon_1) m \right \}\right ) = \mathbb{P}_{\text{Ber($\mean{m}$)}} \left ( \left \{  |\Omega| > (1 + \varepsilon_2) \mean{m} \right \}\right ) \leq 2 \exp \left ( -3 \varepsilon_2 \mean{m} / 8 \right ).
+            \end{equation*}
+        }
+    \end{proof}
+    \qedstep
+\end{proof*}
