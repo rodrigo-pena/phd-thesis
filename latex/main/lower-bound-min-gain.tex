@@ -7,12 +7,12 @@ Notions of width appear as a consequence of translating the trivial intersection
 
 Strategies for lower bounding the minimum gain vary according to which random matrix plays the role of measurement operator. It is enlightening at first to imagine what would happen if we had Gaussian measurement vectors. Then, I introduce Mendelson's small-ball method as a potential path towards a direct certificate in our setting. Unfortunately, the ``spikiness'' of our coordinate-sampling matrices proves to be a burden down this road.
 
-The chapter finishes with an open question, but points towards a way to get a direct certificate for robust recovery in \eqref{eq:l1_regression}. A way that requires knowing more about the \emph{coordinate structure} of descent cones induced by the \acrshort{gtv} semi-norm. Ultimately, the sample complexity of \acrshort{gtv} decoders only gets a workable expression in Chapter \ref{ch:inexact_dual}.
+The chapter finishes with an open question, but points towards a way to get a direct certificate for a robust recovery in \eqref{eq:l1_regression}. A way that requires knowing more about the \emph{coordinate structure} of descent cones induced by the \acrshort{gtv} semi-norm. Ultimately, the sample complexity of \acrshort{gtv} decoders only gets a workable expression in Chapter \ref{ch:inexact_dual}.
 
 
 \section{A positive gain functional as a recovery certificate}
 
-We can quantify the the trivial intersection property in terms of any $q$-norm by noting that
+We can quantify the trivial intersection property in terms of any $q$-norm by noting that
 \begin{equation}
     \mathcal{D}(f, \mathbf{x}) \cap \operatorname{null} \left ( \mathbf{A} \right ) = \{ \mathbf{0} \} \iff \|\mathbf{Au}\|_q^q > 0, \forall \mathbf{u} \in \mathcal{D}(f, \mathbf{x}) \setminus \{ \mathbf{0} \}.
     \label{eq:trivial_intersect_equiv_lower_bound_gain}
@@ -85,7 +85,7 @@ But \acrlong{lhs} of \eqref{eq:rip} is equivalent to a positive minimum $q$-gain
 
 The properties of Gaussian random vectors are among the easiest to characterize theoretically. It is no surprise then that most of the work in convex recovery \cite{chandrasekaran2012, tropp2015a, vershynin2015a, plan2016, liaw2017, plan2017, vershynin2017} (in general), and \acrlong{cs} \cite{foucart2013, foygel2014, dirksen2018, dirksen2018a} (in particular) employ Gaussian measurement ensembles.
 
-Gordon's ``escape through a mesh'' theorem \cite[Cor. 1.2]{gordon1988} connects the minimum $2$-gain of  a Gaussian matrix~\footnote{By ``Gaussian matrix'' I always mean a random matrix whose entries are independent draws from the standard Gaussian distribution.} $\mathbf{A}$ to its number of rows (measurements) through the Gaussian width of the descent cone~\cite[Cor. 3.3]{chandrasekaran2012}. This is notion of conic width through the lens of Gaussian vectors can be defined as follows.
+Gordon's ``escape through a mesh'' theorem \cite[Cor. 1.2]{gordon1988} connects the minimum $2$-gain of a Gaussian matrix~\footnote{By ``Gaussian matrix'' I always mean a random matrix whose entries are independent draws from the standard Gaussian distribution.} $\mathbf{A}$ to its number of rows (measurements) through the Gaussian width of the descent cone~\cite[Cor. 3.3]{chandrasekaran2012}. This notion of conic width through the lens of Gaussian vectors can be defined as follows.
 
 \begin{definition}[Conic Gaussian width \protect{\cite[Def. 3.1]{tropp2015a}}]
     Let $\mathcal{K} \subset \mathbb{R}^{n}$ be a cone and $\mathbf{g} \sim \mathcal{N}(\mathbf{0}, \mathbf{I}_n)$ be a standard Gaussian vector. The conic Gaussian width of $\mathcal{K}$ is the quantity
@@ -94,7 +94,7 @@ Gordon's ``escape through a mesh'' theorem \cite[Cor. 1.2]{gordon1988} connects 
     \end{equation}
 \end{definition}
 
-The conic Gaussian width is computed for the descent cones of some atomic norms in Chandrasekaran \etal~\cite{chandrasekaran2012}. The authors can then use those widths to arrive at the number of Gaussian measurements required for robust recovery in the respective decoders.
+The conic Gaussian width is computed for the descent cones of some atomic norms in Chandrasekaran \etal~\cite{chandrasekaran2012}. The authors can then use those widths to arrive at the number of Gaussian measurements required for a robust recovery in the respective decoders.
 
 More than that, it is even possible to precisely describe the phase transition undergone by the probability of recovery in convex recovery problems with Gaussian measurements. Such a result, derived from conic integral geometry tools, is presented next.
 
@@ -119,7 +119,7 @@ In words, the theorem says that if the number of Gaussian measurements crosses a
     \pfsketch\ If the entries of $\mathbf{A} \in \mathbb{R}^{m \times n}$ are \acrshort{iid} standard Gaussian, then the solutions to the equation $\mathbf{A u} = \mathbf{0}$ lie almost surely on an $(n - m)$-dimensional subspace of $\mathbb{R}^{n}$ drawn uniformly at random \footnote{More precisely, a subspace distributed according to the Haar measure on the Grassmannian manifold $\mathcal{G}_{(n-m),n}$ invariant to the group of rotations $\operatorname{SO}(n)$.}. The probability that a fixed cone, $\mathcal{D}(f, \mathbf{x})$, and a uniformly random subspace, $\operatorname{null} \left ( \mathbf{A} \right )$, intersect only at $\mathbf{0}$ is given by the kinematic formula studied in conic integral geometry~\cite{schneider2008}. The kinematic formula is expressed as a sum of certain ``conic intrinsic volumes'', which are shown to concentrate sharply around the square of the conic Gaussian width~\cite{amelunxen2014}~\footnote{Actually, Amelunxen \etal show that the conic intrinsic volumes concentrate around the so-called ``statistical dimension'' of the descent cone, $\delta(\mathcal{D}(f, \mathbf{x}))$. Nevertheless, this quantity is bounded as $w(\mathcal{D}(f, \mathbf{x}))^2 \leq \delta(\mathcal{D}(f, \mathbf{x})) \leq w(\mathcal{D}(f, \mathbf{x}))^2 + 1$~\cite[Prop. 10.2]{amelunxen2014}, so the Gaussian width and the statistical dimension are essentially equivalent for the purposes of characterizing the phase transition in Theorem~\ref{thm:phase_transition_gaussian}.}
 \end{proof}
 
-It is possible to rank different objectives $f$, from worst to best, according to how small is $w(\mathcal{D}(f, \mathbf{x}))$. This is one of the main benefits of pinpointing the sample complexity threshold so precisely. The width functional almost singlehandedly determines how many Gaussian measurements are needed for a successful recovery; and good objectives $f$ should require a small number of measurements. Lemma \ref{lem:upper_bound_conic_gaussian_width} shows a possible upper bound to the Gaussian width of the descent cone induced by the \acrshort{gtv} semi-norm.
+It is possible to rank different objectives $f$, from worst to best, according to how small is $w(\mathcal{D}(f, \mathbf{x}))$. This is one of the main benefits of pinpointing the sample complexity threshold so precisely. The width functional almost singlehandedly determines how many Gaussian measurements are needed for a successful recovery; good objectives $f$ should require a small number of measurements. Lemma \ref{lem:upper_bound_conic_gaussian_width} shows a possible upper bound to the Gaussian width of the descent cone induced by the \acrshort{gtv} semi-norm.
 
 \begin{lemma}[Conic Gaussian width of $\mathcal{D}( \|\mathbf{D} \cdot \|_1, \mathbf{x})$ \protect{\cite{kabanava2015a}}]\label{lem:upper_bound_conic_gaussian_width}
     Let $\mathcal{S} := \operatorname{supp}\left ( \mathbf{Dx} \right )$ be the support of $\mathbf{x}$ under the action of the analysis operator $\mathbf{D} \in \mathbb{R}^{N \times n}$, and define $\mathbf{P}_\mathcal{S}$ to be the orthogonal projection operator onto $\operatorname{span}\left \{ \mathbf{e}_i : i \in \mathcal{S} \right \}$. Then, with $\mathbf{g} \sim \mathcal{N}(\mathbf{0}, \mathbf{I}_n)$,
@@ -175,7 +175,7 @@ The precise expression relating the minimum $q$-gain to the marginal tail functi
 \begin{proposition}[\protect{\cite[Prop. 5.1]{tropp2015a}}]\label{prop:lower_bound_min_q_gain}
     Let the rows of $\mathbf{A} \in \mathbb{R}^{m \times n}$ be \acrshort{iid} copies of a random vector $\mathbf{a}$. Then, for any constants $\xi, t > 0$, and with probability at least $1 - \exp \left ( \frac{-t^2}{2} \right )$, we have the lower bound
     \begin{equation}
-        \gamma_{\min}^{(q)} \left ( \mathcal{D}( f, \mathbf{x}), \mathbf{A} \right ) \geq m^{\frac{2 - q}{2q}} \left [ \xi \sqrt{m} Q_{\xi}(\mathbf{a}, \mathcal{S}) - 2 W_{m}(\mathbf{a}, \mathcal{S}) - \xi t \right ].
+        \gamma_{\min}^{(q)} \left ( \mathcal{D}( f, \mathbf{x}), \mathbf{A} \right ) \geq m^{\frac{2 - q}{2q}} \left [ \xi \sqrt{m} Q_{\xi}(\mathbf{a}, \mathcal{D}( f, \mathbf{x})) - 2 W_{m}(\mathbf{a}, \mathcal{D}( f, \mathbf{x})) - \xi t \right ].
     \end{equation}
 \end{proposition}
 
@@ -199,11 +199,11 @@ This lower bound combines with Theorem \ref{thm:error_min_q_gain} to form in the
 
 In light of Corollary~\ref{cor:sample_complexity_small_ball_method}, the small-ball method prescribes the following three steps for uncovering the sample complexity of decoders like \eqref{eq:f_regression} whenever the measurement matrix has independent rows.
 \begin{algorithm}
-	\begin{algorithmic}[1]
-		\State{Bound $Q_{\xi}(\mathbf{a}, \mathcal{D}( f, \mathbf{x}))$ below.}
+    \begin{algorithmic}[1]
+        \State{Bound $Q_{\xi}(\mathbf{a}, \mathcal{D}( f, \mathbf{x}))$ below.}
         \State{Bound $W_{m}(\mathbf{a}, \mathcal{D}( f, \mathbf{x}))$ above.}
         \State{Return $m$ according to Corollary \ref{cor:sample_complexity_small_ball_method}.}
-	\end{algorithmic}
+    \end{algorithmic}
 \end{algorithm}
 
 There are many tools for attacking the non-trivial steps 1 and 2. Unless we already know the constants in the small-ball condition satisfied by $\mathbf{a}$, a Paley-Zygmund inequality \cite[Prop. 3.3.1]{delapena1999} may lower-bound the marginal tail function. Generic chaining \cite[Ch. 2]{talagrand2014} or cone polarity \cite[Prop 7.1]{tropp2015a}, in turn, may majorize the mean empirical width by simpler objects. Indeed, in Appendix~\ref{ap:proof_empirical_width_l1} I adapt an argument of Tropp to arrive at the following estimate for the mean empirical width associated with the \acrshort{gtv} regression decoder \eqref{eq:l1_regression}. Notice its similarity to Lemma~\ref{lem:upper_bound_conic_gaussian_width}, even though the rows of $\mathbf{A}$ are not necessarily Gaussian random vectors.
@@ -232,7 +232,7 @@ For a concrete example of how large the marginal tail function can be for absolu
 \begin{proof}
     \pf\ It suffices to realize that $\langle \mathbf{g}, \mathbf{u} \rangle \sim \mathcal{N}(\mathbf{0}, \underbrace{\|\mathbf{u}\|_{2}^2}_{=1})$ and compute
     \begin{align*}
-        \underset{\xi \to 0}{\lim} \enspace \underset{\mathbf{u} \in \mathcal{S} \cap \mathbb{S}^{n-1}}{\inf} \mathbb{P} \left ( \left \{ | \langle \mathbf{g}, \mathbf{u}\rangle | \geq \xi \right \} \right ) & = \underset{\xi \to 0}{\lim} \enspace \frac{1}{\sqrt{2\pi}}\int_{-\infty}^{\infty} \mathbb{1}_{\{ |t| \geq \xi \}} e^{-t^2/2} dt \\
+        \underset{\xi \to 0}{\lim} \enspace \underset{\mathbf{u} \in \mathbb{S}^{n-1}}{\inf} \mathbb{P} \left ( \left \{ | \langle \mathbf{g}, \mathbf{u}\rangle | \geq \xi \right \} \right ) & = \underset{\xi \to 0}{\lim} \enspace \frac{1}{\sqrt{2\pi}}\int_{-\infty}^{\infty} \mathbb{1}_{\{ |t| \geq \xi \}} e^{-t^2/2} dt \\
         & = \underset{\xi \to 0}{\lim} \enspace \frac{2}{\sqrt{2\pi}}\int_{\xi}^{\infty} e^{-t^2/2} dt & \comment{$2\times$ Gaussian tail}\\
         & = 1.
     \end{align*}
@@ -313,7 +313,7 @@ Mendelson's small-ball method has been involved in many success stories regardin
 
 By the end of this chapter I can but point towards a direction where the \acrshort{gtv} regression \eqref{eq:l1_regression} might be given a direct recovery certificate. The path requires a better understanding of the geometry of the descent cone $\mathcal{D}( \|\mathbf{D} \cdot \|_1, \mathbf{x})$, especially in what concerns the coordinate structure of the set $\mathcal{D}( \|\mathbf{D} \cdot \|_1, \mathbf{x}) \cap \mathbb{S}^{n-1}$. But this characterization I leave as an open problem.
 
-In the next chapter I will finally show a recovery certificate -- even if only for the noiseless, interpolation program  \eqref{eq:l1_interpolation}. An optimal sampling design will then be revealed as the one that minimizes the number of samples the certificate demands.
+In the next chapter, I will finally show a recovery certificate -- even if only for the noiseless, interpolation program  \eqref{eq:l1_interpolation}. An optimal sampling design will then be revealed as the one that minimizes the number of samples the certificate demands.
 
 \clearpage
 

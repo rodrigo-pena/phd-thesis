@@ -12,7 +12,7 @@ end up into the origin-centered Euclidean ball of radius $\frac{1}{3}$. At the s
     \label{fig:illustration_golfing_scheme}
 \end{figure}
 
-A good place for picking the the initial guess $\mathbf{u}^{(0)}$ is within the slab
+A good place for picking the initial guess $\mathbf{u}^{(0)}$ is within the slab
 \begin{equation*}
     \left\{\mathbf{u} \in \mathbb{R}^{N} : \left \| \left ( \mathbf{I}_N - \mathbf{P}_\mathcal{S} \right ) \mathbf{u}^\star \right \|_{\infty} \leq \frac{1}{3} \right\}.
 \end{equation*}
@@ -34,7 +34,7 @@ But the range condition in \eqref{ass:range} is stated in the \emph{primal} doma
 \end{equation}
 for any $\mathbf{u} \in \mathbb{R}^{N}$. Each iterate $\mathbf{u}^{(l)}$ can be expressed as $\mathbf{u}^{(l)} = \mathbf{D} \mathbf{D}^{+} \mathbf{u}^{(l)} + \left ( \mathbf{I}_N - \mathbf{D} \mathbf{D}^{+}\right )\mathbf{u}^{(l)}$, by means of a direct sum of $\mathbb{R}^{N}$. Hence, by the equivalence \eqref{eq:equiv_range_primal_dual}, we are only required to write the orthogonal projection of $\mathbf{u}^{(l)}$ onto the range of $\mathbf{D}$ as $(\mathbf{D}^{+})^{\top}\mathbf{A^{\top}} \mathbf{v}$, for some vector $\mathbf{v} \in \mathbb{R}^{m}$.
 
-We can now improve be prototypical assignment by incorporating this new constraint using an additional sequence of vectors, $\{\mathbf{v}^{(l)}\}_{l \in [L]}$. Instead of simply adding the error vector $\mathbf{w}^{(l)}$, modify the part of it which lies within the range of $\mathbf{D}$ and add the result to the current iterate:
+We can now improve the prototypical assignment by incorporating this new constraint using an additional sequence of vectors, $\{\mathbf{v}^{(l)}\}_{l \in [L]}$. Instead of simply adding the error vector $\mathbf{w}^{(l)}$, modify the part of it which lies within the range of $\mathbf{D}$ and add the result to the current iterate:
 \begin{algorithm}[H]
     \begin{algorithmic}[1]
         \State{$\ldots$}
@@ -118,7 +118,7 @@ Once that is done, we can finally settle on the final version of the golfing sch
 
 \begin{algorithm}[H]
     \caption{Golfing scheme}\label{algo:golf}
-	\begin{algorithmic}[1]
+    \begin{algorithmic}[1]
         \State{Set $\mathbf{u}^{(0)} = \mathbf{0}$}
         \For{$l = 1, \dots, L$}
         \State {$\mathbf{u}^{(l)} \gets \mathbf{u}^{(l-1)} + \left[ \mathbf{I}_N - \mathbf{M}^{(l)} \right] \mathbf{w}^{(l)} $}\Comment{with $\mathbf{M}^{(l)}$ as in \eqref{eq:def_M^l}, and $\mathbf{w}^{(l)}$ as in \eqref{eq:golf_error_vec}}
