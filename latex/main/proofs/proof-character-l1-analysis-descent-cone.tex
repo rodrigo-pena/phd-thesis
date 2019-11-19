@@ -16,14 +16,14 @@ I will say that a vector $\mathbf{v}$ is polar to a set $\mathcal{S}$ if $\langl
         ``$\impliedby$'': If $\left\langle \operatorname{sign} \left ( \mathbf{Dx} \right ), \mathbf{Du} \right\rangle \leq -\left\|(\mathbf{I}_N - \mathbf{P}_{\mathcal{S}}) \mathbf{Du}\right\|_1$ then $\mathbf{u} \in \mean{\mathcal{D}(\| \mathbf{D} \cdot \|_1, \mathbf{x})}$.
     }
         \begin{proof}
-            \pf\ For any given $\mathbf{v} \in \mean{\mathcal{D}(\| \mathbf{D} \cdot \|_1, \mathbf{x})}\polar$, directly compute
+            \pf\ For any given $\mathbf{v} \in \partial \|\mathbf{D} \cdot\|_1(\mathbf{x})$, directly compute
             \begin{align*}
                 \langle \mathbf{v}, \mathbf{u} \rangle & = \left\langle \mathbf{D}^\top \operatorname{sign} \left( \mathbf{Dx} \right) + \mathbf{D}^\top (\mathbf{I}_N - \mathbf{P}_{\mathcal{S}}) \mathbf{w}, \mathbf{u} \right\rangle \\
                 & = \left\langle \operatorname{sign} \left ( \mathbf{Dx} \right ), \mathbf{Du} \right\rangle + \left\langle (\mathbf{I}_N - \mathbf{P}_{\mathcal{S}}) \mathbf{w}, \mathbf{Du} \right \rangle \\
                 & \leq \left\langle \operatorname{sign} \left ( \mathbf{Dx} \right ), \mathbf{Du} \right\rangle + \left\|(\mathbf{I}_N - \mathbf{P}_{\mathcal{S}}) \mathbf{Du}\right\|_1 \cdot \underbrace{\left\|(\mathbf{I}_N - \mathbf{P}_{\mathcal{S}}) \mathbf{w}\right\|_\infty}_{\leq 1} & \comment{H\"older inequality} \\
                 & \leq 0. & \comment{Assumption}
             \end{align*}
-            Therefore, $\mathbf{u}$ is polar to $\mean{\mathcal{D}(\| \mathbf{D} \cdot \|_1, \mathbf{x})}\polar$, meaning $\mathbf{u} \in \mean{\mathcal{D}(\| \mathbf{D} \cdot \|_1, \mathbf{x})}$.\hfill\qedsymbol
+            Therefore, $\mathbf{u}$ is polar to $\partial \|\mathbf{D} \cdot\|_1(\mathbf{x})$, meaning $\mathbf{u} \in \mean{\mathcal{D}(\| \mathbf{D} \cdot \|_1, \mathbf{x})}$.\hfill\qedsymbol
         \end{proof}
 
     \step{}{
@@ -34,8 +34,9 @@ I will say that a vector $\mathbf{v}$ is polar to a set $\mathcal{S}$ if $\langl
             \step{}{
                 Pick a vector $\mathbf{w} \in \mathbb{B}_{\infty}^N$ for which $\langle \mathbf{w}, (\mathbf{I}_N - \mathbf{P}_{\mathcal{S}}) \mathbf{Du}\rangle = \left\|(\mathbf{I}_N - \mathbf{P}_{\mathcal{S}}) \mathbf{Du}\right\|_1$. Then $\mathbf{v} = \mathbf{D}^\top \operatorname{sign} \left ( \mathbf{Dx} \right ) + \mathbf{D}^\top (\mathbf{I}_N - \mathbf{P}_{\mathcal{S}}) \mathbf{w}$ is a valid subgradient in $\partial \|\mathbf{D} \cdot\|_1(\mathbf{x})$, because
                 \begin{equation*}
-                    \left\|(\mathbf{I}_N - \mathbf{P}_{\mathcal{S}}) \mathbf{w}\right\|_\infty \leq \underbrace{\left\|(\mathbf{I}_N - \mathbf{P}_{\mathcal{S}})\right\|_\infty}_{\leq 1} \cdot \underbrace{\left\|\mathbf{w}\right\|_\infty}_{\leq 1} \leq 1.
+                    \left\|(\mathbf{I}_N - \mathbf{P}_{\mathcal{S}}) \mathbf{w}\right\|_\infty \leq \underbrace{\left\|(\mathbf{I}_N - \mathbf{P}_{\mathcal{S}})\right\|_\infty}_{\leq 1} \cdot \underbrace{\left\|\mathbf{w}\right\|_\infty}_{\leq 1} \leq 1,
                 \end{equation*}
+                where I used the fact that the rows of $\mathbf{I}_N - \mathbf{P}_{\mathcal{S}}$ are either the zero vector or one of the standard basis vectors in $\mathbb{R}^{N}$.
             }
             \step{}{
                 Since $\mathbf{v} \in \partial \|\mathbf{D} \cdot\|_1(\mathbf{x})$ is polar to $\mean{\mathcal{D}(\| \mathbf{D} \cdot \|_1, \mathbf{x})}$, we conclude that

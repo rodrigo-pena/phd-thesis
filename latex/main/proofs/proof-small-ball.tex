@@ -5,7 +5,7 @@ In this section, $\mathbf{A} \in \mathbb{R}^{m \times n}$ is a random matrix who
 
 I will then show that for any constants $\xi, t > 0$, and with probability larger than $1 - \exp \left ( \frac{-t^2}{2} \right )$, the lower bound
 \begin{equation*}
-    \gamma_{\min}^{(q)} \left ( \mathcal{S}, \mathbf{A} \right ) \geq m^{\frac{2 - q}{2q}} \left [ \xi \sqrt{m} Q_{\xi}(\mathbf{a}, \mathcal{S}) - 2 W_{m}(\mathbf{a}, \mathcal{S}) - \xi t \right ]
+    \left ( \gamma_{\min}^{(q)} \left ( \mathcal{S}, \mathbf{A} \right ) \right)^{1/q} \geq m^{\frac{2 - q}{2q}} \left [ \xi \sqrt{m} Q_{\xi}(\mathbf{a}, \mathcal{S}) - 2 W_{m}(\mathbf{a}, \mathcal{S}) - \xi t \right ]
 \end{equation*}
 takes place. The argument is taken from Tropp~\cite[Sec. 2.5.5]{tropp2015a}.
 
@@ -73,7 +73,7 @@ takes place. The argument is taken from Tropp~\cite[Sec. 2.5.5]{tropp2015a}.
         \end{proof}
         \qedstep{The desired lower bound on the minimim $q$-gain functional arises by combining steps \stepref{2}, \stepref{3} and \stepref{4}:
         \begin{equation*}
-            \gamma_{\min}^{(q)} \left ( \mathcal{S}, \mathbf{A} \right ) := \underset{\mathbf{u} \in \mathcal{S}}{\inf} \enspace \left ( \frac{1}{m}\sum_{i=1}^{m} \left | \langle \mathbf{a}_i, \mathbf{u} \rangle \right |^q \right )^{1/q} \geq m^{\frac{2 - q}{2q}} \left [ \xi \sqrt{m} Q_{\xi}(\mathbf{a}, \mathcal{S}) - 2 W_{m}(\mathbf{a}, \mathcal{S}) - \xi t \right ].
+            \left ( \gamma_{\min}^{(q)} \left ( \mathcal{S}, \mathbf{A} \right ) \right)^{1/q} := \underset{\mathbf{u} \in \mathcal{S}}{\inf} \enspace \left ( \frac{1}{m}\sum_{i=1}^{m} \left | \langle \mathbf{a}_i, \mathbf{u} \rangle \right |^q \right )^{1/q} \geq m^{\frac{2 - q}{2q}} \left [ \xi \sqrt{m} Q_{\xi}(\mathbf{a}, \mathcal{S}) - 2 W_{m}(\mathbf{a}, \mathcal{S}) - \xi t \right ].
         \end{equation*}
         }
 \end{proof}

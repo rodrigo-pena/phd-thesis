@@ -19,12 +19,12 @@ take place~\footnote{In Calculus, this is analogous to finding the critical poin
     \mathbf{0} \in \partial_{\bm{\nu}} \mathfrak{L}(\mathbf{z}^\star, \bm{\nu}^\star) & \iff \mathbf{0} = \nabla_{\bm{\nu}} \left\{ \| \mathbf{D}\mathbf{z}^\star \|_1 + \left\langle \cdot, \mathbf{A}\mathbf{z}^\star - \mathbf{Ax}\right\rangle \right\} (\bm{\nu}^\star)\\
     & \iff \mathbf{0} = \mathbf{A}\mathbf{z}^\star - \mathbf{Ax}.
 \end{align*}
-For the second inclusion, we have to deal with the subdifferential of $\|\mathbf{D} \cdot \|_1$ at $\mathbf{z}^\star$. It helps to recall this set's defining expressions from Proposition \ref{prop:character_subdifferential_l1}, which let us write $\mathbf{z} \in \partial \|\mathbf{D} \cdot \|_1 (\mathbf{z}^\star)$ $\iff$ $\mathbf{z} = \mathbf{D}^{\top} \left[ \operatorname{sign} \left ( \mathbf{Dx} \right ) + \left ( \mathbf{I}_N + \mathbf{P}_{\mathcal{S}} \right ) \mathbf{u} \right]$ for some $\mathbf{u} \in \mathbb{R}^{N}$ satisfying $\left\|(\mathbf{I}_N - \mathbf{P}_{\mathcal{S}}) \mathbf{u}\right\|_\infty \leq 1$. As a result, we can read \eqref{eq:saddle_primal} as
+For the second inclusion, we have to deal with the subdifferential of $\|\mathbf{D} \cdot \|_1$ at $\mathbf{z}^\star$, and it will help to recall this set's defining expressions from Proposition \ref{prop:character_subdifferential_l1}. Setting $\mathcal{S} = \operatorname{supp}\left ( \mathbf{D} \mathbf{z}^\star \right )$, we can write $\mathbf{z} \in \partial \|\mathbf{D} \cdot \|_1 (\mathbf{z}^\star)$ $\iff$ there is some vector $\mathbf{u}^\star \in \mathbb{R}^{N}$ such that $\mathbf{z} = \mathbf{D}^\top \mathbf{u}^\star$, $\mathbf{P}_{\mathcal{S}} \mathbf{u}^\star =  \operatorname{sign} \left ( \mathbf{D} \mathbf{z}^\star \right )$, and $\left\|(\mathbf{I}_N - \mathbf{P}_{\mathcal{S}}) \mathbf{u}^\star \right\|_\infty \leq 1$. As a result, we may read \eqref{eq:saddle_primal} as
 \begin{align*}
-    \mathbf{0} \in \partial_{\mathbf{z}} \mathfrak{L}(\mathbf{z}^\star, \bm{\nu}^\star) & \iff \mathbf{0} = \partial \|\mathbf{D} \cdot \|_1 (\mathbf{z}^\star) + \nabla_{\mathbf{z}} \left\{ \left\langle \bm{\nu}^\star, \mathbf{A}\cdot - \mathbf{Ax}\right\rangle \right\} (\mathbf{z}^\star)\\
-    & \iff \mathbf{0} = \mathbf{D}^{\top} \left[ \operatorname{sign} \left ( \mathbf{Dx} \right ) + \left ( \mathbf{I}_N + \mathbf{P}_{\mathcal{S}} \right ) \mathbf{u}^\star \right] + \mathbf{A}^{\top} \bm{\nu}^\star,
+    \mathbf{0} \in \partial_{\mathbf{z}} \mathfrak{L}(\mathbf{z}^\star, \bm{\nu}^\star) & \iff \mathbf{0} \in \partial \|\mathbf{D} \cdot \|_1 (\mathbf{z}^\star) + \nabla_{\mathbf{z}} \left\{ \left\langle \bm{\nu}^\star, \mathbf{A}\cdot - \mathbf{Ax}\right\rangle \right\} (\mathbf{z}^\star)\\
+    & \iff -\mathbf{A}^{\top} \bm{\nu}^\star = \mathbf{D}^{\top} \left[ \operatorname{sign} \left ( \mathbf{D} \mathbf{z}^\star \right ) + \left ( \mathbf{I}_N - \mathbf{P}_{\mathcal{S}} \right ) \mathbf{u}^\star \right],
 \end{align*}
-where $\mathbf{u}^\star$ is such that $\mathbf{z}^\star = \mathbf{D}^\top \mathbf{u}^\star$ \emph{and} $\left\|(\mathbf{I}_N - \mathbf{P}_{\mathcal{S}}) \mathbf{u}^\star \right\|_\infty \leq 1$.
+where $\left\|(\mathbf{I}_N - \mathbf{P}_{\mathcal{S}}) \mathbf{u}^\star \right\|_\infty \leq 1$.
 
 Together, the unpacked saddle-point expressions form the so-called \acrfull{kkt} conditions for the optimality of the primal-dual pair $(\mathbf{z}^\star, \bm{\nu}^\star)$:
 \begin{equation*}
@@ -32,21 +32,21 @@ Together, the unpacked saddle-point expressions form the so-called \acrfull{kkt}
 \end{equation*}
 and
 \begin{equation*}
-    \mathbf{z}^\star = \mathbf{A}^{\top} \bm{\nu}^\star = \mathbf{D}^\top \mathbf{u}^\star \enspace : \enspace \left\{
+    -\mathbf{A}^{\top} \bm{\nu}^\star = \mathbf{D}^\top \mathbf{u}^\star \enspace : \enspace \left\{
     \begin{matrix}
-        \mathbf{P}_{\mathcal{S}} \mathbf{u}^\star =  \operatorname{sign} \left ( \mathbf{Dx} \right )\\
+        \mathbf{P}_{\mathcal{S}} \mathbf{u}^\star =  \operatorname{sign} \left ( \mathbf{D} \mathbf{z}^\star \right )\\
         \left \| \left ( \mathbf{I}_N - \mathbf{P}_\mathcal{S} \right ) \mathbf{u}^\star \right \|_{\infty} \leq 1
     \end{matrix}
-    \right. \enspace .
+    \right. \enspace ,
 \end{equation*}
-The first of these just restates the interpolation constraint; the second lists the ingredients we will need in the rest of the chapter. Problem \eqref{eq:l1_interpolation} is only succesful if each of its optimal points $\mathbf{z}^\star$ is identical to $\mathbf{x}$. In this case the first of the \acrshort{kkt} conditions is trivially satisfied; let us focus on the second one then.
+for some $\mathbf{u}^\star \in \mathbb{R}^{N}$. The first of these conditions just restates the interpolation constraint; the second lists the ingredients we will need in the rest of the chapter. Problem \eqref{eq:l1_interpolation} is only succesful if each of its optimal points $\mathbf{z}^\star$ is identical to $\mathbf{x}$. In this case the first of the \acrshort{kkt} conditions is trivially satisfied; let us focus on the rest of them then.
 
-Note that not much is demanded of the optimal dual point $..bm{\nu}^\star$: it just needs to be different than zero, lest $\mathbf{z}^\star$ be zero as well. The equation $\mathbf{z}^\star = \mathbf{A}^{\top} \bm{\nu}^\star$, in other words, just says that $\mathbf{z}^\star$ should be in the range of $\mathbf{A}^\top$. The only degree of freedom left is vector the $\mathbf{u}^\star$. If there is some such vector simultaneously satisfying
+Note that not much is demanded of the optimal dual point $\bm{\nu}^\star$: it just constraints $\mathbf{D}^\top \mathbf{u}^\star$ to be in the range of $\mathbf{A}^\top$. The only degree of freedom left is the vector $\mathbf{u}^\star$. If there is some such vector simultaneously satisfying
 \begin{align}
     \label{eq:kkt0}\mathbf{D}^\top \mathbf{u}^\star \in \operatorname{range} \left( \mathbf{A}^\top \right),\\
     \label{eq:kkt1}\mathbf{P}_{\mathcal{S}} \mathbf{u}^\star =  \operatorname{sign} \left ( \mathbf{Dx} \right )\\
     \label{eq:kkt2}\left \| \left ( \mathbf{I}_N - \mathbf{P}_\mathcal{S} \right ) \mathbf{u}^\star \right \|_{\infty} \leq 1,
 \end{align}
-and $\mathbf{x} = \mathbf{D}^\top \mathbf{u}^\star$, then it certifies $\mathbf{x}$ as the solution of \eqref{eq:l1_interpolation}. We suddenly see in $\mathbf{u}^\star$ the (dual) certificate we had been looking for.
+where $\mathcal{S} = \operatorname{supp}\left ( \mathbf{D} \mathbf{x} \right )$, then $\mathbf{u}^\star$ certifies $\mathbf{x}$ as a solution of \eqref{eq:l1_interpolation}. We should then try to find such certificate vectors.
 
-But before we rush, remember the random nature of the sampling matrix $\mathbf{A}$. It turns impractical the search for a vector $\mathbf{u}^\star$ satisfying an equality constraint like $\mathbf{P}_{\mathcal{S}} \mathbf{u}^\star =  \operatorname{sign} \left ( \mathbf{Dx} \right )$, \emph{while} having a deterministic image $\mathbf{D}^\top \mathbf{u}^\star$ that lies in a random subspace. Fortunately, I show in the next section how some points $\mathbf{u} \in \mathbb{R}^{N}$ can be enough of a recovery certificate despite $\mathbf{P}_{\mathcal{S}} \mathbf{u}$ merely approximating $\operatorname{sign} \left ( \mathbf{Dx} \right )$. This relaxation does not come --- of course --- without a cost, for it demands a more precise control over the interplay between operators $\mathbf{D}$ and $\mathbf{A}$. Still, it pays off, later on, when the defining expressions for these inexact certificates are turned into the blueprint for an effective golfing scheme.
+But before we rush, remember the random nature of the sampling matrix $\mathbf{A}$. It makes impractical the search for a vector $\mathbf{u}^\star$ satisfying an equality constraint like $\mathbf{P}_{\mathcal{S}} \mathbf{u}^\star =  \operatorname{sign} \left ( \mathbf{Dx} \right )$, \emph{while} having a deterministic image $\mathbf{D}^\top \mathbf{u}^\star$ that lies in a random subspace. Fortunately, I show in the next section how some points $\mathbf{u} \in \mathbb{R}^{N}$ can be enough of a recovery certificate despite $\mathbf{P}_{\mathcal{S}} \mathbf{u}$ merely approximating $\operatorname{sign} \left ( \mathbf{Dx} \right )$. This relaxation does not come --- of course --- without a cost, for it demands a more precise control over the interplay between operators $\mathbf{D}$ and $\mathbf{A}$. Still, it pays off, later on, when the defining expressions for these inexact certificates are turned into the blueprint for an effective golfing scheme.
