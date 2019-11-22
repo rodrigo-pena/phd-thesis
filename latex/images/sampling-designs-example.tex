@@ -1,0 +1,119 @@
+\begin{tikzpicture}[scale=0.85]
+
+        % axes
+        %\draw[help lines, color=gray!30, dashed] (0,-6) grid (14,8);
+
+        % real axis
+        \draw[-{Latex[length=3mm, width=3mm]}, very thick] (0,0) -- (0,5) node [right] {$\mathbb{R}$};
+        \begin{scope}[every node/.style={anchor=east}]
+            \node[color=epfl-perle] at (0,0) {$0$};
+            \node[color=epfl-canard] at (0,2) {$1$};
+            \node[color=epfl-groseille] at (0,4) {$2$};
+        \end{scope}
+
+        % vertices
+        \begin{scope}[every node/.style={circle, thick, draw}]
+            \node (v1) at (1,0.5) {$v_1$};
+            \node (v2) at (2.5,2.5) {$v_2$};
+            \node (v3) at (4.5,0.5) {$v_3$};
+            \node (v4) at (6,2.5) {$v_4$};
+        \end{scope}
+
+        % edges
+        \begin{scope}[every edge/.style={thick, draw}]
+            \path[-] (v1) edge (v2);
+            \path[-] (v2) edge (v3);
+            \path[-] (v3) edge (v4);
+            \path[-] (v3) edge (v1);
+        \end{scope}
+
+        % signal
+        \begin{scope}[every node/.style={circle, fill},
+                    every edge/.style={dashed, draw}]
+            \node[color=epfl-groseille] (sv1) at (1,4.5) {};
+            \node[color=epfl-groseille] (sv2) at (2.5,6.5) {};
+            \node[color=epfl-groseille] (sv3) at (4.5,4.5) {};
+            \node[color=epfl-canard] (sv4) at (6,4.5) {};
+
+            \path[->, color=epfl-groseille] (v1) edge (sv1);
+            \path[->, color=epfl-groseille] (v2) edge (sv2);
+            \path[->, color=epfl-groseille] (v3) edge (sv3);
+            \path[->, color=epfl-canard] (v4) edge (sv4);
+        \end{scope}
+
+        % level sets
+        \fill[color=epfl-perle, fill=epfl-perle, fill opacity=0.2] (0,0) -- (2.25,3) -- (7,3) -- (4.75,0);
+
+        % cutting plane
+        \fill[color=epfl-ardoise, fill=epfl-ardoise, fill opacity=0.2] (3.5,3.5) -- (6.5,0.5) -- (6.5,3.5) -- (3.5,6.5);
+
+        %% uniform example
+        % vertices
+        \begin{scope}[every node/.style={circle, thick, draw}]
+            \node (v1_u) at (8.25,5.5) {$v_1$};
+            \node (v2_u) at (9.75,7.5) {$v_2$};
+            \node (v3_u) at (11.75,5.5) {$v_3$};
+            \node (v4_u) at (13.25,7.5) {$v_4$};
+        \end{scope}
+
+        \node[anchor=south, yshift=15pt] at (v1_u) {$0.25$};
+        \node[anchor=south, yshift=15pt] at (v2_u) {$0.25$};
+        \node[anchor=south, yshift=15pt] at (v3_u) {$0.25$};
+        \node[anchor=south, yshift=15pt] at (v4_u) {$0.25$};
+        \node[anchor=center] at (10,4.75) {Uniform};
+
+        % edges
+        \begin{scope}[every edge/.style={thick, draw}]
+            \path[-] (v1_u) edge (v2_u);
+            \path[-] (v2_u) edge (v3_u);
+            \path[-] (v3_u) edge (v4_u);
+            \path[-] (v3_u) edge (v1_u);
+        \end{scope}
+
+        %% naive coherence example
+        % vertices
+        \begin{scope}[every node/.style={circle, thick, draw}]
+            \node (v1_nc) at (8.25,0.5) {$v_1$};
+            \node (v2_nc) at (9.75,2.5) {$v_2$};
+            \node (v3_nc) at (11.75,0.5) {$v_3$};
+            \node (v4_nc) at (13.25,2.5) {$v_4$};
+        \end{scope}
+
+        \node[anchor=south, yshift=15pt] at (v1_nc) {$0.23$};
+        \node[anchor=south, yshift=15pt] at (v2_nc) {$0.23$};
+        \node[anchor=south, yshift=15pt] at (v3_nc) {$0.13$};
+        \node[anchor=south, yshift=15pt] at (v4_nc) {$0.41$};
+        \node[anchor=center] at (10,-0.25) {Naive coherence};
+
+        % edges
+        \begin{scope}[every edge/.style={thick, draw}]
+            \path[-] (v1_nc) edge (v2_nc);
+            \path[-] (v2_nc) edge (v3_nc);
+            \path[-] (v3_nc) edge (v4_nc);
+            \path[-] (v3_nc) edge (v1_nc);
+        \end{scope}
+
+        %% jump-set coherence example
+        % vertices
+        \begin{scope}[every node/.style={circle, thick, draw}]
+            \node (v1_jsc) at (8.25,-4.5) {$v_1$};
+            \node (v2_jsc) at (9.75,-2.5) {$v_2$};
+            \node (v3_jsc) at (11.75,-4.5) {$v_3$};
+            \node (v4_jsc) at (13.25,-2.5) {$v_4$};
+        \end{scope}
+
+        \node[anchor=south, yshift=15pt] at (v1_jsc) {$0.00$};
+        \node[anchor=south, yshift=15pt] at (v2_jsc) {$0.00$};
+        \node[anchor=south, yshift=15pt] at (v3_jsc) {$0.25$};
+        \node[anchor=south, yshift=15pt] at (v4_jsc) {$0.75$};
+        \node[anchor=center] at (10,-5.25) {Jump-set coherence};
+
+        % edges
+        \begin{scope}[every edge/.style={thick, draw}]
+            \path[-] (v1_jsc) edge (v2_jsc);
+            \path[-] (v2_jsc) edge (v3_jsc);
+            \path[-] (v3_jsc) edge (v4_jsc);
+            \path[-] (v3_jsc) edge (v1_jsc);
+        \end{scope}
+
+    \end{tikzpicture}
